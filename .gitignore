@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+.env.*
+*.local
+*.Zone.Identifier
+.DS_Store
+coverage/
+.vite/
