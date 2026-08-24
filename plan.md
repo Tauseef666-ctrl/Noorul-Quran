@@ -25,16 +25,21 @@
 - [x] Lint + typecheck scripts wired up — `npm run lint` / `npm run typecheck`
 - [x] Initial app runs locally — dev server 200 OK; typecheck/lint/build all pass
 
-## Phase 1 — Data Layer (Abstraction First)
+## Phase 1 — Data Layer (Abstraction First) ✅ *(2026-08-24)*
 
-- [ ] Define types: Surah, Ayah, Page, Juz, Hizb, Rub, Ruku, Manzil, Sajdah, Translation, Tafsir, Reciter
-- [ ] `services/quran/quranProvider.ts` — provider interface (UI never couples to one API)
-- [ ] `services/quran/quranFoundationProvider.ts` — Quran.com / Quran Foundation API
-- [ ] `services/quran/alQuranCloudProvider.ts` — Al Quran Cloud API
-- [ ] `services/quran/audioProvider.ts` — recitation/audio sources
-- [ ] `services/quran/translationProvider.ts` + tafsir access
-- [ ] API response caching layer (memory + storage)
-- [ ] API keys via env vars, server-side only, nothing committed
+- [x] Define types: Surah, Ayah, Page, Juz, Hizb, Rub, Ruku, Manzil, Sajdah, Translation, Tafsir, Reciter
+- [x] `services/quran/quranProvider.ts` — provider interface (UI never couples to one API)
+- [x] `services/quran/alQuranCloudProvider.ts` — Al Quran Cloud API (verified against live API shapes)
+- [x] `services/quran/quranFoundationProvider.ts` — Quran.com API (+ paginated verse fetch, count cross-check)
+- [x] `services/quran/audioProvider.ts` — islamic.network CDN verse/surah URLs, curated reciter catalog
+- [x] `services/quran/translationProvider.ts` + tafsir access methods
+- [x] Caching layer: memory TTL + localStorage persistence (`services/http.ts`)
+- [x] API keys via env vars only — `.env.example` committed, `.env` gitignored
+- [x] Canonical global-ayah math + `surahOfGlobal()` (`src/data/ayahCounts.ts`)
+- [x] Embedded-basmala handling for correct canonical verse segmentation (never alters verse text otherwise)
+- [x] **REQ:** English + Urdu surah-name meanings via Quran Foundation localized chapters API (`nameTranslationUrdu`)
+- [x] **REQ:** Default visible translations = English (en.sahih) + Urdu (ur.jalandhry) together
+- [ ] Audio always recites Arabic; EN/UR text layers follow the same active-ayah sync *(implemented in Phase 9 player)*
 
 ## Phase 2 — Quran Text Integrity & Validation
 
