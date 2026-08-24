@@ -16,14 +16,14 @@
 
 ---
 
-## Phase 0 — Project Setup
+## Phase 0 — Project Setup ✅ *(2026-08-24)*
 
-- [ ] Scaffold Vite + React + TypeScript project (`noorulquran`)
-- [ ] Install & configure Tailwind CSS
-- [ ] Install Motion/Framer Motion + Lucide icons
-- [ ] Create folder structure: `src/{components,pages,layouts,hooks,services/quran,data,types,utils,store,styles}`
-- [ ] Lint + typecheck scripts wired up
-- [ ] Initial app runs locally
+- [x] Scaffold Vite + React + TypeScript project (`noorulquran`) — Vite 8
+- [x] Install & configure Tailwind CSS — Tailwind v4 via `@tailwindcss/vite`
+- [x] Install Motion/Framer Motion + Lucide icons
+- [x] Create folder structure: `src/{components,pages,layouts,hooks,services/quran,data,types,utils,store,styles}`
+- [x] Lint + typecheck scripts wired up — `npm run lint` / `npm run typecheck`
+- [x] Initial app runs locally — dev server 200 OK; typecheck/lint/build all pass
 
 ## Phase 1 — Data Layer (Abstraction First)
 
@@ -188,4 +188,5 @@
 
 | Date | Step | Commit |
 |------|------|--------|
-| | | |
+| 2026-08-24 | Repo created, build plan committed | `53dde11`, `3f6ed59` |
+| 2026-08-24 | Phase 0 — Project Setup complete | scaffold commit (below) |
