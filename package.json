@@ -9,7 +9,9 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "generate:quran": "node scripts/generate-quran-data.mjs",
+    "validate:quran": "node scripts/validate-quran.mjs"
   },
   "dependencies": {
     "framer-motion": "^13.1.1",

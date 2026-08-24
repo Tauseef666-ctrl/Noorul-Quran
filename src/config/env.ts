@@ -6,6 +6,6 @@ interface AppEnv {
 const env = import.meta.env as unknown as AppEnv
 
 export const appConfig = {
-  activeProviderId: env.VITE_QURAN_PROVIDER || 'alqurancloud',
+  activeProviderId: env.VITE_QURAN_PROVIDER || 'canonical',
   quranFoundationApiKey: env.VITE_QURAN_FOUNDATION_API_KEY || undefined,
 } as const

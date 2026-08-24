@@ -41,17 +41,17 @@
 - [x] **REQ:** Default visible translations = English (en.sahih) + Urdu (ur.jalandhry) together
 - [ ] Audio always recites Arabic; EN/UR text layers follow the same active-ayah sync *(implemented in Phase 9 player)*
 
-## Phase 2 — Quran Text Integrity & Validation
+## Phase 2 — Quran Text Integrity & Validation ✅ *(2026-08-24)*
 
-- [ ] Authoritative canonical source wired (Tanzil / Quran Foundation) — verbatim, unmodified
-- [ ] NO AI-generated/paraphrased/truncated verses anywhere
-- [ ] `npm run validate:quran` dev script
-  - [ ] Exactly 114 Surahs, correct ordering
-  - [ ] Expected ayah counts per surah
-  - [ ] Correct ayah numbering, no duplicate IDs, no missing ayahs
-  - [ ] No empty Arabic text / diacritics intact
-  - [ ] Valid page mappings & audio references
-- [ ] Tanzil attribution + license compliance if used
+- [x] Authoritative canonical source wired (Quran Foundation API; Tanzil-lineage) — verbatim, unmodified, checksummed (`src/data/canonical-quran.json` + `canonicalProvider`)
+- [x] NO AI-generated/paraphrased/truncated verses anywhere — text enters only via `npm run generate:quran`, guarded by SHA-256
+- [x] `npm run validate:quran` dev script (28 checks; `--live` adds dual-API cross-check + CDN HEAD probes)
+  - [x] Exactly 114 Surahs, correct ordering
+  - [x] Expected ayah counts per surah
+  - [x] Correct ayah numbering, no duplicate IDs, no missing ayahs
+  - [x] No empty Arabic text / diacritics intact (96.3% verses carry harakat; Uthmani glyphs verified)
+  - [x] Valid page mappings & audio references (604 pages covered, monotonic; 6 reciters × 228 ayah URLs)
+- [x] Tanzil attribution + license compliance — `src/data/attribution.ts`, README table
 
 ## Phase 3 — Design System, Theme & Typography
 
@@ -195,3 +195,5 @@
 |------|------|--------|
 | 2026-08-24 | Repo created, build plan committed | `53dde11`, `3f6ed59` |
 | 2026-08-24 | Phase 0 — Project Setup complete | scaffold commit (below) |
+| 2026-08-24 | Phase 1 — Data Layer complete | `c52ccaf` |
+| 2026-08-24 | Phase 2 — Text Integrity & Validation complete (canonical dataset + validate:quran) | *(below)* |
