@@ -1,1 +1,219 @@
 @import 'tailwindcss';
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   NoorulQuran Design System — Phase 3
+   Aesthetic: peaceful, scholarly, luminous. Warm ivory & white glass by day;
+   deep forest green & near-black emerald by night; emerald + muted gold
+   throughout. No neon, no cyberpunk, no gamified vibes.
+
+   Sacred-text rule: glassmorphism is NEVER applied to Quran text surfaces.
+   Quran text always renders on opaque, high-contrast backgrounds.
+   ────────────────────────────────────────────────────────────────────────── */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Raw palette variables — switched by .dark on <html> */
+:root {
+  color-scheme: light;
+
+  --paper: #f6f1e7;
+  --paper-deep: #efe7d8;
+  --wash-1: rgba(14, 122, 99, 0.07);
+  --wash-2: rgba(201, 169, 97, 0.09);
+
+  --surface: rgba(255, 255, 255, 0.78);
+  --surface-strong: #fffdf8;
+  --surface-opaque: #fdfaf3;
+  --line: rgba(23, 58, 48, 0.12);
+  --line-strong: rgba(23, 58, 48, 0.2);
+
+  --ink: #1e2b26;
+  --ink-muted: #5c6d65;
+  --ink-faint: #8a978f;
+
+  --brand: #0e7a63;
+  --brand-deep: #0a5c4a;
+  --brand-tint: rgba(14, 122, 99, 0.08);
+
+  --gold: #a07d24;
+  --gold-bright: #b8933b;
+  --gold-tint: rgba(160, 125, 36, 0.1);
+
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.65);
+
+  --shadow-soft: 0 10px 40px -12px rgba(18, 46, 38, 0.18);
+  --shadow-lifted: 0 18px 50px -16px rgba(18, 46, 38, 0.28);
+
+  --quran-size: 2rem;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --paper: #0b1613;
+  --paper-deep: #07100d;
+  --wash-1: rgba(62, 207, 154, 0.05);
+  --wash-2: rgba(212, 175, 55, 0.06);
+
+  --surface: rgba(19, 35, 29, 0.62);
+  --surface-strong: #12241e;
+  --surface-opaque: #10201a;
+  --line: rgba(226, 216, 190, 0.11);
+  --line-strong: rgba(226, 216, 190, 0.2);
+
+  --ink: #ede5d3;
+  --ink-muted: #a3b3aa;
+  --ink-faint: #6f8078;
+
+  --brand: #3ecf9a;
+  --brand-deep: #2ba87c;
+  --brand-tint: rgba(62, 207, 154, 0.09);
+
+  --gold: #d4af37;
+  --gold-bright: #e3c566;
+  --gold-tint: rgba(212, 175, 55, 0.1);
+
+  --glass-bg: rgba(17, 31, 26, 0.5);
+  --glass-border: rgba(226, 216, 190, 0.09);
+
+  --shadow-soft: 0 10px 40px -12px rgba(0, 0, 0, 0.45);
+  --shadow-lifted: 0 18px 50px -16px rgba(0, 0, 0, 0.6);
+}
+
+/* Map raw variables into Tailwind's theme (inline = resolve at usage site,
+   so utilities follow whichever scope they land in) */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-surface-opaque: var(--surface-opaque);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+
+  --font-ui: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-reading: 'Lora Variable', Georgia, serif;
+  --font-arabic: 'Amiri', serif;
+  --font-quran: 'Amiri Quran', 'Amiri', serif;
+  --font-urdu: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
+}
+
+/* Arabic font size setting: small | medium | large */
+[data-arabic-size='small'] {
+  --quran-size: 1.6rem;
+}
+[data-arabic-size='medium'] {
+  --quran-size: 2rem;
+}
+[data-arabic-size='large'] {
+  --quran-size: 2.5rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Ambient wash — two calm radial glows on a fixed layer */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(42rem 28rem at 12% -6%, var(--wash-1), transparent 60%),
+      radial-gradient(38rem 26rem at 95% 8%, var(--wash-2), transparent 62%),
+      radial-gradient(46rem 30rem at 50% 110%, var(--wash-1), transparent 65%);
+  }
+
+  ::selection {
+    background: var(--brand-tint);
+    color: var(--brand-deep);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* Glassmorphism — chrome only, never behind Quran text */
+  .glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(14px) saturate(1.25);
+    backdrop-filter: blur(14px) saturate(1.25);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Sacred text — opaque, generous leading for diacritics, never glassy */
+  .quran-text {
+    font-family: var(--font-quran);
+    font-size: var(--quran-size);
+    line-height: 2.1;
+    letter-spacing: 0;
+    word-spacing: 0.08em;
+  }
+
+  .arabic-heading {
+    font-family: var(--font-arabic);
+  }
+
+  .translation-en {
+    font-family: var(--font-reading);
+  }
+
+  .translation-ur {
+    font-family: var(--font-urdu);
+    line-height: 2.2;
+  }
+
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--gold),
+      transparent
+    );
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

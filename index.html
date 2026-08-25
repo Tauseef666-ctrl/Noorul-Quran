@@ -8,7 +8,26 @@
       name="description"
       content="NoorulQuran — Read. Listen. Reflect. A peaceful digital Mushaf and modern Quran study companion."
     />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f1e7" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1613" />
     <title>NoorulQuran — Read. Listen. Reflect.</title>
+    <script>
+      // Pre-paint theme application — prevents flash of wrong theme.
+      ;(function () {
+        try {
+          var theme = localStorage.getItem('nq:theme') || 'system'
+          var dark =
+            theme === 'dark' ||
+            (theme === 'system' &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
+          if (dark) document.documentElement.classList.add('dark')
+          var size = localStorage.getItem('nq:arabic-size')
+          if (size) document.documentElement.setAttribute('data-arabic-size', size)
+        } catch (e) {
+          /* storage unavailable — defaults apply */
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

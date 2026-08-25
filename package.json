@@ -14,6 +14,11 @@
     "validate:quran": "node scripts/validate-quran.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/lora": "^5.3.0",
+    "@fontsource/amiri": "^5.3.0",
+    "@fontsource/amiri-quran": "^5.3.0",
+    "@fontsource/noto-nastaliq-urdu": "^5.3.0",
     "framer-motion": "^13.1.1",
     "lucide-react": "^1.34.0",
     "react": "^19.2.8",

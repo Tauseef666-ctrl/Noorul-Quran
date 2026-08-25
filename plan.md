@@ -53,16 +53,16 @@
   - [x] Valid page mappings & audio references (604 pages covered, monotonic; 6 reciters × 228 ayah URLs)
 - [x] Tanzil attribution + license compliance — `src/data/attribution.ts`, README table
 
-## Phase 3 — Design System, Theme & Typography
+## Phase 3 — Design System, Theme & Typography ✅ *(2026-08-24)*
 
-- [ ] Global theme controller: Light / Dark / System (localStorage + `prefers-color-scheme`)
-- [ ] Light palette: warm ivory, white glass, emerald, muted gold, soft shadows
-- [ ] Dark palette: deep forest green, near-black emerald, dark glass, gold/cream type
-- [ ] Subtle glassmorphism (blur, translucent surfaces, thin borders) — never on Quran text itself
-- [ ] Quran-compatible Arabic font(s); separate translation typography
-- [ ] Arabic font sizes: large / medium / small setting
-- [ ] Correct RTL handling throughout
-- [ ] Peaceful/scholarly aesthetic — no cyberpunk/neon/gaming vibes
+- [x] Global theme controller: Light / Dark / System (localStorage + `prefers-color-scheme`), pre-paint FOUC guard in index.html
+- [x] Light palette: warm ivory `#f6f1e7`, white glass `rgba(255,255,255,0.78)`, emerald `#0e7a63`, muted gold `#a07d24`, soft shadows
+- [x] Dark palette: deep forest green `#0b1613`, near-black emerald `#07100d`, dark glass `rgba(19,35,29,0.62)`, gold `#d4af37`, cream text `#ede5d3`
+- [x] Subtle glassmorphism (`.glass`, `.card`) — never on Quran text surfaces (`.quran-text` is always opaque)
+- [x] Quran-compatible Arabic fonts: Amiri Quran (Quran), Amiri (headings), Noto Nastaliq Urdu (UR), Lora Variable (EN translations), Inter Variable (UI)
+- [x] Arabic font sizes: small / medium / large via `[data-arabic-size]` + `var(--quran-size)`
+- [x] Correct RTL handling (`lang`+`dir` on Arabic/Urdu elements, `.translation-ur` line-height 2.2)
+- [x] Peaceful/scholarly aesthetic — ambient radial washes, gold divider accents, no neon/cyberpunk
 
 ## Phase 4 — Routes & Pages
 
@@ -196,4 +196,5 @@
 | 2026-08-24 | Repo created, build plan committed | `53dde11`, `3f6ed59` |
 | 2026-08-24 | Phase 0 — Project Setup complete | scaffold commit (below) |
 | 2026-08-24 | Phase 1 — Data Layer complete | `c52ccaf` |
-| 2026-08-24 | Phase 2 — Text Integrity & Validation complete (canonical dataset + validate:quran) | *(below)* |
+| 2026-08-24 | Phase 2 — Text Integrity & Validation complete (canonical dataset + validate:quran) | `94265be` |
+| 2026-08-24 | Phase 3 — Design System, Theme & Typography complete (light/dark/system + fonts + glass) | *(below)* |
