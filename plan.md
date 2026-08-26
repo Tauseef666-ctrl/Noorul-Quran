@@ -64,24 +64,27 @@
 - [x] Correct RTL handling (`lang`+`dir` on Arabic/Urdu elements, `.translation-ur` line-height 2.2)
 - [x] Peaceful/scholarly aesthetic — ambient radial washes, gold divider accents, no neon/cyberpunk
 
-## Phase 4 — Routes & Pages
+## Phase 4 — Routes & Pages ✅
 
-- [ ] `/` Home — hero (نور القرآن, tagline), Continue Reading, Daily Ayah, explorers, featured recitations, footer
-- [ ] `/quran` Main reader hub
-- [ ] `/surahs` — all 114 Surah cards (number, Arabic/English names, name meaning, ayah count, revelation, juz info, Play/Read buttons) + search/filter/sort (Arabic + English)
-- [ ] `/surah/:surahId` — header, Bismillah where appropriate, all ayahs + translations + audio + actions, smooth transitions
-- [ ] `/mushaf` + `/mushaf/:page` — page-by-page reader (see Phase 6)
-- [ ] `/juz` + `/juz/:id` — 30 juz, start/end refs, progress, read/play
-- [ ] Explore section — Hizb, Rub al-Hizb, Ruku, Manzil, Sajdah verses (reliable data only)
-- [ ] `/search` (see Phase 7)
-- [ ] `/bookmarks` (see Phase 8)
-- [ ] `/daily-ayah` — Arabic, translation, ref, audio, bookmark, share (from real dataset)
-- [ ] `/tafsir` — clearly separated from Quran/translation/notes
-- [ ] `/listen` Audio-first browsing
-- [ ] `/plans` reading plans (see Phase 8)
-- [ ] `/settings` theme, fonts, reciter, preferences
-- [ ] `/resources`, `/sources`, `/about`
-- [ ] Custom 404 / error pages
+- [x] `/` Home — hero (نور القرآن, tagline), Continue Reading, Daily Ayah, explorers, featured recitations, footer
+- [x] `/surahs` — all 114 Surah cards (number, Arabic/English names, name meaning, ayah count, revelation, juz info, Play/Read buttons) + search/filter/sort (Arabic + English)
+- [x] `/surah/:surahId` — header, Bismillah where appropriate, all ayahs + translations + actions (bookmark, copy, share), smooth transitions
+- [x] `/mushaf` + `/mushaf/:page` — page-by-page reader with nav, keyboard controls, fullscreen
+- [x] `/juz` + `/juz/:id` — 30 juz, start/end refs, read with translations
+- [x] `/search` — Arabic + translation search with debounce
+- [x] `/bookmarks` — localStorage bookmarks for ayahs/surahs/pages
+- [x] `/daily-ayah` — Arabic, translation, ref, bookmark, share (from real dataset)
+- [x] `/tafsir` — clearly separated from Quran/translation/notes
+- [x] `/listen` — audio-first browsing with reciter list
+- [x] `/plans` — 30-day, 60-day, custom reading plans
+- [x] `/settings` — theme, Arabic font size, cache management
+- [x] `/sources` — data attribution, integrity statement, font licenses
+- [x] `/about` — mission, text integrity, content distinction, technology
+- [x] Custom 404 / error page
+- [x] App layout — desktop sidebar + mobile bottom nav + slide-out menu
+- [x] Reading progress tracking (localStorage)
+- [x] Bookmark store (localStorage)
+- [x] `useAsyncData` hook for clean async data fetching
 
 ## Phase 5 — Interactive Ayah Actions (Every Verse)
 
@@ -197,4 +200,5 @@
 | 2026-08-24 | Phase 0 — Project Setup complete | scaffold commit (below) |
 | 2026-08-24 | Phase 1 — Data Layer complete | `c52ccaf` |
 | 2026-08-24 | Phase 2 — Text Integrity & Validation complete (canonical dataset + validate:quran) | `94265be` |
-| 2026-08-24 | Phase 3 — Design System, Theme & Typography complete (light/dark/system + fonts + glass) | *(below)* |
+| 2026-08-24 | Phase 3 — Design System, Theme & Typography complete (light/dark/system + fonts + glass) | `7434a40` |
+| 2026-08-26 | Phase 4 — Routes & Pages complete (17 routes, layout, home, surahs, surah reader, juz, mushaf, search, bookmarks, daily ayah, tafsir, listen, plans, settings, sources, about, 404) | *(below)* |

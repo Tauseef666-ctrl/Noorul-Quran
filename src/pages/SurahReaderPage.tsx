@@ -1,0 +1,448 @@
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react'
+import { useParams, useSearchParams, Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import {
+  Bookmark,
+  BookmarkCheck,
+  Copy,
+  Share2,
+  ChevronLeft,
+  ChevronRight,
+  Info,
+} from 'lucide-react'
+import { getActiveProvider } from '../services/quran'
+import { getTranslationsForAyah } from '../services/quran/alQuranCloudProvider'
+import { DEFAULT_TRANSLATION_IDS } from '../services/quran/translationProvider'
+import type { SurahDetail, Ayah } from '../types/quran'
+import { useBookmarks } from '../store/bookmarks'
+import { useReadingProgress } from '../hooks/useReadingProgress'
+import { useAsyncData } from '../hooks/useAsyncData'
+
+const fadeIn = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+}
+
+function AyahActions({
+  ayah,
+  isBookmarked,
+  onBookmark,
+}: {
+  ayah: Ayah
+  isBookmarked: boolean
+  onBookmark: () => void
+}) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(ayah.arabic).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }, [ayah.arabic])
+
+  const handleShare = useCallback(() => {
+    const text = `${ayah.arabic}\n\n— Surah ${ayah.surahNumber}:${ayah.ayahNumber}`
+    if (navigator.share) {
+      navigator.share({ text }).catch(() => {})
+    } else {
+      navigator.clipboard.writeText(text)
+    }
+  }, [ayah])
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <button
+        type="button"
+        onClick={onBookmark}
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-brand/10 hover:text-brand"
+        aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark this ayah'}
+      >
+        {isBookmarked ? (
+          <BookmarkCheck className="h-4 w-4 text-gold" />
+        ) : (
+          <Bookmark className="h-4 w-4" />
+        )}
+      </button>
+      <button
+        type="button"
+        onClick={handleCopy}
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-brand/10 hover:text-brand"
+        aria-label="Copy Arabic text"
+        title={copied ? 'Copied!' : 'Copy'}
+      >
+        <Copy className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        onClick={handleShare}
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-brand/10 hover:text-brand"
+        aria-label="Share this ayah"
+      >
+        <Share2 className="h-4 w-4" />
+      </button>
+    </div>
+  )
+}
+
+export default function SurahReaderPage() {
+  const { surahId } = useParams<{ surahId: string }>()
+  const [searchParams] = useSearchParams()
+  const targetAyah = searchParams.get('ayah')
+  const [showInfo, setShowInfo] = useState(false)
+  const ayahRefs = useRef<Map<string, HTMLLIElement>>(new Map())
+  const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
+  const { updateProgress } = useReadingProgress()
+
+  const surahNumber = Number(surahId)
+
+  const isValid = useMemo(
+    () => surahId && !isNaN(surahNumber) && surahNumber >= 1 && surahNumber <= 114,
+    [surahId, surahNumber],
+  )
+
+  const { data: surah, loading, error: dataError } = useAsyncData<SurahDetail>(
+    (signal) => getActiveProvider().getSurah(surahNumber, { signal }),
+    [surahNumber],
+  )
+
+  const [translations, setTranslations] = useState<Record<string, Record<string, string>>>({})
+
+  // Fetch translations in batches once surah data loads
+  useEffect(() => {
+    if (!surah) return
+
+    // Update reading progress
+    updateProgress({
+      surahNumber,
+      ayahNumber: 1,
+      page: surah.ayahs[0]?.navigation.page ?? 1,
+      juz: surah.ayahs[0]?.navigation.juz ?? 1,
+    })
+
+    const controller = new AbortController()
+
+    const fetchTranslations = async () => {
+      const batchSize = 5
+      for (let i = 0; i < surah.ayahs.length; i += batchSize) {
+        if (controller.signal.aborted) break
+        const batch = surah.ayahs.slice(i, i + batchSize)
+        const results = await Promise.all(
+          batch.map(async (ayah) => {
+            try {
+              const trans = await getTranslationsForAyah(
+                ayah.surahNumber,
+                ayah.ayahNumber,
+                DEFAULT_TRANSLATION_IDS,
+                controller.signal,
+              )
+              return [ayah.key, trans] as const
+            } catch {
+              return [ayah.key, {}] as const
+            }
+          }),
+        )
+        if (!controller.signal.aborted) {
+          setTranslations((prev) => {
+            const next = { ...prev }
+            for (const [key, trans] of results) {
+              next[key] = trans
+            }
+            return next
+          })
+        }
+      }
+    }
+
+    fetchTranslations()
+    return () => controller.abort()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [surah])
+
+  // Scroll to target ayah
+  useEffect(() => {
+    if (!targetAyah || !surah) return
+    const el = ayahRefs.current.get(`${surahNumber}:${targetAyah}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetAyah, surah])
+
+  // Track reading on scroll
+  useEffect(() => {
+    if (!surah) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const key = entry.target.getAttribute('data-ayah-key')
+            if (key) {
+              const [s, a] = key.split(':').map(Number)
+              const ayah = surah.ayahs.find((ay) => ay.surahNumber === s && ay.ayahNumber === a)
+              if (ayah) {
+                updateProgress({
+                  surahNumber: s,
+                  ayahNumber: a,
+                  page: ayah.navigation.page,
+                  juz: ayah.navigation.juz,
+                })
+              }
+            }
+          }
+        }
+      },
+      { threshold: 0.5 },
+    )
+
+    for (const el of ayahRefs.current.values()) {
+      observer.observe(el)
+    }
+
+    return () => observer.disconnect()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [surah])
+
+  const handleBookmarkToggle = useCallback(() => {
+    if (!surah) return
+    const id = String(surah.number)
+    if (isBookmarked('surah', id)) {
+      removeBookmark('surah', id)
+    } else {
+      addBookmark({
+        type: 'surah',
+        id,
+        surahNumber: surah.number,
+        label: surah.nameTransliterated,
+      })
+    }
+  }, [surah, isBookmarked, addBookmark, removeBookmark])
+
+  const error = !isValid ? 'Invalid surah number.' : dataError
+
+  if (loading) {
+    return (
+      <div className="space-y-4 py-12">
+        <div className="card animate-pulse rounded-2xl p-6">
+          <div className="mx-auto h-8 w-48 rounded bg-line" />
+          <div className="mx-auto mt-4 h-6 w-32 rounded bg-line" />
+          <div className="mx-auto mt-8 h-24 w-full rounded-xl bg-line" />
+        </div>
+        <div className="space-y-6">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="animate-pulse space-y-3 rounded-2xl p-4">
+              <div className="h-20 w-full rounded-xl bg-line" />
+              <div className="h-4 w-3/4 rounded bg-line" />
+              <div className="h-4 w-1/2 rounded bg-line" />
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !surah) {
+    return (
+      <div className="py-12 text-center">
+        <div className="card rounded-2xl p-8" role="alert">
+          <p className="text-sm text-red-700 dark:text-red-300">{error || 'Surah not found.'}</p>
+          <Link to="/surahs" className="mt-4 inline-block text-sm font-semibold text-brand hover:underline">
+            ← Back to Surahs
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  // Bismillah: show for all surahs except 1 (Al-Fatihah — it's part of the text) and 9 (At-Tawbah)
+  const showBismillah = surahNumber !== 1 && surahNumber !== 9
+
+  return (
+    <motion.div initial="hidden" animate="visible" className="space-y-6">
+      {/* Surah header */}
+      <motion.div variants={fadeIn} className="card rounded-2xl p-6 text-center sm:p-8">
+        <div className="flex items-center justify-between">
+          <Link
+            to={surahNumber > 1 ? `/surah/${surahNumber - 1}` : '/surahs'}
+            className="flex h-9 w-9 items-center justify-center rounded-xl text-ink-faint hover:bg-brand/10 hover:text-brand"
+            aria-label={surahNumber > 1 ? `Previous surah (${surahNumber - 1})` : 'Back to surahs'}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Link>
+          <div className="text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">
+              Surah {surah.number} · {surah.revelationType}
+            </p>
+            <h1 className="arabic-heading mt-2 text-4xl sm:text-5xl" lang="ar" dir="rtl">
+              {surah.nameArabic}
+            </h1>
+            <p className="mt-1 text-sm text-ink-muted">
+              {surah.nameTransliterated} — {surah.nameTranslation}
+              {surah.nameTranslationUrdu ? ` · ${surah.nameTranslationUrdu}` : ''}
+            </p>
+            <p className="mt-1 text-xs text-ink-faint">
+              {surah.numberOfAyahs} Ayahs
+            </p>
+          </div>
+          <Link
+            to={surahNumber < 114 ? `/surah/${surahNumber + 1}` : '/surahs'}
+            className="flex h-9 w-9 items-center justify-center rounded-xl text-ink-faint hover:bg-brand/10 hover:text-brand"
+            aria-label={surahNumber < 114 ? `Next surah (${surahNumber + 1})` : 'Back to surahs'}
+          >
+            <ChevronRight className="h-5 w-5" />
+          </Link>
+        </div>
+
+        <div className="gold-divider mx-auto mt-5 w-40" />
+
+        <div className="mt-4 flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={handleBookmarkToggle}
+            className="flex items-center gap-2 rounded-full border border-line px-4 py-2 text-xs font-medium text-ink-muted transition-colors hover:border-brand hover:text-brand"
+          >
+            {isBookmarked('surah', String(surah.number)) ? (
+              <BookmarkCheck className="h-3.5 w-3.5 text-gold" />
+            ) : (
+              <Bookmark className="h-3.5 w-3.5" />
+            )}
+            Bookmark Surah
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowInfo(!showInfo)}
+            className="flex items-center gap-2 rounded-full border border-line px-4 py-2 text-xs font-medium text-ink-muted transition-colors hover:border-brand hover:text-brand"
+          >
+            <Info className="h-3.5 w-3.5" />
+            {showInfo ? 'Hide Info' : 'Surah Info'}
+          </button>
+        </div>
+
+        {showInfo && (
+          <div className="mt-4 rounded-xl bg-brand/5 p-4 text-left text-sm text-ink-muted">
+            <p><span className="font-semibold text-ink">Name:</span> {surah.nameTransliterated}</p>
+            <p><span className="font-semibold text-ink">Meaning:</span> {surah.nameTranslation}</p>
+            {surah.nameTranslationUrdu && (
+              <p><span className="font-semibold text-ink">Urdu:</span> {surah.nameTranslationUrdu}</p>
+            )}
+            <p><span className="font-semibold text-ink">Revelation:</span> {surah.revelationType}</p>
+            <p><span className="font-semibold text-ink">Ayahs:</span> {surah.numberOfAyahs}</p>
+            <p>
+              <span className="font-semibold text-ink">Starting page:</span>{' '}
+              {surah.ayahs[0]?.navigation.page ?? '—'}
+            </p>
+          </div>
+        )}
+      </motion.div>
+
+      {/* Bismillah */}
+      {showBismillah && (
+        <motion.div variants={fadeIn} className="text-center py-2">
+          <p className="arabic-heading text-2xl text-ink" lang="ar" dir="rtl">
+            بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+          </p>
+          <p className="mt-1 text-xs text-ink-faint italic">
+            In the name of Allah, the Most Gracious, the Most Merciful
+          </p>
+        </motion.div>
+      )}
+
+      {/* Ayahs */}
+      <motion.ul variants={fadeIn} className="space-y-8">
+        {surah.ayahs.map((ayah) => {
+          const bookmarkId = `${ayah.surahNumber}:${ayah.ayahNumber}`
+          return (
+            <motion.li
+              key={ayah.key}
+              ref={(el) => {
+                if (el) ayahRefs.current.set(ayah.key, el)
+              }}
+              data-ayah-key={ayah.key}
+              variants={fadeIn}
+              className="group relative rounded-2xl p-4 sm:p-6 transition-colors hover:bg-surface/60"
+            >
+              {/* Ayah number badge */}
+              <div className="mb-3 flex items-center justify-between">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-[11px] font-semibold text-ink-faint">
+                  {ayah.ayahNumber}
+                </span>
+                <AyahActions
+                  ayah={ayah}
+                  isBookmarked={isBookmarked('ayah', bookmarkId)}
+                  onBookmark={() => {
+                    if (isBookmarked('ayah', bookmarkId)) {
+                      removeBookmark('ayah', bookmarkId)
+                    } else {
+                      addBookmark({
+                        type: 'ayah',
+                        id: bookmarkId,
+                        surahNumber: ayah.surahNumber,
+                        ayahNumber: ayah.ayahNumber,
+                        label: `${surah.nameTransliterated} ${ayah.surahNumber}:${ayah.ayahNumber}`,
+                      })
+                    }
+                  }}
+                />
+              </div>
+
+              {/* Arabic text */}
+              <p className="quran-text text-right" lang="ar" dir="rtl">
+                {ayah.arabic}
+              </p>
+
+              {/* Translations */}
+              <div className="mt-4 space-y-2 border-t border-line/50 pt-3">
+                {translations[ayah.key]?.['en.sahih'] && (
+                  <p className="translation-en text-[15px] leading-relaxed text-ink-muted">
+                    {translations[ayah.key]['en.sahih']}
+                  </p>
+                )}
+                {translations[ayah.key]?.['ur.jalandhry'] && (
+                  <p className="translation-ur text-right text-base" lang="ur" dir="rtl">
+                    {translations[ayah.key]['ur.jalandhry']}
+                  </p>
+                )}
+                {!translations[ayah.key] && (
+                  <div className="h-4 w-48 animate-pulse rounded bg-line" />
+                )}
+              </div>
+
+              {/* Page marker */}
+              {ayah.ayahNumber === 1 || ayah.navigation.page !== surah.ayahs[surah.ayahs.indexOf(ayah) - 1]?.navigation.page ? (
+                <div className="absolute -right-2 top-4 hidden rotate-90 text-[10px] font-semibold text-ink-faint sm:block">
+                  p.{ayah.navigation.page}
+                </div>
+              ) : null}
+            </motion.li>
+          )
+        })}
+      </motion.ul>
+
+      {/* Bottom navigation */}
+      <motion.div variants={fadeIn} className="flex items-center justify-between py-6">
+        {surahNumber > 1 ? (
+          <Link
+            to={`/surah/${surahNumber - 1}`}
+            className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-ink-muted transition-colors hover:border-brand hover:text-brand"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Previous Surah
+          </Link>
+        ) : (
+          <div />
+        )}
+        {surahNumber < 114 ? (
+          <Link
+            to={`/surah/${surahNumber + 1}`}
+            className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-ink-muted transition-colors hover:border-brand hover:text-brand"
+          >
+            Next Surah
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        ) : (
+          <div />
+        )}
+      </motion.div>
+    </motion.div>
+  )
+}

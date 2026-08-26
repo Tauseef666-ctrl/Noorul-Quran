@@ -10,11 +10,14 @@ import '@fontsource/noto-nastaliq-urdu/600.css'
 import './styles/index.css'
 import App from './App.tsx'
 import { PreferencesProvider } from './store/preferences.tsx'
+import { BookmarksProvider } from './store/bookmarks.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PreferencesProvider>
-      <App />
+      <BookmarksProvider>
+        <App />
+      </BookmarksProvider>
     </PreferencesProvider>
   </StrictMode>,
 )
