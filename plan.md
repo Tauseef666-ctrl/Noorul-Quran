@@ -106,11 +106,13 @@
 - [x] Page boundaries respect selected mushaf edition — provider fetches with `{ mushaf: layout }`, so each edition's own page mapping is used; jump index is the canonical 604-page reference
 - [x] Dark/light aware, highly readable sacred text (existing design tokens)
 
-## Phase 7 — Search
+## Phase 7 — Search ✅
 
-- [ ] Search across: Arabic text, translations, surah names, ayah references
-- [ ] Results: `SurahName 2:255` + Arabic excerpt + translation excerpt + Play/Read actions
-- [ ] Empty state + zero-AI-invented-text guarantee
+- [x] Search across: Arabic text (offline canonical corpus, tashkeel-insensitive), translations (provider), surah names (Arabic/transliterated/meaning), and exact ayah references (`2:255`, `2 255`)
+- [x] Results: `SurahName 2:255` + Arabic excerpt + translation excerpt + Play/Read actions, plus surah-name cards
+- [x] Empty state + zero-AI-invented-text guarantee (every hit verbatim from bundled dataset or public API)
+- [x] Mode tabs: All / Arabic (offline) / Translation (provider); reference queries always resolve locally
+- [x] Diacritic-neutral Arabic matching (alef/hamza/wasla/ta-marbuta folding)
 - [ ] Loading/error/debounce handling
 
 ## Phase 8 — Personal Features
@@ -205,4 +207,5 @@
 | 2026-08-24 | Phase 3 — Design System, Theme & Typography complete (light/dark/system + fonts + glass) | `7434a40` |
 | 2026-08-26 | Phase 4 — Routes & Pages complete (17 routes, layout, home, surahs, surah reader, juz, mushaf, search, bookmarks, daily ayah, tafsir, listen, plans, settings, sources, about, 404) | `e07c551` |
 | 2026-08-28 | Phase 5 — Interactive Ayah Actions complete (per-ayah play/pause/replay, tafsir modal, verse info panel, AudioProvider store) | `1dba4ca` |
-| 2026-08-28 | Phase 6 — Mushaf Reader complete (swipe nav, jump-to dialog, fullscreen, progress + last-page restore, layout selection, per-edition boundaries) | *(below)* |
+| 2026-08-28 | Phase 6 — Mushaf Reader complete (swipe nav, jump-to dialog, fullscreen, progress + last-page restore, layout selection, per-edition boundaries) | `d5d10ec` |
+| 2026-08-28 | Phase 7 — Search complete (offline Arabic corpus search, provider translations, surah-name + reference matching, mode tabs, play/read actions, zero-AI guarantee) | *(below)* |
