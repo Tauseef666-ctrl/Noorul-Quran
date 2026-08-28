@@ -95,16 +95,16 @@
 - [ ] Personal notes (deferred — requires accounts/later)
 - [x] Wired per-ayah actions into SurahReader + JuzReader
 
-## Phase 6 — Mushaf Reader (Page-by-Page)
+## Phase 6 — Mushaf Reader (Page-by-Page) ✅
 
-- [ ] Prev/next page navigation, desktop controls
-- [ ] Mobile swipe navigation
-- [ ] Jump to: page number, surah, juz, ayah
-- [ ] Full-screen reading mode
-- [ ] Reading progress indicator; last page saved locally
-- [ ] Mushaf layout selection (Uthmani / IndoPak / supported layouts)
-- [ ] Page boundaries respect selected mushaf edition (not assumed identical)
-- [ ] Dark/light aware, highly readable sacred text
+- [x] Prev/next page navigation (desktop buttons, keyboard arrows, bottom nav, fullscreen toolbar)
+- [x] Mobile swipe navigation (RTL-aware)
+- [x] Jump to: page number, surah, juz, ayah (`JumpToDialog` with tabs, powered by bundled page index)
+- [x] Full-screen reading mode (dedicated toolbar, arrows, Escape/F to exit)
+- [x] Reading progress bar (page X/604); last page auto-saved and restored on `/mushaf`
+- [x] Mushaf layout selection (Uthmani / Imlaei; only layouts the active provider supports, persisted to localStorage)
+- [x] Page boundaries respect selected mushaf edition — provider fetches with `{ mushaf: layout }`, so each edition's own page mapping is used; jump index is the canonical 604-page reference
+- [x] Dark/light aware, highly readable sacred text (existing design tokens)
 
 ## Phase 7 — Search
 
@@ -204,4 +204,5 @@
 | 2026-08-24 | Phase 2 — Text Integrity & Validation complete (canonical dataset + validate:quran) | `94265be` |
 | 2026-08-24 | Phase 3 — Design System, Theme & Typography complete (light/dark/system + fonts + glass) | `7434a40` |
 | 2026-08-26 | Phase 4 — Routes & Pages complete (17 routes, layout, home, surahs, surah reader, juz, mushaf, search, bookmarks, daily ayah, tafsir, listen, plans, settings, sources, about, 404) | `e07c551` |
-| 2026-08-28 | Phase 5 — Interactive Ayah Actions complete (per-ayah play/pause/replay, tafsir modal, verse info panel, AudioProvider store) | *(below)* |
+| 2026-08-28 | Phase 5 — Interactive Ayah Actions complete (per-ayah play/pause/replay, tafsir modal, verse info panel, AudioProvider store) | `1dba4ca` |
+| 2026-08-28 | Phase 6 — Mushaf Reader complete (swipe nav, jump-to dialog, fullscreen, progress + last-page restore, layout selection, per-edition boundaries) | *(below)* |
