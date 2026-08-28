@@ -9,6 +9,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Info,
+  Play,
+  Pause,
+  RotateCcw,
+  BookMarked,
 } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
 import { getTranslationsForAyah } from '../services/quran/alQuranCloudProvider'
@@ -17,6 +21,9 @@ import type { SurahDetail, Ayah } from '../types/quran'
 import { useBookmarks } from '../store/bookmarks'
 import { useReadingProgress } from '../hooks/useReadingProgress'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { useAudio } from '../store/audio'
+import { TafsirModal } from '../components/TafsirModal'
+import { VerseInfoPanel } from '../components/VerseInfoPanel'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 16 },
@@ -27,12 +34,21 @@ function AyahActions({
   ayah,
   isBookmarked,
   onBookmark,
+  onTafsir,
+  onVerseInfo,
+  showVerseInfo,
 }: {
   ayah: Ayah
   isBookmarked: boolean
   onBookmark: () => void
+  onTafsir: () => void
+  onVerseInfo: () => void
+  showVerseInfo: boolean
 }) {
   const [copied, setCopied] = useState(false)
+  const { toggle, playing, isCurrentAyah } = useAudio()
+  const isActive = isCurrentAyah(ayah.surahNumber, ayah.ayahNumber)
+  const isPlaying = isActive && playing
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(ayah.arabic).then(() => {
@@ -52,6 +68,27 @@ function AyahActions({
 
   return (
     <div className="flex items-center gap-1.5">
+      {/* Play / Pause */}
+      <button
+        type="button"
+        onClick={() => toggle(ayah.surahNumber, ayah.ayahNumber)}
+        className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
+          isActive
+            ? 'bg-brand text-white'
+            : 'text-ink-faint hover:bg-brand/10 hover:text-brand'
+        }`}
+        aria-label={isPlaying ? `Pause ayah ${ayah.ayahNumber}` : `Play ayah ${ayah.ayahNumber}`}
+      >
+        {isPlaying ? (
+          <Pause className="h-4 w-4" />
+        ) : isActive ? (
+          <RotateCcw className="h-4 w-4" />
+        ) : (
+          <Play className="h-4 w-4" />
+        )}
+      </button>
+
+      {/* Bookmark */}
       <button
         type="button"
         onClick={onBookmark}
@@ -64,6 +101,8 @@ function AyahActions({
           <Bookmark className="h-4 w-4" />
         )}
       </button>
+
+      {/* Copy */}
       <button
         type="button"
         onClick={handleCopy}
@@ -73,6 +112,8 @@ function AyahActions({
       >
         <Copy className="h-4 w-4" />
       </button>
+
+      {/* Share */}
       <button
         type="button"
         onClick={handleShare}
@@ -80,6 +121,32 @@ function AyahActions({
         aria-label="Share this ayah"
       >
         <Share2 className="h-4 w-4" />
+      </button>
+
+      {/* Tafsir */}
+      <button
+        type="button"
+        onClick={onTafsir}
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-brand/10 hover:text-brand"
+        aria-label={`Tafsir for ayah ${ayah.ayahNumber}`}
+        title="Tafsir"
+      >
+        <BookMarked className="h-4 w-4" />
+      </button>
+
+      {/* Verse info */}
+      <button
+        type="button"
+        onClick={onVerseInfo}
+        className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
+          showVerseInfo
+            ? 'bg-brand/10 text-brand'
+            : 'text-ink-faint hover:bg-brand/10 hover:text-brand'
+        }`}
+        aria-label={`Verse info for ayah ${ayah.ayahNumber}`}
+        title="Verse info"
+      >
+        <Info className="h-4 w-4" />
       </button>
     </div>
   )
@@ -90,6 +157,8 @@ export default function SurahReaderPage() {
   const [searchParams] = useSearchParams()
   const targetAyah = searchParams.get('ayah')
   const [showInfo, setShowInfo] = useState(false)
+  const [tafsirAyah, setTafsirAyah] = useState<Ayah | null>(null)
+  const [verseInfoAyah, setVerseInfoAyah] = useState<Ayah | null>(null)
   const ayahRefs = useRef<Map<string, HTMLLIElement>>(new Map())
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
   const { updateProgress } = useReadingProgress()
@@ -382,7 +451,23 @@ export default function SurahReaderPage() {
                       })
                     }
                   }}
+                  onTafsir={() => setTafsirAyah(ayah)}
+                  onVerseInfo={() =>
+                    setVerseInfoAyah((prev) =>
+                      prev?.key === ayah.key ? null : ayah,
+                    )
+                  }
+                  showVerseInfo={verseInfoAyah?.key === ayah.key}
                 />
+
+                {/* Verse info panel */}
+                {verseInfoAyah?.key === ayah.key && (
+                  <VerseInfoPanel
+                    ayah={ayah}
+                    isOpen
+                    onClose={() => setVerseInfoAyah(null)}
+                  />
+                )}
               </div>
 
               {/* Arabic text */}
@@ -443,6 +528,16 @@ export default function SurahReaderPage() {
           <div />
         )}
       </motion.div>
+
+      {/* Tafsir modal */}
+      {tafsirAyah && (
+        <TafsirModal
+          surahNumber={tafsirAyah.surahNumber}
+          ayahNumber={tafsirAyah.ayahNumber}
+          isOpen
+          onClose={() => setTafsirAyah(null)}
+        />
+      )}
     </motion.div>
   )
 }

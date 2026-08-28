@@ -1,13 +1,28 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Bookmark, BookmarkCheck, ChevronLeft, ChevronRight } from 'lucide-react'
+import {
+  Bookmark,
+  BookmarkCheck,
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
+  RotateCcw,
+  BookMarked,
+  Info,
+  Copy,
+  Share2,
+} from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
 import { getTranslationsForAyah } from '../services/quran/alQuranCloudProvider'
 import { DEFAULT_TRANSLATION_IDS } from '../services/quran/translationProvider'
-import type { JuzDetail } from '../types/quran'
+import type { JuzDetail, Ayah } from '../types/quran'
 import { useBookmarks } from '../store/bookmarks'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { useAudio } from '../store/audio'
+import { TafsirModal } from '../components/TafsirModal'
+import { VerseInfoPanel } from '../components/VerseInfoPanel'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 16 },
@@ -17,7 +32,10 @@ const fadeIn = {
 export default function JuzReaderPage() {
   const { juzId } = useParams<{ juzId: string }>()
   const [translations, setTranslations] = useState<Record<string, Record<string, string>>>({})
+  const [tafsirAyah, setTafsirAyah] = useState<Ayah | null>(null)
+  const [verseInfoAyah, setVerseInfoAyah] = useState<Ayah | null>(null)
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
+  const { toggle, playing, isCurrentAyah } = useAudio()
 
   const juzNumber = Number(juzId)
 
@@ -176,6 +194,7 @@ export default function JuzReaderPage() {
         {juz.ayahs.map((ayah, index) => {
           const prevAyah = index > 0 ? juz.ayahs[index - 1] : null
           const showSurahHeader = !prevAyah || prevAyah.surahNumber !== ayah.surahNumber
+          const bookmarkId = `${ayah.surahNumber}:${ayah.ayahNumber}`
 
           return (
             <motion.li key={ayah.key} variants={fadeIn}>
@@ -199,9 +218,101 @@ export default function JuzReaderPage() {
                   <span className="flex h-7 w-7 items-center justify-center rounded-full border border-line text-[10px] font-semibold text-ink-faint">
                     {ayah.ayahNumber}
                   </span>
-                  <span className="text-[10px] font-semibold text-ink-faint">
-                    {ayah.surahNumber}:{ayah.ayahNumber}
-                  </span>
+
+                  {/* Per-ayah actions */}
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => toggle(ayah.surahNumber, ayah.ayahNumber)}
+                      className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${
+                        isCurrentAyah(ayah.surahNumber, ayah.ayahNumber)
+                          ? 'bg-brand text-white'
+                          : 'text-ink-faint hover:bg-brand/10 hover:text-brand'
+                      }`}
+                      aria-label={isCurrentAyah(ayah.surahNumber, ayah.ayahNumber) && playing ? `Pause ayah ${ayah.ayahNumber}` : `Play ayah ${ayah.ayahNumber}`}
+                    >
+                      {isCurrentAyah(ayah.surahNumber, ayah.ayahNumber) && playing ? (
+                        <Pause className="h-3.5 w-3.5" />
+                      ) : isCurrentAyah(ayah.surahNumber, ayah.ayahNumber) ? (
+                        <RotateCcw className="h-3.5 w-3.5" />
+                      ) : (
+                        <Play className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (isBookmarked('ayah', bookmarkId)) {
+                          removeBookmark('ayah', bookmarkId)
+                        } else {
+                          addBookmark({
+                            type: 'ayah',
+                            id: bookmarkId,
+                            surahNumber: ayah.surahNumber,
+                            ayahNumber: ayah.ayahNumber,
+                            label: `Juz ${juzNumber} · ${ayah.surahNumber}:${ayah.ayahNumber}`,
+                          })
+                        }
+                      }}
+                      className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-brand/10 hover:text-brand"
+                      aria-label={isBookmarked('ayah', bookmarkId) ? 'Remove bookmark' : 'Bookmark'}
+                    >
+                      {isBookmarked('ayah', bookmarkId) ? (
+                        <BookmarkCheck className="h-3.5 w-3.5 text-gold" />
+                      ) : (
+                        <Bookmark className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(ayah.arabic).catch(() => {})
+                      }}
+                      className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-brand/10 hover:text-brand"
+                      aria-label="Copy"
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const text = `${ayah.arabic}\n\n— ${ayah.surahNumber}:${ayah.ayahNumber}`
+                        if (navigator.share) {
+                          navigator.share({ text }).catch(() => {})
+                        } else {
+                          navigator.clipboard.writeText(text)
+                        }
+                      }}
+                      className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-brand/10 hover:text-brand"
+                      aria-label="Share"
+                    >
+                      <Share2 className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTafsirAyah(ayah)}
+                      className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-brand/10 hover:text-brand"
+                      aria-label="Tafsir"
+                    >
+                      <BookMarked className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setVerseInfoAyah((prev) =>
+                          prev?.key === ayah.key ? null : ayah,
+                        )
+                      }
+                      className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${
+                        verseInfoAyah?.key === ayah.key
+                          ? 'bg-brand/10 text-brand'
+                          : 'text-ink-faint hover:bg-brand/10 hover:text-brand'
+                      }`}
+                      aria-label="Verse info"
+                    >
+                      <Info className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
 
                 <p className="quran-text text-right" lang="ar" dir="rtl">
@@ -223,6 +334,15 @@ export default function JuzReaderPage() {
                     <div className="h-4 w-48 animate-pulse rounded bg-line" />
                   )}
                 </div>
+
+                {/* Verse info panel */}
+                {verseInfoAyah?.key === ayah.key && (
+                  <VerseInfoPanel
+                    ayah={ayah}
+                    isOpen
+                    onClose={() => setVerseInfoAyah(null)}
+                  />
+                )}
               </div>
             </motion.li>
           )
@@ -254,6 +374,16 @@ export default function JuzReaderPage() {
           <div />
         )}
       </motion.div>
+
+      {/* Tafsir modal */}
+      {tafsirAyah && (
+        <TafsirModal
+          surahNumber={tafsirAyah.surahNumber}
+          ayahNumber={tafsirAyah.ayahNumber}
+          isOpen
+          onClose={() => setTafsirAyah(null)}
+        />
+      )}
     </motion.div>
   )
 }

@@ -11,12 +11,15 @@ import './styles/index.css'
 import App from './App.tsx'
 import { PreferencesProvider } from './store/preferences.tsx'
 import { BookmarksProvider } from './store/bookmarks.tsx'
+import { AudioProvider } from './store/audio.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PreferencesProvider>
       <BookmarksProvider>
-        <App />
+        <AudioProvider>
+          <App />
+        </AudioProvider>
       </BookmarksProvider>
     </PreferencesProvider>
   </StrictMode>,

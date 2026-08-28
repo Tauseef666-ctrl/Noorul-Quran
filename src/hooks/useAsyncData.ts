@@ -25,14 +25,17 @@ function reducer<T>(_state: State<T>, action: Action<T>): State<T> {
 export function useAsyncData<T>(
   fetcher: (signal: AbortSignal) => Promise<T>,
   deps: unknown[],
+  enabled = true,
 ): State<T> {
   const [state, dispatch] = useReducer(reducer<T>, undefined, (): State<T> => ({
     data: null,
-    loading: true,
+    loading: enabled,
     error: null,
   }))
 
   useEffect(() => {
+    if (!enabled) return
+
     const controller = new AbortController()
 
     dispatch({ type: 'start' })
@@ -52,7 +55,7 @@ export function useAsyncData<T>(
 
     return () => controller.abort()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps)
+  }, [...deps, enabled])
 
   return state
 }

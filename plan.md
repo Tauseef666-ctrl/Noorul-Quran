@@ -86,12 +86,14 @@
 - [x] Bookmark store (localStorage)
 - [x] `useAsyncData` hook for clean async data fetching
 
-## Phase 5 — Interactive Ayah Actions (Every Verse)
+## Phase 5 — Interactive Ayah Actions (Every Verse) ✅
 
-- [ ] Play / Pause / Replay per ayah
-- [ ] Bookmark / Copy / Share per ayah
-- [ ] View translation / tafsir / verse info
-- [ ] Personal notes (if accounts implemented later)
+- [x] Play / Pause / Replay per ayah (curated reciter audio, toggle state per verse)
+- [x] Bookmark / Copy / Share per ayah
+- [x] View translation / tafsir / verse info (TafsirModal with Jalalayn, VerseInfoPanel with navigation metadata)
+- [x] AudioProvider store (reciter selection, playback state, per-ayah URL)
+- [ ] Personal notes (deferred — requires accounts/later)
+- [x] Wired per-ayah actions into SurahReader + JuzReader
 
 ## Phase 6 — Mushaf Reader (Page-by-Page)
 
@@ -201,4 +203,5 @@
 | 2026-08-24 | Phase 1 — Data Layer complete | `c52ccaf` |
 | 2026-08-24 | Phase 2 — Text Integrity & Validation complete (canonical dataset + validate:quran) | `94265be` |
 | 2026-08-24 | Phase 3 — Design System, Theme & Typography complete (light/dark/system + fonts + glass) | `7434a40` |
-| 2026-08-26 | Phase 4 — Routes & Pages complete (17 routes, layout, home, surahs, surah reader, juz, mushaf, search, bookmarks, daily ayah, tafsir, listen, plans, settings, sources, about, 404) | *(below)* |
+| 2026-08-26 | Phase 4 — Routes & Pages complete (17 routes, layout, home, surahs, surah reader, juz, mushaf, search, bookmarks, daily ayah, tafsir, listen, plans, settings, sources, about, 404) | `e07c551` |
+| 2026-08-28 | Phase 5 — Interactive Ayah Actions complete (per-ayah play/pause/replay, tafsir modal, verse info panel, AudioProvider store) | *(below)* |
