@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -39,8 +39,9 @@ export default function JuzReaderPage() {
   const [verseInfoAyah, setVerseInfoAyah] = useState<Ayah | null>(null)
   const [noteAyah, setNoteAyah] = useState<Ayah | null>(null)
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
-  const { toggle, playing, isCurrentAyah } = useAudio()
+  const { toggle, playing, isCurrentAyah, currentAyah, mode, playRange, pause, resume } = useAudio()
   const notes = useNotes()
+  const ayahRefs = useRef<Map<string, HTMLLIElement>>(new Map())
 
   const juzNumber = Number(juzId)
 
@@ -97,6 +98,13 @@ export default function JuzReaderPage() {
   }, [juz])
 
   const error = !isValid ? 'Invalid juz number.' : dataError
+
+  // Scroll current ayah into view during playback
+  useEffect(() => {
+    if (!currentAyah || !playing) return
+    const el = ayahRefs.current.get(`${currentAyah.surahNumber}:${currentAyah.ayahNumber}`)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [currentAyah, playing])
 
   if (loading) {
     return (
@@ -170,6 +178,31 @@ export default function JuzReaderPage() {
           <button
             type="button"
             onClick={() => {
+              const playingThisJuz = mode === 'range' && currentAyah?.surahNumber === juz.ayahs[0]?.surahNumber
+              if (playingThisJuz) {
+                if (playing) pause()
+                else resume()
+              } else {
+                playRange(juz.ayahs.map((a) => ({ surahNumber: a.surahNumber, ayahNumber: a.ayahNumber })))
+              }
+            }}
+            className={`flex items-center gap-2 rounded-full px-5 py-2 text-xs font-semibold text-white shadow-md transition-colors ${
+              mode === 'range' && currentAyah?.surahNumber === juz.ayahs[0]?.surahNumber
+                ? 'bg-gold hover:bg-gold-bright'
+                : 'bg-brand hover:bg-brand-deep'
+            }`}
+            aria-label="Play this juz"
+          >
+            {mode === 'range' && playing ? (
+              <Pause className="h-3.5 w-3.5" />
+            ) : (
+              <Play className="h-3.5 w-3.5" />
+            )}
+            {mode === 'range' && playing ? 'Pause Juz' : 'Play Juz'}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
               if (isBookmarked('ayah', bookmarkId)) {
                 removeBookmark('ayah', bookmarkId)
               } else {
@@ -202,7 +235,14 @@ export default function JuzReaderPage() {
           const bookmarkId = `${ayah.surahNumber}:${ayah.ayahNumber}`
 
           return (
-            <motion.li key={ayah.key} variants={fadeIn}>
+            <motion.li
+              key={ayah.key}
+              ref={(el) => {
+                if (el) ayahRefs.current.set(ayah.key, el)
+              }}
+              data-ayah-key={ayah.key}
+              variants={fadeIn}
+            >
               {/* Surah header when surah changes */}
               {showSurahHeader && (
                 <div className="mb-4 border-b border-line pb-3 text-center">
@@ -218,7 +258,13 @@ export default function JuzReaderPage() {
                 </div>
               )}
 
-              <div className="rounded-2xl p-4 sm:p-6 transition-colors hover:bg-surface/60">
+              <div
+                className={`rounded-2xl p-4 transition-colors sm:p-6 ${
+                  isCurrentAyah(ayah.surahNumber, ayah.ayahNumber) && playing
+                    ? 'bg-brand/5 ring-1 ring-brand/25'
+                    : 'hover:bg-surface/60'
+                }`}
+              >
                 <div className="mb-2 flex items-center justify-between">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full border border-line text-[10px] font-semibold text-ink-faint">
                     {ayah.ayahNumber}

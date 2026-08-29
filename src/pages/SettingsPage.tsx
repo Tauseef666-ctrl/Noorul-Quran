@@ -2,6 +2,8 @@ import { motion } from 'framer-motion'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { ArabicSizeSelector } from '../components/ArabicSizeSelector'
 import { usePreferences } from '../store/preferences'
+import { useAudio } from '../store/audio'
+import { CURATED_RECITERS } from '../services/quran/audioProvider'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 12 },
@@ -14,6 +16,7 @@ const stagger = {
 
 export default function SettingsPage() {
   const { arabicSize } = usePreferences()
+  const { reciterId, setReciter } = useAudio()
 
   return (
     <motion.div initial="hidden" animate="visible" variants={stagger} className="space-y-8">
@@ -50,8 +53,40 @@ export default function SettingsPage() {
         <p className="mt-1 text-xs text-ink-muted">
           Select your preferred reciter for audio playback
         </p>
-        <p className="mt-4 text-xs text-ink-faint italic">
-          Reciter selection will be available in Phase 9 (Audio Recitation System)
+        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+          {CURATED_RECITERS.map((reciter) => {
+            const isActive = reciterId === reciter.id
+            return (
+              <button
+                key={reciter.id}
+                type="button"
+                onClick={() => setReciter(reciter.id)}
+                aria-pressed={isActive}
+                className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${
+                  isActive
+                    ? 'border-brand bg-brand/5'
+                    : 'border-line hover:border-brand/40 hover:bg-brand/5'
+                }`}
+              >
+                <div
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-bold transition-colors ${
+                    isActive ? 'bg-brand text-white' : 'bg-brand/10 text-brand'
+                  }`}
+                >
+                  {reciter.name.charAt(0)}
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-xs font-semibold text-ink">{reciter.name}</p>
+                  <p className="text-[10px] text-ink-faint">
+                    {reciter.bitrate} kbps{isActive ? ' · selected' : ''}
+                  </p>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+        <p className="mt-3 text-xs text-ink-faint">
+          Audio is streamed on demand from the islamic.network CDN.
         </p>
       </motion.section>
 

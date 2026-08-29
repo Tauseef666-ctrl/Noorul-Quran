@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Play, Headphones } from 'lucide-react'
+import { Play, Pause, Headphones, Mic2 } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
 import { CURATED_RECITERS } from '../services/quran/audioProvider'
 import type { Surah } from '../types/quran'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { useAudio } from '../store/audio'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 12 },
@@ -20,6 +21,7 @@ export default function ListenPage() {
     (signal) => getActiveProvider().getSurahList({ signal }),
     [],
   )
+  const { reciterId, setReciter, playSurah, mode, currentAyah, playing, pause, resume } = useAudio()
 
   return (
     <motion.div initial="hidden" animate="visible" variants={stagger} className="space-y-6">
@@ -28,30 +30,51 @@ export default function ListenPage() {
           <Headphones className="h-5 w-5 text-brand" aria-hidden />
           <h1 className="text-2xl font-bold text-ink">Listen</h1>
         </div>
-        <p className="text-sm text-ink-muted">Audio-first Quran browsing</p>
+        <p className="text-sm text-ink-muted">
+          Audio-first Quran browsing — playback continues across the app
+        </p>
       </motion.header>
 
-      {/* Reciter info */}
+      {/* Reciter selection */}
       <motion.section variants={fadeIn} className="card rounded-2xl p-5 sm:p-6">
-        <h2 className="text-sm font-semibold text-ink">Available Reciters</h2>
+        <div className="flex items-center gap-2">
+          <Mic2 className="h-4 w-4 text-gold" aria-hidden />
+          <h2 className="text-sm font-semibold text-ink">Reciter</h2>
+        </div>
         <p className="mt-1 text-xs text-ink-muted">
-          Select a reciter when playing audio. Full playback controls available in Phase 9.
+          Choose who you would like to hear. All reciters stream from the islamic.network CDN.
         </p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          {CURATED_RECITERS.map((reciter) => (
-            <div
-              key={reciter.id}
-              className="flex items-center gap-3 rounded-xl border border-line p-3"
-            >
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
-                <Play className="h-3.5 w-3.5" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-xs font-semibold text-ink truncate">{reciter.name}</p>
-                <p className="text-[10px] text-ink-faint">{reciter.bitrate} kbps</p>
-              </div>
-            </div>
-          ))}
+          {CURATED_RECITERS.map((reciter) => {
+            const isActive = reciterId === reciter.id
+            return (
+              <button
+                key={reciter.id}
+                type="button"
+                onClick={() => setReciter(reciter.id)}
+                aria-pressed={isActive}
+                className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${
+                  isActive
+                    ? 'border-brand bg-brand/5'
+                    : 'border-line hover:border-brand/40 hover:bg-brand/5'
+                }`}
+              >
+                <div
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors ${
+                    isActive ? 'bg-brand text-white' : 'bg-brand/10 text-brand'
+                  }`}
+                >
+                  <Play className="h-3.5 w-3.5" aria-hidden />
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-xs font-semibold text-ink">{reciter.name}</p>
+                  <p className="text-[10px] text-ink-faint">
+                    {reciter.bitrate} kbps{isActive ? ' · selected' : ''}
+                  </p>
+                </div>
+              </button>
+            )
+          })}
         </div>
       </motion.section>
 
@@ -74,31 +97,68 @@ export default function ListenPage() {
           </div>
         ) : surahs && (
           <motion.div variants={stagger} className="space-y-1.5">
-            {surahs.map((surah) => (
-              <motion.div key={surah.number} variants={fadeIn}>
-                <Link
-                  to={`/surah/${surah.number}`}
-                  className="group flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-surface"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand transition-colors group-hover:bg-brand group-hover:text-white">
-                    <Play className="h-3.5 w-3.5" />
+            {surahs.map((surah) => {
+              const isPlayingHere = mode === 'surah' && currentAyah?.surahNumber === surah.number
+              return (
+                <motion.div key={surah.number} variants={fadeIn}>
+                  <div className="group flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-surface">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (isPlayingHere) {
+                          if (playing) pause()
+                          else resume()
+                        } else {
+                          playSurah(surah.number)
+                        }
+                      }}
+                      aria-label={
+                        isPlayingHere && playing
+                          ? `Pause surah ${surah.number}`
+                          : `Play surah ${surah.number}`
+                      }
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
+                        isPlayingHere
+                          ? 'bg-gold text-white'
+                          : 'bg-brand/10 text-brand group-hover:bg-brand group-hover:text-white'
+                      }`}
+                    >
+                      {isPlayingHere && playing ? (
+                        <Pause className="h-3.5 w-3.5" />
+                      ) : (
+                        <Play className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-xs font-semibold text-ink">
+                        {surah.number}. {surah.nameTransliterated}
+                      </p>
+                      <p className="text-[10px] text-ink-faint">
+                        {surah.numberOfAyahs} ayahs · {surah.revelationType}
+                      </p>
+                    </div>
+                    <Link
+                      to={`/surah/${surah.number}`}
+                      className="text-[11px] font-semibold text-brand hover:underline"
+                    >
+                      Read →
+                    </Link>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold text-ink truncate">
-                      {surah.number}. {surah.nameTransliterated}
-                    </p>
-                    <p className="text-[10px] text-ink-faint">
-                      {surah.numberOfAyahs} ayahs · {surah.revelationType}
-                    </p>
-                  </div>
-                  <p className="arabic-heading text-sm text-ink-faint" lang="ar" dir="rtl">
-                    {surah.nameArabic}
-                  </p>
-                </Link>
-              </motion.div>
-            ))}
+                </motion.div>
+              )
+            })}
           </motion.div>
         )}
+      </motion.section>
+
+      {/* Attribution */}
+      <motion.section variants={fadeIn} className="rounded-xl border border-line px-4 py-3">
+        <p className="text-[11px] leading-relaxed text-ink-faint">
+          Recitations © their respective reciters and are served via the islamic.network CDN under
+          its terms. Audio is streamed on demand and is never bulk-downloaded or cached offline.
+          Only the reciters listed above are offered, matching what the audio source actually
+          provides.
+        </p>
       </motion.section>
     </motion.div>
   )

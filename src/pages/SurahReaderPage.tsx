@@ -185,6 +185,7 @@ export default function SurahReaderPage() {
   const [verseInfoAyah, setVerseInfoAyah] = useState<Ayah | null>(null)
   const [noteAyah, setNoteAyah] = useState<Ayah | null>(null)
   const ayahRefs = useRef<Map<string, HTMLLIElement>>(new Map())
+  const { currentAyah, playing, isCurrentAyah, mode, playSurah, pause, resume } = useAudio()
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
   const { updateProgress } = useReadingProgress()
   const notes = useNotes()
@@ -298,6 +299,13 @@ export default function SurahReaderPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [surah])
 
+  // Scroll current ayah into view during playback
+  useEffect(() => {
+    if (!currentAyah || !playing) return
+    const el = ayahRefs.current.get(`${currentAyah.surahNumber}:${currentAyah.ayahNumber}`)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [currentAyah, playing])
+
   const handleBookmarkToggle = useCallback(() => {
     if (!surah) return
     const id = String(surah.number)
@@ -393,6 +401,35 @@ export default function SurahReaderPage() {
         <div className="mt-4 flex items-center justify-center gap-3">
           <button
             type="button"
+            onClick={() => {
+              const playingThisSurah = mode === 'surah' && currentAyah?.surahNumber === surahNumber
+              if (playingThisSurah) {
+                if (playing) pause()
+                else resume()
+              } else {
+                playSurah(surahNumber)
+              }
+            }}
+            className={`flex items-center gap-2 rounded-full px-5 py-2 text-xs font-semibold text-white shadow-md transition-colors ${
+              mode === 'surah' && currentAyah?.surahNumber === surahNumber
+                ? 'bg-gold hover:bg-gold-bright'
+                : 'bg-brand hover:bg-brand-deep'
+            }`}
+            aria-label={
+              mode === 'surah' && currentAyah?.surahNumber === surahNumber && playing
+                ? `Pause surah ${surahNumber}`
+                : `Play surah ${surahNumber}`
+            }
+          >
+            {mode === 'surah' && currentAyah?.surahNumber === surahNumber && playing ? (
+              <Pause className="h-3.5 w-3.5" />
+            ) : (
+              <Play className="h-3.5 w-3.5" />
+            )}
+            {mode === 'surah' && currentAyah?.surahNumber === surahNumber ? 'Pause Surah' : 'Play Surah'}
+          </button>
+          <button
+            type="button"
             onClick={handleBookmarkToggle}
             className="flex items-center gap-2 rounded-full border border-line px-4 py-2 text-xs font-medium text-ink-muted transition-colors hover:border-brand hover:text-brand"
           >
@@ -447,6 +484,7 @@ export default function SurahReaderPage() {
         {surah.ayahs.map((ayah) => {
           const bookmarkId = `${ayah.surahNumber}:${ayah.ayahNumber}`
           const note = notes.getNote(ayah.surahNumber, ayah.ayahNumber)
+          const isActive = isCurrentAyah(ayah.surahNumber, ayah.ayahNumber) && playing
           return (
             <motion.li
               key={ayah.key}
@@ -455,7 +493,11 @@ export default function SurahReaderPage() {
               }}
               data-ayah-key={ayah.key}
               variants={fadeIn}
-              className="group relative rounded-2xl p-4 sm:p-6 transition-colors hover:bg-surface/60"
+              className={`group relative rounded-2xl p-4 transition-colors sm:p-6 ${
+                isActive
+                  ? 'bg-brand/5 ring-1 ring-brand/25'
+                  : 'hover:bg-surface/60'
+              }`}
             >
               {/* Ayah number badge */}
               <div className="mb-3 flex items-center justify-between">

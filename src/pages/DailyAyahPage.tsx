@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Bookmark, Share2, Sparkles } from 'lucide-react'
+import { Bookmark, Share2, Sparkles, Play, Pause } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
 import { getTranslationsForAyah } from '../services/quran/alQuranCloudProvider'
 import { DEFAULT_TRANSLATION_IDS } from '../services/quran/translationProvider'
 import type { Ayah } from '../types/quran'
 import { useBookmarks } from '../store/bookmarks'
+import { useAudio } from '../store/audio'
 import { AYAH_COUNTS } from '../data/ayahCounts'
 import { useAsyncData } from '../hooks/useAsyncData'
 
@@ -37,6 +38,7 @@ export default function DailyAyahPage() {
   const [translation, setTranslation] = useState('')
   const [urduTranslation, setUrduTranslation] = useState('')
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
+  const { toggle, playing, isCurrentAyah, playSurah } = useAudio()
 
   const bookmarkId = `${daily.surahNumber}:${daily.ayahNumber}`
 
@@ -104,10 +106,39 @@ export default function DailyAyahPage() {
             </p>
           )}
 
-          <div className="mt-8 flex items-center justify-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => toggle(daily.surahNumber, daily.ayahNumber)}
+              className={`inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-colors hover:bg-brand-deep ${
+                isCurrentAyah(daily.surahNumber, daily.ayahNumber) ? 'bg-gold hover:bg-gold-bright' : ''
+              }`}
+              aria-label={
+                isCurrentAyah(daily.surahNumber, daily.ayahNumber) && playing
+                  ? 'Pause this ayah'
+                  : 'Play this ayah'
+              }
+            >
+              {isCurrentAyah(daily.surahNumber, daily.ayahNumber) && playing ? (
+                <Pause className="h-4 w-4" />
+              ) : (
+                <Play className="h-4 w-4" />
+              )}
+              {isCurrentAyah(daily.surahNumber, daily.ayahNumber) && playing
+                ? 'Pause'
+                : 'Listen'}
+            </button>
+            <button
+              type="button"
+              onClick={() => playSurah(daily.surahNumber)}
+              className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-ink-muted transition-colors hover:border-brand hover:text-brand"
+            >
+              <Play className="h-4 w-4" />
+              Play Surah
+            </button>
             <Link
               to={`/surah/${daily.surahNumber}?ayah=${daily.ayahNumber}`}
-              className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-colors hover:bg-brand-deep"
+              className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-ink-muted transition-colors hover:border-brand hover:text-brand"
             >
               Read in Context
             </Link>

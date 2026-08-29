@@ -39,7 +39,7 @@
 - [x] Embedded-basmala handling for correct canonical verse segmentation (never alters verse text otherwise)
 - [x] **REQ:** English + Urdu surah-name meanings via Quran Foundation localized chapters API (`nameTranslationUrdu`)
 - [x] **REQ:** Default visible translations = English (en.sahih) + Urdu (ur.jalandhry) together
-- [ ] Audio always recites Arabic; EN/UR text layers follow the same active-ayah sync *(implemented in Phase 9 player)*
+- [x] Audio always recites Arabic; EN/UR text layers follow the same active-ayah sync *(implemented in Phase 9 player)*
 
 ## Phase 2 — Quran Text Integrity & Validation ✅ *(2026-08-24)*
 
@@ -92,7 +92,7 @@
 - [x] Bookmark / Copy / Share per ayah
 - [x] View translation / tafsir / verse info (TafsirModal with Jalalayn, VerseInfoPanel with navigation metadata)
 - [x] AudioProvider store (reciter selection, playback state, per-ayah URL)
-- [ ] Personal notes (deferred — requires accounts/later)
+- [x] Personal notes, device-only, explicitly labeled "Personal Note", cloud-sync path noted (implemented in Phase 8 — `/notes`, NoteModal, per-ayah blocks)
 - [x] Wired per-ayah actions into SurahReader + JuzReader
 
 ## Phase 6 — Mushaf Reader (Page-by-Page) ✅
@@ -125,14 +125,14 @@
 
 ## Phase 9 — Audio Recitation System
 
-- [ ] Persistent bottom audio player across app
-- [ ] Playback modes: single ayah, ayah range, whole surah, continuous Quran (cross-surah)
-- [ ] Auto-advance ayah → next surah (when enabled)
-- [ ] Controls: play/pause, prev/next ayah, seek, volume, repeat ayah/surah, auto-next
-- [ ] Speeds: 0.75x / 1x / 1.25x / 1.5x
-- [ ] Reciter selector (Alafasy, Abdul Basit, Husary, Ghamdi… — only providers actually supplying them)
-- [ ] Active ayah sync: subtle highlight, scroll-into-view, current surah/ayah + total progress shown
-- [ ] Respect audio licensing/attribution per source
+- [x] Persistent bottom audio player across app (queue engine + `AudioPlayer`, mobile/dark-aware)
+- [x] Playback modes: single ayah, ayah range, whole surah, continuous Quran (cross-surah)
+- [x] Auto-advance ayah → next surah (when enabled)
+- [x] Controls: play/pause, prev/next ayah, seek, volume, repeat ayah/surah, auto-next
+- [x] Speeds: 0.75x / 1x / 1.25x / 1.5x
+- [x] Reciter selector (Alafasy, Abdul Basit, Husary, Minshawi, Shaatree, Hudhaify — only providers actually supplying them)
+- [x] Active ayah sync: subtle highlight, scroll-into-view, current surah/ayah + total progress shown
+- [x] Respect audio licensing/attribution per source (islamic.network CDN, on-demand, no bulk cache)
 
 ## Phase 10 — Translations & Tafsir
 
@@ -210,3 +210,4 @@
 | 2026-08-28 | Phase 6 — Mushaf Reader complete (swipe nav, jump-to dialog, fullscreen, progress + last-page restore, layout selection, per-edition boundaries) | `d5d10ec` |
 | 2026-08-28 | Phase 7 — Search complete (offline Arabic corpus search, provider translations, surah-name + reference matching, mode tabs, play/read actions, zero-AI guarantee) | `4fde527` |
 | 2026-08-29 | Phase 8 — Personal Features complete (personal notes store + modal + per-ayah wiring in surah/juz readers, `/notes` page, functional 30/60/custom reading plans with calm day tracking, continue-reading % on Home, cloud-sync note) | `c16a713` |
+| 2026-08-29 | Phase 9 — Audio Recitation System complete (queue playback engine with single/range/surah/continuous modes, persistent bottom player, prev/next/seek/volume/repeat/auto-next, speeds, reciter selector in Settings + Listen, play actions across Home/Surahs/Reader/Juz/DailyAyah/Listen, active-ayah highlight + scroll-into-view, streaming attribution) | `PENDING` |

@@ -10,6 +10,7 @@ import {
   Bookmark,
   CalendarCheck,
   Play,
+  Pause,
   Sparkles,
 } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
@@ -18,6 +19,7 @@ import { useReadingProgress } from '../hooks/useReadingProgress'
 import { useBookmarks } from '../store/bookmarks'
 import { AYAH_COUNTS, TOTAL_AYAHS } from '../data/ayahCounts'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { useAudio } from '../store/audio'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -83,6 +85,7 @@ export default function HomePage() {
 
   const { progress } = useReadingProgress()
   const { bookmarks } = useBookmarks()
+  const { playSurah, mode, currentAyah, playing, pause, resume } = useAudio()
 
   const featuredSurahs = surahs?.slice(0, 6) ?? []
 
@@ -266,21 +269,47 @@ export default function HomePage() {
             { surah: 67, label: 'Al-Mulk', subtitle: 'The Sovereignty' },
             { surah: 112, label: 'Al-Ikhlas', subtitle: 'The Sincerity' },
             { surah: 114, label: 'An-Nas', subtitle: 'Mankind' },
-          ].map(({ surah, label, subtitle }) => (
-            <Link
-              key={surah}
-              to={`/surah/${surah}`}
-              className="card group flex items-center gap-3 rounded-2xl p-4 transition-shadow hover:shadow-lg"
-            >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand transition-colors group-hover:bg-brand group-hover:text-white">
-                <Play className="h-4 w-4" aria-hidden />
+          ].map(({ surah, label, subtitle }) => {
+            const playingThis = mode === 'surah' && currentAyah?.surahNumber === surah
+            return (
+              <div
+                key={surah}
+                className="card group flex items-center gap-4 rounded-2xl p-4 transition-shadow hover:shadow-lg"
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (playingThis) {
+                      if (playing) pause()
+                      else resume()
+                    } else {
+                      playSurah(surah)
+                    }
+                  }}
+                  aria-label={
+                    playingThis && playing
+                      ? `Pause surah ${surah}`
+                      : `Play surah ${surah}`
+                  }
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors ${
+                    playingThis
+                      ? 'bg-gold text-white'
+                      : 'bg-brand/10 text-brand group-hover:bg-brand group-hover:text-white'
+                  }`}
+                >
+                  {playingThis && playing ? (
+                    <Pause className="h-4 w-4" aria-hidden />
+                  ) : (
+                    <Play className="h-4 w-4" aria-hidden />
+                  )}
+                </button>
+                <Link to={`/surah/${surah}`} className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-ink">{label}</p>
+                  <p className="text-xs text-ink-faint">{subtitle}</p>
+                </Link>
               </div>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-ink">{label}</p>
-                <p className="text-xs text-ink-faint">{subtitle}</p>
-              </div>
-            </Link>
-          ))}
+            )
+          })}
         </div>
       </motion.section>
 

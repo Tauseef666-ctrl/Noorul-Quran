@@ -18,6 +18,8 @@ import {
 } from 'lucide-react'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { ArabicSizeSelector } from '../components/ArabicSizeSelector'
+import { AudioPlayer } from '../components/AudioPlayer'
+import { useAudio } from '../store/audio'
 
 interface NavItem {
   to: string
@@ -72,6 +74,7 @@ function SidebarLink({ to, label, Icon }: NavItem) {
 export default function AppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
+  const { currentAyah: activeAudio } = useAudio()
 
   // Close mobile menu when pathname changes — derived, no effect needed
   const menuKey = useMemo(() => location.pathname, [location.pathname])
@@ -147,10 +150,17 @@ export default function AppLayout() {
 
       {/* Main content — key forces remount on route change, auto-closes menu */}
       <main className="flex-1 overflow-x-hidden">
-        <div className="mx-auto max-w-5xl px-4 pb-24 pt-16 lg:px-8 lg:pt-6">
+        <div
+          className={`mx-auto max-w-5xl px-4 pt-16 lg:px-8 lg:pt-6 ${
+            activeAudio ? 'pb-56 lg:pb-36' : 'pb-24 lg:pb-10'
+          }`}
+        >
           <Outlet key={menuKey} />
         </div>
       </main>
+
+      {/* Persistent bottom audio player */}
+      <AudioPlayer />
 
       {/* Mobile bottom nav */}
       <nav

@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Search, Filter } from 'lucide-react'
+import { Search, Filter, Play, Pause } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
 import type { Surah } from '../types/quran'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { useAudio } from '../store/audio'
 
 type SortKey = 'number' | 'name' | 'ayahs' | 'revelation'
 type SortDir = 'asc' | 'desc'
@@ -24,6 +25,8 @@ export default function SurahsPage() {
   const [sortKey, setSortKey] = useState<SortKey>('number')
   const [sortDir, setSortDir] = useState<SortDir>('asc')
   const [revelationFilter, setRevelationFilter] = useState<RevelationFilter>('all')
+
+  const { playSurah, mode, currentAyah, playing, pause, resume } = useAudio()
 
   const { data: surahs, loading, error } = useAsyncData<Surah[]>(
     (signal) => getActiveProvider().getSurahList({ signal }),
@@ -162,27 +165,55 @@ export default function SurahsPage() {
         <motion.div variants={stagger} className="grid gap-3 sm:grid-cols-2">
           {filtered.map((surah) => (
             <motion.div key={surah.number} variants={fadeIn}>
-              <Link
-                to={`/surah/${surah.number}`}
-                className="card group flex items-center gap-4 rounded-2xl p-4 transition-all hover:shadow-lg"
-              >
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-sm font-bold text-brand transition-colors group-hover:bg-brand group-hover:text-white">
-                  {surah.number}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="font-semibold text-ink truncate">{surah.nameTransliterated}</p>
-                  <p className="text-xs text-ink-muted">
-                    {surah.nameTranslation}
-                    {surah.nameTranslationUrdu ? ` · ${surah.nameTranslationUrdu}` : ''}
+              <div className="card group relative flex items-center gap-4 rounded-2xl p-4 transition-all hover:shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const playingThisSurah =
+                      mode === 'surah' && currentAyah?.surahNumber === surah.number
+                    if (playingThisSurah) {
+                      if (playing) pause()
+                      else resume()
+                    } else {
+                      playSurah(surah.number)
+                    }
+                  }}
+                  aria-label={
+                    mode === 'surah' && currentAyah?.surahNumber === surah.number && playing
+                      ? `Pause surah ${surah.number}`
+                      : `Play surah ${surah.number}`
+                  }
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-colors ${
+                    mode === 'surah' && currentAyah?.surahNumber === surah.number
+                      ? 'bg-gold text-white'
+                      : 'bg-brand/10 text-brand group-hover:bg-brand group-hover:text-white'
+                  }`}
+                >
+                  {mode === 'surah' && currentAyah?.surahNumber === surah.number && playing ? (
+                    <Pause className="h-4 w-4" />
+                  ) : (
+                    <Play className="h-4 w-4" />
+                  )}
+                </button>
+                <Link
+                  to={`/surah/${surah.number}`}
+                  className="flex min-w-0 flex-1 items-center gap-4"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-ink truncate">{surah.number}. {surah.nameTransliterated}</p>
+                    <p className="text-xs text-ink-muted">
+                      {surah.nameTranslation}
+                      {surah.nameTranslationUrdu ? ` · ${surah.nameTranslationUrdu}` : ''}
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-ink-faint">
+                      {surah.numberOfAyahs} ayahs · {surah.revelationType}
+                    </p>
+                  </div>
+                  <p className="arabic-heading text-xl text-ink-faint group-hover:text-ink" lang="ar" dir="rtl">
+                    {surah.nameArabic}
                   </p>
-                  <p className="mt-0.5 text-[11px] text-ink-faint">
-                    {surah.numberOfAyahs} ayahs · {surah.revelationType}
-                  </p>
-                </div>
-                <p className="arabic-heading text-xl text-ink-faint group-hover:text-ink" lang="ar" dir="rtl">
-                  {surah.nameArabic}
-                </p>
-              </Link>
+                </Link>
+              </div>
             </motion.div>
           ))}
         </motion.div>
