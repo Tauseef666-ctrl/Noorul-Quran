@@ -16,7 +16,7 @@ import { getActiveProvider } from '../services/quran'
 import type { Surah, Ayah } from '../types/quran'
 import { useReadingProgress } from '../hooks/useReadingProgress'
 import { useBookmarks } from '../store/bookmarks'
-import { AYAH_COUNTS } from '../data/ayahCounts'
+import { AYAH_COUNTS, TOTAL_AYAHS } from '../data/ayahCounts'
 import { useAsyncData } from '../hooks/useAsyncData'
 
 const fadeIn = {
@@ -26,6 +26,13 @@ const fadeIn = {
 
 const stagger = {
   visible: { transition: { staggerChildren: 0.1 } },
+}
+
+function readingPercent(surahNumber: number, ayahNumber: number): number {
+  let global = 0
+  for (let i = 0; i < surahNumber - 1; i++) global += AYAH_COUNTS[i]
+  global += ayahNumber
+  return Math.min(100, Math.max(0, Math.round((global / TOTAL_AYAHS) * 100)))
 }
 
 function getDailyAyah(): { surahNumber: number; ayahNumber: number } {
@@ -135,8 +142,20 @@ export default function HomePage() {
                 </p>
                 <p className="text-sm text-ink-muted">Page {progress.page} · Juz {progress.juz}</p>
               </div>
-              <ArrowRight className="h-5 w-5 text-brand transition-transform group-hover:translate-x-1" />
+              <div className="text-right">
+                <p className="text-lg font-bold text-brand">
+                  {readingPercent(progress.surahNumber, progress.ayahNumber)}%
+                </p>
+                <p className="text-[10px] text-ink-faint">complete</p>
+              </div>
             </div>
+            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line">
+              <div
+                className="h-full rounded-full bg-brand transition-all duration-500"
+                style={{ width: `${readingPercent(progress.surahNumber, progress.ayahNumber)}%` }}
+              />
+            </div>
+            <ArrowRight className="mt-3 h-5 w-5 text-brand transition-transform group-hover:translate-x-1" />
           </Link>
         </motion.section>
       )}

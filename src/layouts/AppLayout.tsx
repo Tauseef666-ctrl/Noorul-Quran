@@ -14,6 +14,7 @@ import {
   CalendarCheck,
   BookMarked,
   Compass,
+  StickyNote,
 } from 'lucide-react'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { ArabicSizeSelector } from '../components/ArabicSizeSelector'
@@ -32,6 +33,7 @@ const DESKTOP_NAV: NavItem[] = [
   { to: '/search', label: 'Search', Icon: Search },
   { to: '/daily-ayah', label: 'Daily Ayah', Icon: CalendarCheck },
   { to: '/bookmarks', label: 'Bookmarks', Icon: Bookmark },
+  { to: '/notes', label: 'Notes', Icon: StickyNote },
   { to: '/listen', label: 'Listen', Icon: Radio },
   { to: '/tafsir', label: 'Tafsir', Icon: BookMarked },
   { to: '/plans', label: 'Plans', Icon: CalendarCheck },

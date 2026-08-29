@@ -13,6 +13,7 @@ import {
   Info,
   Copy,
   Share2,
+  StickyNote,
 } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
 import { getTranslationsForAyah } from '../services/quran/alQuranCloudProvider'
@@ -23,6 +24,8 @@ import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
 import { TafsirModal } from '../components/TafsirModal'
 import { VerseInfoPanel } from '../components/VerseInfoPanel'
+import { NoteModal } from '../components/NoteModal'
+import { useNotes } from '../store/notes'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 16 },
@@ -34,8 +37,10 @@ export default function JuzReaderPage() {
   const [translations, setTranslations] = useState<Record<string, Record<string, string>>>({})
   const [tafsirAyah, setTafsirAyah] = useState<Ayah | null>(null)
   const [verseInfoAyah, setVerseInfoAyah] = useState<Ayah | null>(null)
+  const [noteAyah, setNoteAyah] = useState<Ayah | null>(null)
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
   const { toggle, playing, isCurrentAyah } = useAudio()
+  const notes = useNotes()
 
   const juzNumber = Number(juzId)
 
@@ -312,6 +317,23 @@ export default function JuzReaderPage() {
                     >
                       <Info className="h-3.5 w-3.5" />
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => setNoteAyah(ayah)}
+                      className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${
+                        notes.getNote(ayah.surahNumber, ayah.ayahNumber)
+                          ? 'bg-gold/10 text-gold'
+                          : 'text-ink-faint hover:bg-gold/10 hover:text-gold'
+                      }`}
+                      aria-label={
+                        notes.getNote(ayah.surahNumber, ayah.ayahNumber)
+                          ? `Edit personal note for ayah ${ayah.ayahNumber}`
+                          : `Add a personal note for ayah ${ayah.ayahNumber}`
+                      }
+                      title="Personal note"
+                    >
+                      <StickyNote className="h-3.5 w-3.5" />
+                    </button>
                   </div>
                 </div>
 
@@ -334,6 +356,41 @@ export default function JuzReaderPage() {
                     <div className="h-4 w-48 animate-pulse rounded bg-line" />
                   )}
                 </div>
+
+                {/* Personal note */}
+                {notes.getNote(ayah.surahNumber, ayah.ayahNumber) && (
+                  <div
+                    className="mt-3 rounded-xl border border-gold/30 bg-gold/10 p-4"
+                    role="note"
+                    aria-label="Personal note"
+                  >
+                    <div className="mb-1.5 flex items-center justify-between gap-2">
+                      <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-gold">
+                        <StickyNote className="h-3.5 w-3.5" aria-hidden />
+                        Personal Note
+                      </p>
+                      <div className="flex gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setNoteAyah(ayah)}
+                          className="rounded-md px-2 py-1 text-[11px] font-medium text-gold transition-colors hover:bg-gold/10"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => notes.deleteNote(ayah.surahNumber, ayah.ayahNumber)}
+                          className="rounded-md px-2 py-1 text-[11px] font-medium text-ink-faint transition-colors hover:bg-gold/10 hover:text-red-600 dark:hover:text-red-300"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-muted">
+                      {notes.getNote(ayah.surahNumber, ayah.ayahNumber)?.text}
+                    </p>
+                  </div>
+                )}
 
                 {/* Verse info panel */}
                 {verseInfoAyah?.key === ayah.key && (
@@ -382,6 +439,17 @@ export default function JuzReaderPage() {
           ayahNumber={tafsirAyah.ayahNumber}
           isOpen
           onClose={() => setTafsirAyah(null)}
+        />
+      )}
+
+      {/* Personal note modal */}
+      {noteAyah && (
+        <NoteModal
+          key={noteAyah.key}
+          surahNumber={noteAyah.surahNumber}
+          ayahNumber={noteAyah.ayahNumber}
+          isOpen
+          onClose={() => setNoteAyah(null)}
         />
       )}
     </motion.div>

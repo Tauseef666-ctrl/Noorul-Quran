@@ -8,6 +8,7 @@ import JuzPage from './pages/JuzPage'
 import JuzReaderPage from './pages/JuzReaderPage'
 import SearchPage from './pages/SearchPage'
 import BookmarksPage from './pages/BookmarksPage'
+import NotesPage from './pages/NotesPage'
 import DailyAyahPage from './pages/DailyAyahPage'
 import TafsirPage from './pages/TafsirPage'
 import ListenPage from './pages/ListenPage'
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/juz/:juzId" element={<JuzReaderPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/bookmarks" element={<BookmarksPage />} />
+          <Route path="/notes" element={<NotesPage />} />
           <Route path="/daily-ayah" element={<DailyAyahPage />} />
           <Route path="/tafsir" element={<TafsirPage />} />
           <Route path="/listen" element={<ListenPage />} />

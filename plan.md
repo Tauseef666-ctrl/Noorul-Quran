@@ -115,13 +115,13 @@
 - [x] Diacritic-neutral Arabic matching (alef/hamza/wasla/ta-marbuta folding)
 - [ ] Loading/error/debounce handling
 
-## Phase 8 — Personal Features
+## Phase 8 — Personal Features ✅
 
-- [ ] Bookmarks for ayahs/surahs/pages via localStorage (`/bookmarks`)
-- [ ] Continue Reading: last surah/ayah/page/juz + % on Home
-- [ ] Notes attached to ayahs, explicitly labeled "Personal Note", visually distinct
-- [ ] Plans: 30-Day (1 juz/day), 60-Day, custom goal — calm, non-gamified
-- [ ] Optional cloud sync path noted for later (auth APIs)
+- [x] Bookmarks for ayahs/surahs/pages via localStorage (`/bookmarks`)
+- [x] Continue Reading: last surah/ayah/page/juz + % on Home
+- [x] Notes attached to ayahs, explicitly labeled "Personal Note", visually distinct (`/notes`, NoteModal, per-ayah note button + inline blocks in surah & juz readers)
+- [x] Plans: 30-Day (1 juz/day), 60-Day, custom goal — calm, non-gamified (persisted, gentle day tracking + progress bar)
+- [x] Optional cloud sync path noted for later (auth APIs) — device-only note surfaced in UI + plan
 
 ## Phase 9 — Audio Recitation System
 
@@ -208,4 +208,5 @@
 | 2026-08-26 | Phase 4 — Routes & Pages complete (17 routes, layout, home, surahs, surah reader, juz, mushaf, search, bookmarks, daily ayah, tafsir, listen, plans, settings, sources, about, 404) | `e07c551` |
 | 2026-08-28 | Phase 5 — Interactive Ayah Actions complete (per-ayah play/pause/replay, tafsir modal, verse info panel, AudioProvider store) | `1dba4ca` |
 | 2026-08-28 | Phase 6 — Mushaf Reader complete (swipe nav, jump-to dialog, fullscreen, progress + last-page restore, layout selection, per-edition boundaries) | `d5d10ec` |
-| 2026-08-28 | Phase 7 — Search complete (offline Arabic corpus search, provider translations, surah-name + reference matching, mode tabs, play/read actions, zero-AI guarantee) | *(below)* |
+| 2026-08-28 | Phase 7 — Search complete (offline Arabic corpus search, provider translations, surah-name + reference matching, mode tabs, play/read actions, zero-AI guarantee) | `4fde527` |
+| 2026-08-29 | Phase 8 — Personal Features complete (personal notes store + modal + per-ayah wiring in surah/juz readers, `/notes` page, functional 30/60/custom reading plans with calm day tracking, continue-reading % on Home, cloud-sync note) | *(below)* |
