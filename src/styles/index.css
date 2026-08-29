@@ -1,10 +1,11 @@
 @import 'tailwindcss';
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   NoorulQuran Design System — Phase 3
-   Aesthetic: peaceful, scholarly, luminous. Warm ivory & white glass by day;
-   deep forest green & near-black emerald by night; emerald + muted gold
-   throughout. No neon, no cyberpunk, no gamified vibes.
+   NoorulQuran Design System — Phase 10
+   Aesthetic: Luxury Islamic · Deep Black · Emerald · Subtle Gold · Frosted Glass
+   · Cinematic Motion. Dark-first identity (deep black/#050807 with very dark
+   emerald warmth), restrained emerald + muted gold accents. No neon, no
+   cyberpunk, no gamified vibes.
 
    Sacred-text rule: glassmorphism is NEVER applied to Quran text surfaces.
    Quran text always renders on opaque, high-contrast backgrounds.
@@ -40,10 +41,13 @@
   --gold-tint: rgba(160, 125, 36, 0.1);
 
   --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-nav: rgba(255, 255, 255, 0.42);
   --glass-border: rgba(255, 255, 255, 0.65);
+  --glass-edge: rgba(255, 255, 255, 0.7);
 
   --shadow-soft: 0 10px 40px -12px rgba(18, 46, 38, 0.18);
   --shadow-lifted: 0 18px 50px -16px rgba(18, 46, 38, 0.28);
+  --shadow-glow: 0 0 0 1px rgba(14, 122, 99, 0.08), 0 16px 48px -18px rgba(14, 122, 99, 0.35);
 
   --quran-size: 2rem;
 }
@@ -51,20 +55,20 @@
 .dark {
   color-scheme: dark;
 
-  --paper: #0b1613;
-  --paper-deep: #07100d;
-  --wash-1: rgba(62, 207, 154, 0.05);
-  --wash-2: rgba(212, 175, 55, 0.06);
+  --paper: #050807;
+  --paper-deep: #030504;
+  --wash-1: rgba(62, 207, 154, 0.06);
+  --wash-2: rgba(212, 175, 55, 0.07);
 
-  --surface: rgba(19, 35, 29, 0.62);
-  --surface-strong: #12241e;
-  --surface-opaque: #10201a;
-  --line: rgba(226, 216, 190, 0.11);
-  --line-strong: rgba(226, 216, 190, 0.2);
+  --surface: rgba(14, 22, 18, 0.55);
+  --surface-strong: #0f1814;
+  --surface-opaque: #0b120f;
+  --line: rgba(226, 216, 190, 0.1);
+  --line-strong: rgba(226, 216, 190, 0.18);
 
-  --ink: #ede5d3;
-  --ink-muted: #a3b3aa;
-  --ink-faint: #6f8078;
+  --ink: #ece7db;
+  --ink-muted: #9db0a6;
+  --ink-faint: #61736a;
 
   --brand: #3ecf9a;
   --brand-deep: #2ba87c;
@@ -74,11 +78,14 @@
   --gold-bright: #e3c566;
   --gold-tint: rgba(212, 175, 55, 0.1);
 
-  --glass-bg: rgba(17, 31, 26, 0.5);
-  --glass-border: rgba(226, 216, 190, 0.09);
+  --glass-bg: rgba(12, 19, 16, 0.46);
+  --glass-nav: rgba(12, 19, 16, 0.36);
+  --glass-border: rgba(226, 216, 190, 0.1);
+  --glass-edge: rgba(226, 216, 190, 0.06);
 
-  --shadow-soft: 0 10px 40px -12px rgba(0, 0, 0, 0.45);
-  --shadow-lifted: 0 18px 50px -16px rgba(0, 0, 0, 0.6);
+  --shadow-soft: 0 10px 40px -12px rgba(0, 0, 0, 0.5);
+  --shadow-lifted: 0 18px 50px -16px rgba(0, 0, 0, 0.65);
+  --shadow-glow: 0 0 0 1px rgba(62, 207, 154, 0.12), 0 16px 48px -18px rgba(62, 207, 154, 0.28);
 }
 
 /* Map raw variables into Tailwind's theme (inline = resolve at usage site,
@@ -128,9 +135,11 @@
     font-family: var(--font-ui);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Animated light ↔ dark switch — no white flash, soft crossfade */
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
 
-  /* Ambient wash — two calm radial glows on a fixed layer */
+  /* Ambient wash — calm emerald + gold radial glows on a fixed layer */
   body::before {
     content: '';
     position: fixed;
@@ -138,9 +147,28 @@
     z-index: -1;
     pointer-events: none;
     background:
-      radial-gradient(42rem 28rem at 12% -6%, var(--wash-1), transparent 60%),
-      radial-gradient(38rem 26rem at 95% 8%, var(--wash-2), transparent 62%),
-      radial-gradient(46rem 30rem at 50% 110%, var(--wash-1), transparent 65%);
+      radial-gradient(46rem 32rem at 12% -6%, var(--wash-1), transparent 60%),
+      radial-gradient(42rem 30rem at 96% 6%, var(--wash-2), transparent 62%),
+      radial-gradient(50rem 34rem at 50% 112%, var(--wash-1), transparent 66%),
+      radial-gradient(30rem 22rem at 82% 68%, var(--wash-2), transparent 70%);
+    transition: background 0.6s ease;
+  }
+
+  /* Glass surfaces crossfade with the theme */
+  .glass,
+  .glass-nav,
+  .glass-ctl,
+  .glass-modal,
+  .card,
+  aside,
+  header,
+  nav,
+  footer {
+    transition:
+      background-color 0.5s ease,
+      border-color 0.5s ease,
+      box-shadow 0.5s ease,
+      color 0.3s ease;
   }
 
   ::selection {
@@ -156,18 +184,77 @@
 }
 
 @layer components {
-  /* Glassmorphism — chrome only, never behind Quran text */
+  /* ── Glassmorphism system (never behind Quran text) ─────────────────────────
+     Glass 1 · navigation — very transparent
+     Glass 2 · cards       — medium
+     Glass 3 · controls    — slightly stronger
+     Glass 4 · modals      — maximum readability
+     ────────────────────────────────────────────────────────────────────────── */
+
   .glass {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     -webkit-backdrop-filter: blur(14px) saturate(1.25);
     backdrop-filter: blur(14px) saturate(1.25);
+    box-shadow: inset 0 1px 0 0 var(--glass-edge);
   }
 
+  .glass-nav {
+    background: var(--glass-nav);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    backdrop-filter: blur(16px) saturate(1.2);
+    box-shadow: inset 0 1px 0 0 var(--glass-edge);
+  }
+
+  .glass-ctl {
+    background: var(--surface);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(20px) saturate(1.35);
+    backdrop-filter: blur(20px) saturate(1.35);
+    box-shadow:
+      var(--shadow-lifted),
+      inset 0 1px 0 0 var(--glass-edge);
+  }
+
+  .glass-modal {
+    background: var(--surface-opaque);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(24px) saturate(1.3);
+    backdrop-filter: blur(24px) saturate(1.3);
+    box-shadow: var(--shadow-lifted);
+  }
+
+  /* Glass 2 — cards */
   .card {
     background: var(--surface);
-    border: 1px solid var(--line);
-    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(18px) saturate(1.3);
+    backdrop-filter: blur(18px) saturate(1.3);
+    box-shadow:
+      var(--shadow-soft),
+      inset 0 1px 0 0 var(--glass-edge);
+  }
+
+  /* Glass skeleton — soft shimmer, used while data loads */
+  .skeleton-glass {
+    border-radius: 0.75rem;
+    background: linear-gradient(
+      90deg,
+      var(--line) 25%,
+      var(--line-strong) 42%,
+      var(--line) 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+  @keyframes skeleton-shimmer {
+    0% {
+      background-position: 100% 0;
+    }
+    100% {
+      background-position: 0 0;
+    }
   }
 
   /* Sacred text — opaque, generous leading for diacritics, never glassy */
@@ -231,6 +318,99 @@
     border: 2px solid var(--paper);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   }
+}
+
+/* ── Meditative ambient background ────────────────────────────────────────────
+   Slow gradient balls + floating motes. Felt, not noticed. GPU-friendly
+   (transform + opacity only); disabled globally under prefers-reduced-motion. */
+@keyframes noor-drift {
+  0% {
+    transform: translate3d(-5%, -4%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(5%, 6%, 0) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-5%, -4%, 0) scale(1);
+  }
+}
+
+@keyframes noor-float {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  14% {
+    opacity: var(--p-op, 0.5);
+  }
+  82% {
+    opacity: var(--p-op, 0.5);
+  }
+  100% {
+    transform: translate3d(0, -48vh, 0);
+    opacity: 0;
+  }
+}
+
+.ambient-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  will-change: transform;
+  opacity: 0.5;
+  animation: noor-drift var(--blob-dur, 38s) ease-in-out infinite;
+}
+
+.ambient-particle {
+  position: absolute;
+  bottom: -3vh;
+  width: var(--p-size, 3px);
+  height: var(--p-size, 3px);
+  border-radius: 9999px;
+  background: var(--p-color, var(--brand));
+  opacity: 0;
+  animation: noor-float var(--p-dur, 26s) linear infinite;
+  animation-delay: var(--p-delay, 0s);
+  will-change: transform, opacity;
+}
+
+/* ── Restrained waveform / equalizer indicator (audio playback) ────────────── */
+@keyframes noor-eq {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.eq-bars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 12px;
+}
+.eq-bars span {
+  width: 2.5px;
+  height: 100%;
+  border-radius: 9999px;
+  background: currentColor;
+  transform-origin: center;
+  animation: noor-eq 900ms ease-in-out infinite;
+}
+.eq-bars span:nth-child(2) {
+  animation-delay: 140ms;
+}
+.eq-bars span:nth-child(3) {
+  animation-delay: 280ms;
+}
+.eq-bars span:nth-child(4) {
+  animation-delay: 420ms;
+}
+.eq-bars--muted span {
+  animation-play-state: paused;
+  transform: scaleY(0.35);
 }
 
 @media (prefers-reduced-motion: reduce) {

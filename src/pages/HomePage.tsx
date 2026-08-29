@@ -10,7 +10,6 @@ import {
   Bookmark,
   CalendarCheck,
   Play,
-  Pause,
   Sparkles,
 } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
@@ -20,15 +19,15 @@ import { useBookmarks } from '../store/bookmarks'
 import { AYAH_COUNTS, TOTAL_AYAHS } from '../data/ayahCounts'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
-
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-}
-
-const stagger = {
-  visible: { transition: { staggerChildren: 0.1 } },
-}
+import { GeometricPattern } from '../components/GeometricPattern'
+import { EqualizerBars } from '../components/EqualizerBars'
+import {
+  heroStagger,
+  heroItem,
+  fadeUp,
+  staggerContainer,
+  pageTransition,
+} from '../animations'
 
 function readingPercent(surahNumber: number, ayahNumber: number): number {
   let global = 0
@@ -54,6 +53,8 @@ function getDailyAyah(): { surahNumber: number; ayahNumber: number } {
 }
 
 const daily = getDailyAyah()
+
+const viewportOnce = { once: true, margin: '-60px' } as const
 
 export default function HomePage() {
   const { data: surahs } = useAsyncData<Surah[]>(
@@ -85,58 +86,107 @@ export default function HomePage() {
 
   const { progress } = useReadingProgress()
   const { bookmarks } = useBookmarks()
-  const { playSurah, mode, currentAyah, playing, pause, resume } = useAudio()
+  const { playSurah, mode, currentAyah, playing, pause, resume, toggle, isCurrentAyah } = useAudio()
 
   const featuredSurahs = surahs?.slice(0, 6) ?? []
+  const dailyIsPlaying = dailyAyah
+    ? isCurrentAyah(dailyAyah.surahNumber, dailyAyah.ayahNumber) && playing
+    : false
 
   return (
-    <motion.div initial="hidden" animate="visible" variants={stagger} className="space-y-10">
-      {/* Hero */}
-      <motion.section variants={fadeIn} className="text-center py-10 sm:py-16">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-brand/10 text-brand">
-          <BookOpen className="h-10 w-10" aria-hidden />
-        </div>
-        <h1
-          className="arabic-heading text-5xl sm:text-6xl text-ink"
-          lang="ar"
-          dir="rtl"
+    <motion.div variants={pageTransition} initial="initial" animate="animate" className="space-y-10">
+      {/* ── Cinematic hero — staged reveal ─────────────────────────────────── */}
+      <motion.section
+        initial="hidden"
+        animate="visible"
+        className="relative overflow-hidden rounded-[2rem] border border-gold/15 bg-gradient-to-b from-emerald-900/5 via-transparent to-transparent px-6 py-14 text-center sm:py-20"
+      >
+        {/* ambient glow behind content */}
+        <motion.div
+          variants={heroStagger}
+          className="pointer-events-none absolute inset-0"
         >
-          نور القرآن
-        </h1>
-        <p className="mt-3 text-xl font-semibold text-ink">
-          Noorul<span className="text-gold">Quran</span>
-        </p>
-        <p className="mt-2 text-sm tracking-wide text-ink-muted italic">
-          Read. Listen. Reflect.
-        </p>
-        <div className="gold-divider mx-auto mt-6 w-32" />
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-          <Link
-            to="/surahs"
-            className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-brand-deep"
+          <motion.div
+            variants={heroItem}
+            aria-hidden
+            className="absolute inset-0"
           >
-            <BookOpen className="h-4 w-4" aria-hidden />
-            Read Quran
-          </Link>
-          <Link
-            to="/listen"
-            className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-surface-strong"
+            <GeometricPattern
+              variant="gold"
+              className="absolute inset-x-0 top-0 h-full w-full object-cover"
+              opacity={0.16}
+            />
+          </motion.div>
+        </motion.div>
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-brand/10 blur-3xl"
+        />
+        <motion.div aria-hidden className="pointer-events-none absolute inset-0">
+          <motion.div
+            variants={heroStagger}
+            initial="hidden"
+            animate="visible"
+            className="absolute top-1/3 left-1/2 h-56 w-[36rem] max-w-full -translate-x-1/2 rounded-full bg-gold/[0.05] blur-3xl"
+          />
+        </motion.div>
+
+        <motion.div
+          variants={heroStagger}
+          initial="hidden"
+          animate="visible"
+          className="relative"
+        >
+          {/* logo */}
+          <motion.div variants={heroItem} className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-brand/10 text-brand shadow-[var(--shadow-glow)]">
+            <BookOpen className="h-10 w-10" aria-hidden />
+          </motion.div>
+          {/* wordmark */}
+          <motion.h1
+            variants={heroItem}
+            className="arabic-heading text-5xl text-ink sm:text-6xl"
+            lang="ar"
+            dir="rtl"
           >
-            <Headphones className="h-4 w-4" aria-hidden />
-            Listen to Quran
-          </Link>
-        </div>
+            نور القرآن
+          </motion.h1>
+          <motion.p variants={heroItem} className="mt-3 text-xl font-semibold text-ink">
+            Noorul<span className="text-gold">Quran</span>
+          </motion.p>
+          <motion.p variants={heroItem} className="mt-2 text-sm tracking-wide text-ink-muted italic">
+            Read. Listen. Reflect.
+          </motion.p>
+          <motion.div variants={heroItem} className="gold-divider mx-auto mt-6 w-32" />
+          {/* CTAs */}
+          <motion.div variants={heroItem} className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              to="/surahs"
+              className="group inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-brand-deep hover:shadow-[var(--shadow-lifted)]"
+            >
+              <BookOpen className="h-4 w-4" aria-hidden />
+              Read Quran
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+            </Link>
+            <Link
+              to="/listen"
+              className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-surface/70 px-6 py-3 text-sm font-semibold text-ink backdrop-blur-md transition-all hover:-translate-y-0.5 hover:border-gold hover:bg-surface-strong"
+            >
+              <Headphones className="h-4 w-4 text-gold" aria-hidden />
+              Listen to Quran
+            </Link>
+          </motion.div>
+        </motion.div>
       </motion.section>
 
-      {/* Continue Reading */}
+      {/* ── Continue Reading ────────────────────────────────────────────────── */}
       {progress && (
-        <motion.section variants={fadeIn}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewportOnce}>
           <Link
             to={`/surah/${progress.surahNumber}?ayah=${progress.ayahNumber}`}
-            className="card group block rounded-2xl p-5 transition-shadow hover:shadow-lg sm:p-6"
+            className="card group block rounded-2xl p-5 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-[var(--shadow-glow)])] sm:p-6"
           >
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
                   Continue Reading
                 </p>
@@ -145,7 +195,7 @@ export default function HomePage() {
                 </p>
                 <p className="text-sm text-ink-muted">Page {progress.page} · Juz {progress.juz}</p>
               </div>
-              <div className="text-right">
+              <div className="shrink-0 text-right">
                 <p className="text-lg font-bold text-brand">
                   {readingPercent(progress.surahNumber, progress.ayahNumber)}%
                 </p>
@@ -153,51 +203,81 @@ export default function HomePage() {
               </div>
             </div>
             <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line">
-              <div
-                className="h-full rounded-full bg-brand transition-all duration-500"
-                style={{ width: `${readingPercent(progress.surahNumber, progress.ayahNumber)}%` }}
+              <motion.div
+                className="h-full rounded-full bg-gradient-to-r from-brand to-gold"
+                initial={{ width: 0 }}
+                whileInView={{ width: `${readingPercent(progress.surahNumber, progress.ayahNumber)}%` }}
+                viewport={viewportOnce}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
               />
             </div>
-            <ArrowRight className="mt-3 h-5 w-5 text-brand transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="mt-3 h-5 w-5 text-brand transition-transform group-hover:translate-x-1" aria-hidden />
           </Link>
         </motion.section>
       )}
 
-      {/* Daily Ayah */}
+      {/* ── Daily Ayah — signature component ────────────────────────────────── */}
       {dailyAyah && (
-        <motion.section variants={fadeIn}>
-          <div className="card rounded-2xl p-6 sm:p-8">
-            <div className="mb-4 flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-gold" aria-hidden />
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-                Ayah of the Day
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewportOnce}>
+          <div className="glass relative overflow-hidden rounded-3xl border-gold/25 bg-gradient-to-br from-emerald-900/[0.08] via-transparent to-gold/[0.06] p-6 sm:p-10">
+            <GeometricPattern
+              variant="emerald"
+              className="absolute inset-0 h-full w-full object-cover"
+              opacity={0.3}
+            />
+            <div className="relative">
+              <div className="mb-4 flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-gold" aria-hidden />
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+                  Ayah of the Day
+                </p>
+              </div>
+              <p className="quran-text text-right" lang="ar" dir="rtl">
+                {dailyAyah.arabic}
               </p>
-            </div>
-            <p className="quran-text text-right" lang="ar" dir="rtl">
-              {dailyAyah.arabic}
-            </p>
-            {dailyTranslation && (
-              <p className="translation-en mt-4 text-[15px] leading-relaxed text-ink-muted">
-                {dailyTranslation}
-              </p>
-            )}
-            <div className="mt-4 flex items-center justify-between">
-              <span className="text-xs font-semibold text-ink-faint">
-                {dailyAyah.surahNumber}:{dailyAyah.ayahNumber}
-              </span>
-              <Link
-                to={`/surah/${dailyAyah.surahNumber}?ayah=${dailyAyah.ayahNumber}`}
-                className="text-xs font-semibold text-brand hover:underline"
-              >
-                Read full context →
-              </Link>
+              {dailyTranslation && (
+                <p className="translation-en mt-4 text-[15px] leading-relaxed text-ink-muted">
+                  {dailyTranslation}
+                </p>
+              )}
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+                <span className="text-xs font-semibold text-ink-faint">
+                  {dailyAyah.surahNumber}:{dailyAyah.ayahNumber}
+                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => toggle(dailyAyah.surahNumber, dailyAyah.ayahNumber)}
+                    aria-label={dailyIsPlaying ? 'Pause this ayah' : 'Listen to this ayah'}
+                    className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-xs font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-brand-deep"
+                  >
+                    {dailyIsPlaying ? (
+                      <>
+                        <EqualizerBars />
+                        Pause
+                      </>
+                    ) : (
+                      <>
+                        <Play className="h-3.5 w-3.5" aria-hidden />
+                        Listen
+                      </>
+                    )}
+                  </button>
+                  <Link
+                    to={`/surah/${dailyAyah.surahNumber}?ayah=${dailyAyah.ayahNumber}`}
+                    className="text-xs font-semibold text-brand hover:underline"
+                  >
+                    Read full context →
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </motion.section>
       )}
 
-      {/* Quick Explorers */}
-      <motion.section variants={fadeIn}>
+      {/* ── Quick Explorers ─────────────────────────────────────────────────── */}
+      <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewportOnce}>
         <h2 className="mb-4 text-lg font-semibold text-ink">Explore</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
@@ -209,9 +289,9 @@ export default function HomePage() {
             <Link
               key={to}
               to={to}
-              className="card group flex flex-col items-center gap-2 rounded-2xl p-4 text-center transition-shadow hover:shadow-lg"
+              className="card group flex flex-col items-center gap-2 rounded-2xl p-4 text-center transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-[var(--shadow-glow)])]"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand transition-colors group-hover:bg-brand group-hover:text-white">
                 <Icon className="h-5 w-5" aria-hidden />
               </div>
               <p className="text-sm font-semibold text-ink">{label}</p>
@@ -221,15 +301,12 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* Surah Explorer Preview */}
+      {/* ── Surah Explorer Preview ──────────────────────────────────────────── */}
       {featuredSurahs.length > 0 && (
-        <motion.section variants={fadeIn}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewportOnce}>
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-ink">Browse Surahs</h2>
-            <Link
-              to="/surahs"
-              className="text-sm font-semibold text-brand hover:underline"
-            >
+            <Link to="/surahs" className="text-sm font-semibold text-brand hover:underline">
               View all →
             </Link>
           </div>
@@ -238,18 +315,22 @@ export default function HomePage() {
               <Link
                 key={surah.number}
                 to={`/surah/${surah.number}`}
-                className="card group flex items-center gap-4 rounded-2xl p-4 transition-shadow hover:shadow-lg"
+                className="card group flex items-center gap-4 rounded-2xl p-4 transition-all hover:-translate-y-1 hover:border-gold/40 hover:shadow-[var(--shadow-[var(--shadow-glow)])]"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-sm font-bold text-brand">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-sm font-bold text-brand transition-colors group-hover:bg-gold group-hover:text-white">
                   {surah.number}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="font-semibold text-ink truncate">{surah.nameTransliterated}</p>
+                  <p className="truncate font-semibold text-ink">{surah.nameTransliterated}</p>
                   <p className="text-xs text-ink-muted">
                     {surah.nameTranslation} · {surah.numberOfAyahs} ayahs
                   </p>
                 </div>
-                <p className="arabic-heading text-lg text-ink-faint" lang="ar" dir="rtl">
+                <p
+                  className="arabic-heading text-lg text-ink-faint transition-all duration-300 group-hover:-translate-y-0.5 group-hover:text-gold"
+                  lang="ar"
+                  dir="rtl"
+                >
                   {surah.nameArabic}
                 </p>
               </Link>
@@ -258,10 +339,10 @@ export default function HomePage() {
         </motion.section>
       )}
 
-      {/* Featured Recitations */}
-      <motion.section variants={fadeIn}>
+      {/* ── Featured Recitations ────────────────────────────────────────────── */}
+      <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewportOnce}>
         <h2 className="mb-4 text-lg font-semibold text-ink">Featured Recitations</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <motion.div variants={staggerContainer} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {[
             { surah: 1, label: 'Al-Fatihah', subtitle: 'The Opening' },
             { surah: 36, label: 'Ya-Sin', subtitle: 'The Heart of the Quran' },
@@ -272,9 +353,10 @@ export default function HomePage() {
           ].map(({ surah, label, subtitle }) => {
             const playingThis = mode === 'surah' && currentAyah?.surahNumber === surah
             return (
-              <div
+              <motion.div
                 key={surah}
-                className="card group flex items-center gap-4 rounded-2xl p-4 transition-shadow hover:shadow-lg"
+                variants={fadeUp}
+                className="card group flex items-center gap-4 rounded-2xl p-4 transition-all hover:-translate-y-1 hover:border-gold/40 hover:shadow-[var(--shadow-[var(--shadow-glow)])]"
               >
                 <button
                   type="button"
@@ -291,14 +373,14 @@ export default function HomePage() {
                       ? `Pause surah ${surah}`
                       : `Play surah ${surah}`
                   }
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors ${
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all ${
                     playingThis
-                      ? 'bg-gold text-white'
+                      ? 'bg-gold text-white shadow-md'
                       : 'bg-brand/10 text-brand group-hover:bg-brand group-hover:text-white'
                   }`}
                 >
                   {playingThis && playing ? (
-                    <Pause className="h-4 w-4" aria-hidden />
+                    <EqualizerBars />
                   ) : (
                     <Play className="h-4 w-4" aria-hidden />
                   )}
@@ -307,34 +389,37 @@ export default function HomePage() {
                   <p className="text-sm font-semibold text-ink">{label}</p>
                   <p className="text-xs text-ink-faint">{subtitle}</p>
                 </Link>
-              </div>
+              </motion.div>
             )
           })}
-        </div>
+        </motion.div>
       </motion.section>
 
-      {/* Bookmarks Summary */}
+      {/* ── Bookmarks Summary ───────────────────────────────────────────────── */}
       {bookmarks.length > 0 && (
-        <motion.section variants={fadeIn}>
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewportOnce}>
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-ink">Your Bookmarks</h2>
             <Link to="/bookmarks" className="text-sm font-semibold text-brand hover:underline">
               View all →
             </Link>
           </div>
-          <div className="card rounded-2xl p-5">
-            <div className="flex items-center gap-3">
-              <Bookmark className="h-5 w-5 text-gold" aria-hidden />
-              <p className="text-sm text-ink-muted">
-                You have <span className="font-semibold text-ink">{bookmarks.length}</span> bookmark{bookmarks.length !== 1 ? 's' : ''}
-              </p>
-            </div>
+          <div className="card flex items-center gap-3 rounded-2xl p-5">
+            <Bookmark className="h-5 w-5 text-gold" aria-hidden />
+            <p className="text-sm text-ink-muted">
+              You have <span className="font-semibold text-ink">{bookmarks.length}</span> bookmark{bookmarks.length !== 1 ? 's' : ''}
+            </p>
           </div>
         </motion.section>
       )}
 
-      {/* Footer */}
-      <footer className="border-t border-line pt-8 pb-4 text-center">
+      {/* ── Footer ──────────────────────────────────────────────────────────── */}
+      <footer className="relative overflow-hidden rounded-3xl border-t border-line/70 pt-8 pb-4 text-center">
+        <GeometricPattern
+          variant="gold"
+          className="pointer-events-none absolute inset-x-0 top-0 mx-auto h-24 w-full object-cover"
+          opacity={0.25}
+        />
         <p className="arabic-heading text-sm text-ink-faint" lang="ar" dir="rtl">
           بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
         </p>

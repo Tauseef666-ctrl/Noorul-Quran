@@ -6,19 +6,11 @@ import { getActiveProvider } from '../services/quran'
 import type { Surah } from '../types/quran'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
+import { fadeUp, staggerContainer } from '../animations'
 
 type SortKey = 'number' | 'name' | 'ayahs' | 'revelation'
 type SortDir = 'asc' | 'desc'
 type RevelationFilter = 'all' | 'meccan' | 'medinan'
-
-const fadeIn = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-}
-
-const stagger = {
-  visible: { transition: { staggerChildren: 0.02 } },
-}
 
 export default function SurahsPage() {
   const [query, setQuery] = useState('')
@@ -75,14 +67,14 @@ export default function SurahsPage() {
   }, [surahs, query, sortKey, sortDir, revelationFilter])
 
   return (
-    <motion.div initial="hidden" animate="visible" variants={stagger} className="space-y-6">
-      <motion.header variants={fadeIn}>
+    <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="space-y-6">
+      <motion.header variants={fadeUp}>
         <h1 className="text-2xl font-bold text-ink">Surahs</h1>
         <p className="text-sm text-ink-muted">All 114 Surahs of the Holy Quran</p>
       </motion.header>
 
       {/* Search and filters */}
-      <motion.div variants={fadeIn} className="flex flex-col gap-3 sm:flex-row">
+      <motion.div variants={fadeUp} className="flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" aria-hidden />
           <input
@@ -135,14 +127,14 @@ export default function SurahsPage() {
       {loading && (
         <div className="grid gap-3 sm:grid-cols-2">
           {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="card animate-pulse rounded-2xl p-4">
+            <div key={i} className="card rounded-2xl p-4">
               <div className="flex items-center gap-4">
-                <div className="h-10 w-10 rounded-xl bg-line" />
+                <div className="skeleton-glass h-10 w-10 rounded-xl" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 w-32 rounded bg-line" />
-                  <div className="h-3 w-20 rounded bg-line" />
+                  <div className="skeleton-glass h-4 w-32" />
+                  <div className="skeleton-glass h-3 w-20" />
                 </div>
-                <div className="h-6 w-12 rounded bg-line" />
+                <div className="skeleton-glass h-6 w-12" />
               </div>
             </div>
           ))}
@@ -162,9 +154,9 @@ export default function SurahsPage() {
       )}
 
       {!loading && !error && (
-        <motion.div variants={stagger} className="grid gap-3 sm:grid-cols-2">
+        <motion.div variants={staggerContainer} className="grid gap-3 sm:grid-cols-2">
           {filtered.map((surah) => (
-            <motion.div key={surah.number} variants={fadeIn}>
+            <motion.div key={surah.number} variants={fadeUp}>
               <div className="card group relative flex items-center gap-4 rounded-2xl p-4 transition-all hover:shadow-lg">
                 <button
                   type="button"

@@ -26,6 +26,8 @@ import { TafsirModal } from '../components/TafsirModal'
 import { VerseInfoPanel } from '../components/VerseInfoPanel'
 import { NoteModal } from '../components/NoteModal'
 import { useNotes } from '../store/notes'
+import { LoadingScreen } from '../components/LoadingScreen'
+import { EqualizerBars } from '../components/EqualizerBars'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 16 },
@@ -107,22 +109,7 @@ export default function JuzReaderPage() {
   }, [currentAyah, playing])
 
   if (loading) {
-    return (
-      <div className="space-y-4 py-12">
-        <div className="card animate-pulse rounded-2xl p-6">
-          <div className="mx-auto h-8 w-32 rounded bg-line" />
-          <div className="mx-auto mt-4 h-24 w-full rounded-xl bg-line" />
-        </div>
-        <div className="space-y-6">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="animate-pulse space-y-3 rounded-2xl p-4">
-              <div className="h-16 w-full rounded-xl bg-line" />
-              <div className="h-4 w-3/4 rounded bg-line" />
-            </div>
-          ))}
-        </div>
-      </div>
-    )
+    return <LoadingScreen label="Loading juz…" />
   }
 
   if (error || !juz) {
@@ -259,10 +246,10 @@ export default function JuzReaderPage() {
               )}
 
               <div
-                className={`rounded-2xl p-4 transition-colors sm:p-6 ${
+                className={`group rounded-2xl p-4 transition-[background-color,box-shadow] sm:p-6 ${
                   isCurrentAyah(ayah.surahNumber, ayah.ayahNumber) && playing
-                    ? 'bg-brand/5 ring-1 ring-brand/25'
-                    : 'hover:bg-surface/60'
+                    ? 'bg-brand/5 shadow-[var(--shadow-glow)] ring-1 ring-brand/25'
+                    : 'hover:bg-surface/60 hover:shadow-[var(--shadow-glow)]'
                 }`}
               >
                 <div className="mb-2 flex items-center justify-between">
@@ -283,7 +270,7 @@ export default function JuzReaderPage() {
                       aria-label={isCurrentAyah(ayah.surahNumber, ayah.ayahNumber) && playing ? `Pause ayah ${ayah.ayahNumber}` : `Play ayah ${ayah.ayahNumber}`}
                     >
                       {isCurrentAyah(ayah.surahNumber, ayah.ayahNumber) && playing ? (
-                        <Pause className="h-3.5 w-3.5" />
+                        <EqualizerBars />
                       ) : isCurrentAyah(ayah.surahNumber, ayah.ayahNumber) ? (
                         <RotateCcw className="h-3.5 w-3.5" />
                       ) : (

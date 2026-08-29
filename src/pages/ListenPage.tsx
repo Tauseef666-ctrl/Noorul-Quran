@@ -6,15 +6,7 @@ import { CURATED_RECITERS } from '../services/quran/audioProvider'
 import type { Surah } from '../types/quran'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
-
-const fadeIn = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-}
-
-const stagger = {
-  visible: { transition: { staggerChildren: 0.03 } },
-}
+import { fadeUp, staggerContainer } from '../animations'
 
 export default function ListenPage() {
   const { data: surahs, loading } = useAsyncData<Surah[]>(
@@ -24,8 +16,8 @@ export default function ListenPage() {
   const { reciterId, setReciter, playSurah, mode, currentAyah, playing, pause, resume } = useAudio()
 
   return (
-    <motion.div initial="hidden" animate="visible" variants={stagger} className="space-y-6">
-      <motion.header variants={fadeIn}>
+    <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="space-y-6">
+      <motion.header variants={fadeUp}>
         <div className="flex items-center gap-2">
           <Headphones className="h-5 w-5 text-brand" aria-hidden />
           <h1 className="text-2xl font-bold text-ink">Listen</h1>
@@ -36,7 +28,7 @@ export default function ListenPage() {
       </motion.header>
 
       {/* Reciter selection */}
-      <motion.section variants={fadeIn} className="card rounded-2xl p-5 sm:p-6">
+      <motion.section variants={fadeUp} className="card rounded-2xl p-5 sm:p-6">
         <div className="flex items-center gap-2">
           <Mic2 className="h-4 w-4 text-gold" aria-hidden />
           <h2 className="text-sm font-semibold text-ink">Reciter</h2>
@@ -79,28 +71,28 @@ export default function ListenPage() {
       </motion.section>
 
       {/* Surah list for quick play */}
-      <motion.section variants={fadeIn}>
+      <motion.section variants={fadeUp}>
         <h2 className="mb-3 text-sm font-semibold text-ink">Quick Play — Surahs</h2>
         {loading ? (
           <div className="space-y-2">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="card animate-pulse rounded-xl p-3">
+              <div key={i} className="card rounded-xl p-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-full bg-line" />
+                  <div className="skeleton-glass h-8 w-8 rounded-full" />
                   <div className="flex-1 space-y-1">
-                    <div className="h-3 w-24 rounded bg-line" />
-                    <div className="h-2 w-16 rounded bg-line" />
+                    <div className="skeleton-glass h-3 w-24" />
+                    <div className="skeleton-glass h-2 w-16" />
                   </div>
                 </div>
               </div>
             ))}
           </div>
         ) : surahs && (
-          <motion.div variants={stagger} className="space-y-1.5">
+          <motion.div variants={staggerContainer} className="space-y-1.5">
             {surahs.map((surah) => {
               const isPlayingHere = mode === 'surah' && currentAyah?.surahNumber === surah.number
               return (
-                <motion.div key={surah.number} variants={fadeIn}>
+                <motion.div key={surah.number} variants={fadeUp}>
                   <div className="group flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-surface">
                     <button
                       type="button"
@@ -152,7 +144,7 @@ export default function ListenPage() {
       </motion.section>
 
       {/* Attribution */}
-      <motion.section variants={fadeIn} className="rounded-xl border border-line px-4 py-3">
+      <motion.section variants={fadeUp} className="rounded-xl border border-line px-4 py-3">
         <p className="text-[11px] leading-relaxed text-ink-faint">
           Recitations © their respective reciters and are served via the islamic.network CDN under
           its terms. Audio is streamed on demand and is never bulk-downloaded or cached offline.

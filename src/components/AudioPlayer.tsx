@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { useAudio, type PlaybackMode } from '../store/audio'
 import { CURATED_RECITERS } from '../services/quran/audioProvider'
+import { EqualizerBars } from './EqualizerBars'
 
 const RATES = [0.75, 1, 1.25, 1.5]
 
@@ -107,7 +108,7 @@ export function AudioPlayer() {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 80, opacity: 0 }}
       transition={{ type: 'spring', damping: 26, stiffness: 260 }}
-      className="glass fixed inset-x-0 bottom-14 z-40 rounded-t-2xl sm:rounded-2xl lg:inset-x-auto lg:bottom-5 lg:left-1/2 lg:w-[min(46rem,96vw)] lg:-translate-x-1/2"
+      className="glass-ctl fixed inset-x-0 bottom-14 z-40 rounded-t-2xl sm:rounded-2xl lg:inset-x-auto lg:bottom-5 lg:left-1/2 lg:w-[min(46rem,96vw)] lg:-translate-x-1/2"
       role="region"
       aria-label="Audio player"
     >
@@ -125,7 +126,10 @@ export function AudioPlayer() {
 
         {/* Now playing */}
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-semibold text-ink">
+          <p className="flex items-center gap-2 text-xs font-semibold text-ink">
+            {playing && (
+              <EqualizerBars />
+            )}
             {loading ? 'Loading…' : `Surah ${currentAyah.surahNumber} · Ayah ${currentAyah.ayahNumber}`}
           </p>
           <p className="flex items-center gap-1 text-[10px] text-ink-faint">

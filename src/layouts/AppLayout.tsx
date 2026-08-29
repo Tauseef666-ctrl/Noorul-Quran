@@ -1,5 +1,6 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { useMemo, useState } from 'react'
+import { NavLink, useLocation, useOutlet } from 'react-router-dom'
+import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
   BookOpen,
   Home,
@@ -19,7 +20,14 @@ import {
 import { ThemeToggle } from '../components/ThemeToggle'
 import { ArabicSizeSelector } from '../components/ArabicSizeSelector'
 import { AudioPlayer } from '../components/AudioPlayer'
+import { AmbientBackground } from '../components/AmbientBackground'
 import { useAudio } from '../store/audio'
+import {
+  pageTransition,
+  drawerEnter,
+  staggerContainer,
+  fadeUp,
+} from '../animations'
 
 interface NavItem {
   to: string
@@ -52,13 +60,19 @@ const MOBILE_BOTTOM: NavItem[] = [
   { to: '/settings', label: 'More', Icon: Menu },
 ]
 
-function SidebarLink({ to, label, Icon }: NavItem) {
+function SidebarLink({
+  to,
+  label,
+  Icon,
+  onNavigate,
+}: NavItem & { onNavigate?: () => void }) {
   return (
     <NavLink
       to={to}
       end={to === '/'}
+      onClick={() => onNavigate?.()}
       className={({ isActive }) =>
-        `flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
+        `relative flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
           isActive
             ? 'bg-brand/10 text-brand'
             : 'text-ink-muted hover:bg-brand/5 hover:text-ink'
@@ -71,20 +85,38 @@ function SidebarLink({ to, label, Icon }: NavItem) {
   )
 }
 
+/* Page shell — animates the routed page in/out on pathname change */
+function RoutedPage() {
+  const outlet = useOutlet()
+  const location = useLocation()
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        variants={pageTransition}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+      >
+        {outlet}
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
 export default function AppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const location = useLocation()
   const { currentAyah: activeAudio } = useAudio()
 
-  // Close mobile menu when pathname changes — derived, no effect needed
-  const menuKey = useMemo(() => location.pathname, [location.pathname])
-
   return (
-    <div className="flex min-h-screen bg-paper">
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:border-r lg:border-line lg:bg-surface/50">
-        <div className="flex items-center gap-3 px-6 py-5">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+    <div className="flex min-h-screen">
+      {/* Meditative animated background (fixed, behind everything) */}
+      <AmbientBackground />
+
+      {/* Desktop sidebar — Glass 1 */}
+      <aside className="glass-nav sticky top-0 hidden h-screen w-64 shrink-0 flex-col lg:flex lg:border-y-0 lg:border-l-0">
+        <div className="flex items-center gap-3 px-6 py-6">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand/10 text-brand shadow-md">
             <BookOpen className="h-5 w-5" aria-hidden />
           </span>
           <div>
@@ -97,19 +129,27 @@ export default function AppLayout() {
           </div>
         </div>
 
-        <nav className="flex-1 space-y-0.5 px-3 py-2" aria-label="Sidebar navigation">
+        <motion.nav
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="flex-1 space-y-0.5 overflow-y-auto px-3 py-2"
+          aria-label="Sidebar navigation"
+        >
           {DESKTOP_NAV.map((item) => (
-            <SidebarLink key={item.to} {...item} />
+            <motion.div key={item.to} variants={fadeUp}>
+              <SidebarLink {...item} />
+            </motion.div>
           ))}
-        </nav>
+        </motion.nav>
 
-        <div className="border-t border-line px-4 py-4">
+        <div className="border-t border-line/70 px-4 py-4">
           <ThemeToggle />
         </div>
       </aside>
 
-      {/* Mobile header */}
-      <div className="fixed inset-x-0 top-0 z-40 flex items-center justify-between border-b border-line bg-paper/80 px-4 py-3 backdrop-blur-md lg:hidden">
+      {/* Mobile header — Glass 1 */}
+      <div className="glass-nav fixed inset-x-0 top-0 z-40 flex items-center justify-between border-x-0 border-t-0 px-4 py-2.5 lg:hidden">
         <div className="flex items-center gap-2.5">
           <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand/10 text-brand">
             <BookOpen className="h-4 w-4" aria-hidden />
@@ -121,70 +161,110 @@ export default function AppLayout() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-ink-muted hover:bg-brand/5 hover:text-ink"
+          className="flex h-9 w-9 items-center justify-center rounded-xl text-ink-muted transition-colors hover:bg-brand/5 hover:text-ink"
           aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
         >
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          <motion.span
+            key={mobileMenuOpen ? 'close' : 'open'}
+            initial={{ rotate: -90, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            transition={{ duration: 0.18 }}
+            className="flex"
+            aria-hidden
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </motion.span>
         </button>
       </div>
 
-      {/* Mobile slide-out menu */}
-      {mobileMenuOpen && (
-        <>
-          <div
-            className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm lg:hidden"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-          <div className="fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto border-r border-line bg-paper p-4 pt-20 shadow-xl lg:hidden">
-            <nav aria-label="Mobile navigation" className="space-y-0.5">
-              {DESKTOP_NAV.map((item) => (
-                <SidebarLink key={item.to} {...item} />
-              ))}
-            </nav>
-            <div className="mt-6 border-t border-line pt-4">
-              <ArabicSizeSelector />
-            </div>
-          </div>
-        </>
-      )}
+      {/* Mobile menu — glass drawer, none of it uses abrupt display toggling */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-30 bg-black/30 backdrop-blur-sm lg:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.div
+              key="drawer"
+              variants={drawerEnter}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="glass-nav fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto border-y-0 border-l-0 p-4 pt-20 shadow-xl lg:hidden"
+            >
+              <nav aria-label="Mobile navigation" className="space-y-0.5">
+                {DESKTOP_NAV.map((item) => (
+                  <SidebarLink
+                    key={item.to}
+                    {...item}
+                    onNavigate={() => setMobileMenuOpen(false)}
+                  />
+                ))}
+              </nav>
+              <div className="mt-6 border-t border-line/70 pt-4">
+                <ArabicSizeSelector />
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
-      {/* Main content — key forces remount on route change, auto-closes menu */}
-      <main className="flex-1 overflow-x-hidden">
+      {/* Main content — route transition + audio-aware bottom padding */}
+      <main className="relative min-w-0 flex-1 overflow-x-hidden">
         <div
-          className={`mx-auto max-w-5xl px-4 pt-16 lg:px-8 lg:pt-6 ${
+          className={`mx-auto max-w-5xl px-4 pt-16 lg:px-8 lg:pt-8 ${
             activeAudio ? 'pb-56 lg:pb-36' : 'pb-24 lg:pb-10'
           }`}
         >
-          <Outlet key={menuKey} />
+          <RoutedPage />
         </div>
       </main>
 
       {/* Persistent bottom audio player */}
       <AudioPlayer />
 
-      {/* Mobile bottom nav */}
-      <nav
-        className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-t border-line bg-paper/90 px-2 py-1.5 backdrop-blur-md lg:hidden"
+      {/* Mobile bottom nav — Glass 1 */}
+      <motion.nav
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="glass-nav fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-x-0 border-b-0 px-2 py-1.5 lg:hidden"
         aria-label="Mobile bottom navigation"
       >
         {MOBILE_BOTTOM.map(({ to, label, Icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={to === '/'}
-            className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 text-[10px] font-medium transition-colors ${
-                isActive
-                  ? 'text-brand'
-                  : 'text-ink-faint hover:text-ink-muted'
-              }`
-            }
-          >
-            <Icon className="h-5 w-5" aria-hidden />
-            {label}
-          </NavLink>
+          <motion.div key={to} variants={fadeUp}>
+            <NavLink
+              to={to}
+              end={to === '/'}
+              className="relative flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 text-[10px] font-medium transition-colors"
+            >
+              {({ isActive }) => (
+                <>
+                  <Icon
+                    className={`h-5 w-5 ${isActive ? 'text-brand' : 'text-ink-faint'}`}
+                    aria-hidden
+                  />
+                  <span className={isActive ? 'text-brand' : 'text-ink-faint'}>
+                    {label}
+                  </span>
+                  <span
+                    className={`absolute -bottom-px h-0.5 w-6 rounded-full bg-gradient-to-r from-brand to-gold transition-opacity ${
+                      isActive ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    aria-hidden
+                  />
+                </>
+              )}
+            </NavLink>
+          </motion.div>
         ))}
-      </nav>
+      </motion.nav>
     </div>
   )
 }

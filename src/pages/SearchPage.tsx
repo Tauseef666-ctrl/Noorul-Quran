@@ -15,6 +15,7 @@ import { searchQuran, type SearchMode } from '../services/search'
 import type { RichHit } from '../data/corpus'
 import type { Surah } from '../types/quran'
 import { useAudio } from '../store/audio'
+import { GeometricPattern } from '../components/GeometricPattern'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 12 },
@@ -276,11 +277,14 @@ export default function SearchPage() {
       )}
 
       {!searched && !loading && (
-        <motion.div variants={fadeIn} className="py-12 text-center">
-          <Search className="mx-auto h-10 w-10 text-ink-faint/40" />
-          <p className="mt-3 text-sm text-ink-muted">
-            Type to search across Arabic text, translations, surah names, or an exact reference.
-          </p>
+        <motion.div variants={fadeIn} className="relative overflow-hidden rounded-3xl py-12 text-center">
+          <GeometricPattern variant="emerald" className="absolute inset-0 mx-auto h-full w-full object-cover" opacity={0.35} />
+          <div className="relative">
+            <Search className="mx-auto h-10 w-10 text-ink-faint/40" />
+            <p className="mt-3 text-sm text-ink-muted">
+              Type to search across Arabic text, translations, surah names, or an exact reference.
+            </p>
+          </div>
         </motion.div>
       )}
     </motion.div>

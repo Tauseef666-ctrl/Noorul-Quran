@@ -23,10 +23,12 @@ import { useBookmarks } from '../store/bookmarks'
 import { useReadingProgress } from '../hooks/useReadingProgress'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
+import { useNotes } from '../store/notes'
 import { TafsirModal } from '../components/TafsirModal'
 import { VerseInfoPanel } from '../components/VerseInfoPanel'
 import { NoteModal } from '../components/NoteModal'
-import { useNotes } from '../store/notes'
+import { LoadingScreen } from '../components/LoadingScreen'
+import { EqualizerBars } from '../components/EqualizerBars'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 16 },
@@ -81,13 +83,13 @@ function AyahActions({
         onClick={() => toggle(ayah.surahNumber, ayah.ayahNumber)}
         className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
           isActive
-            ? 'bg-brand text-white'
+            ? 'bg-brand text-white shadow-md'
             : 'text-ink-faint hover:bg-brand/10 hover:text-brand'
         }`}
         aria-label={isPlaying ? `Pause ayah ${ayah.ayahNumber}` : `Play ayah ${ayah.ayahNumber}`}
       >
         {isPlaying ? (
-          <Pause className="h-4 w-4" />
+          <EqualizerBars />
         ) : isActive ? (
           <RotateCcw className="h-4 w-4" />
         ) : (
@@ -324,24 +326,7 @@ export default function SurahReaderPage() {
   const error = !isValid ? 'Invalid surah number.' : dataError
 
   if (loading) {
-    return (
-      <div className="space-y-4 py-12">
-        <div className="card animate-pulse rounded-2xl p-6">
-          <div className="mx-auto h-8 w-48 rounded bg-line" />
-          <div className="mx-auto mt-4 h-6 w-32 rounded bg-line" />
-          <div className="mx-auto mt-8 h-24 w-full rounded-xl bg-line" />
-        </div>
-        <div className="space-y-6">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="animate-pulse space-y-3 rounded-2xl p-4">
-              <div className="h-20 w-full rounded-xl bg-line" />
-              <div className="h-4 w-3/4 rounded bg-line" />
-              <div className="h-4 w-1/2 rounded bg-line" />
-            </div>
-          ))}
-        </div>
-      </div>
-    )
+    return <LoadingScreen />
   }
 
   if (error || !surah) {
@@ -493,10 +478,10 @@ export default function SurahReaderPage() {
               }}
               data-ayah-key={ayah.key}
               variants={fadeIn}
-              className={`group relative rounded-2xl p-4 transition-colors sm:p-6 ${
+              className={`group relative rounded-2xl p-4 transition-[background-color,box-shadow] sm:p-6 ${
                 isActive
-                  ? 'bg-brand/5 ring-1 ring-brand/25'
-                  : 'hover:bg-surface/60'
+                  ? 'bg-brand/5 shadow-[var(--shadow-glow)] ring-1 ring-brand/25'
+                  : 'hover:bg-surface/60 hover:shadow-[var(--shadow-glow)]'
               }`}
             >
               {/* Ayah number badge */}

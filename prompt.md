@@ -1,1036 +1,862 @@
-NoorulQuran — Complete Quran Web Application
+NoorulQuran — Premium Animated Islamic UI/UX Upgrade
 
-Build a complete, production-quality Quran web application called NoorulQuran.
+Upgrade the existing NoorulQuran Quran web application into a highly polished, immersive, premium-quality experience.
 
-Tagline:
-Read. Listen. Reflect.
+Do NOT rebuild it as a cyberpunk, hacker, gaming, neon-tech or AI-dashboard website.
 
-The website must be a respectful, modern, accessible and highly polished digital Quran experience. It must NOT use a cyberpunk, hacker, neon, gaming, futuristic-tech or AI-dashboard visual style.
+The visual direction should be:
 
-The visual identity should feel peaceful, spiritual, elegant and scholarly while still looking like a modern premium web application.
+Luxury Islamic + Deep Black + Emerald + Subtle Gold + Frosted Glass + Cinematic Motion
 
----
-
-1. CRITICAL RELIGIOUS CONTENT REQUIREMENT
-
-The application MUST contain and correctly represent the entire Quran.
-
-There are:
-
-- 114 Surahs
-- Every Ayah in every Surah
-- Complete Arabic Quranic text
-- Correct Surah ordering
-- Correct Ayah numbering
-- Correct Arabic diacritics
-- Complete Quran metadata
-- Complete Mushaf/page navigation
-- Juz/Para information
-- Hizb and Rub information where supported
-- Ruku information where supported
-- Manzil information where supported
-- Sajdah information where supported
-
-DO NOT:
-
-- Invent Quranic verses
-- Generate Quranic verses with AI
-- Paraphrase Quranic Arabic
-- Modify Quranic Arabic text
-- Skip verses
-- Truncate verses
-- Replace verses with placeholder text
-- Use fake sample data in the production Quran reader
-- Present generated religious content as Quran
-- Automatically translate Quran translations through browser translation
-- Alter Quranic wording for UI purposes
-
-Use authoritative Quran datasets/APIs and preserve the original supplied text exactly.
-
-For Quran text, use an authoritative verified source such as Tanzil or another appropriately licensed canonical source. If Tanzil text is used, preserve it verbatim and include the required attribution and source link because its license prohibits modifying the text.
+The website should feel like a premium digital Mushaf and Islamic library.
 
 ---
 
-2. DATA ARCHITECTURE
+1. CORE VISUAL IDENTITY
 
-Do NOT manually type thousands of Quran verses into React components.
+Use a predominantly dark aesthetic.
 
-Create a proper Quran data layer.
+Primary background
 
-Recommended sources:
+Use:
 
-Primary Quran data
+- Deep black
+- Near-black charcoal
+- Very dark emerald
+- Subtle black-to-emerald gradients
 
-Use Quran Foundation/Quran.com Content APIs where appropriate for:
+Avoid pure flat black everywhere.
 
-- Chapters
-- Verses
-- Pages
-- Juz
-- Hizb
-- Rub
-- Ruku
-- Manzil
-- Translations
-- Tafsir
-- Recitations
-- Word-level information
+Use extremely subtle radial gradients behind major sections to create depth.
 
-The current Quran Foundation API provides these content categories and supports verse retrieval by chapter, page, Juz, Hizb and Rub.
+Accent palette
 
-Alternative/open API
+Use restrained:
 
-Use Al Quran Cloud where appropriate for:
+- Emerald
+- Deep green
+- Muted gold
+- Warm ivory
+- Soft white
 
-- Quran editions
-- Surah data
-- Ayah data
-- Juz
-- Page data
-- Audio
-- Translations
-- Search
-- Metadata
+Gold should be an accent, NOT the dominant color.
 
-Its current API provides endpoints for Ayahs, Surahs, Juz, pages, Manzil, Ruku, Sajdah and other Quran resources.
-
-IMPORTANT
-
-Keep the data provider layer abstracted:
-
-src/
-  services/
-    quran/
-      quranProvider.ts
-      quranFoundationProvider.ts
-      alQuranCloudProvider.ts
-      audioProvider.ts
-      translationProvider.ts
-
-The UI must not be tightly coupled to one API.
+Avoid bright neon green.
 
 ---
 
-3. PAGE-BY-PAGE MUSHAF READER
+2. GLASSMORPHISM SYSTEM
 
-This is one of the most important features.
+Create a consistent glass design system.
 
-Create a dedicated page:
+Cards should use:
 
-"/mushaf"
+background:
+semi-transparent dark glass
 
-The user must be able to read the Quran page by page like a physical Mushaf.
+backdrop:
+blur + saturation
 
-Features:
+border:
+subtle translucent border
 
-- Page 1 → Page 2 → Page 3...
-- Previous page
-- Next page
-- Page number input
-- Jump to page
-- Jump to Surah
-- Jump to Juz
-- Jump to Ayah
-- Full-screen reading
-- Mobile swipe navigation
-- Desktop navigation
-- Reading progress
-- Current page saved locally
-- Dark mode
-- Light mode
-- Font/layout selection where supported
+shadow:
+soft depth shadow
 
-The application should support Mushaf layouts where the underlying API/data provides them, including:
+highlight:
+very subtle inner highlight
 
-- Uthmani
-- IndoPak
-- Other supported Mushaf layouts
+Use different glass levels:
 
-Different Mushafs can have different page boundaries, so page navigation MUST be based on the selected Mushaf rather than assuming every edition has identical page layout.
+Glass 1 — Navigation
 
----
+Very transparent.
 
-4. EVERY VERSE MUST BE INTERACTIVE
+Glass 2 — Cards
 
-Every Ayah needs its own dedicated action controls.
+Medium transparency.
 
-Example:
+Glass 3 — Important controls
 
-Ayah 2:255
+Slightly stronger background.
 
-[Arabic Quran text]
+Glass 4 — Modals
 
-[▶ Play] [🔖 Bookmark] [📋 Copy] [↗ Share] [⋮ More]
+Maximum readability.
 
-Actions:
-
-- Play
-- Pause
-- Replay
-- Bookmark
-- Copy
-- Share
-- View translation
-- View tafsir where available
-- View verse information
-- Add personal note if user accounts are implemented
+Do not blur the Quran text itself.
 
 ---
 
-5. AUDIO RECITATION SYSTEM
+3. ANIMATED BACKGROUND
 
-Build a professional Quran audio player.
+Create a very subtle animated background throughout the application.
 
-The user should be able to:
+Use:
 
-Single Ayah
+- Slow gradient movement
+- Soft light diffusion
+- Extremely subtle floating particles
+- Islamic geometric patterns
+- Slow ambient glow
 
-Play one Ayah.
+The animation must be almost meditative.
 
-Multiple Ayahs
+Do NOT use:
 
-Select a range and play it.
+- Fast particles
+- Stars everywhere
+- Cyber grid
+- Lightning
+- Neon lines
+- Excessive glowing effects
 
-Entire Surah
-
-Play the complete Surah.
-
-Entire Quran
-
-Allow continuous playback across Surahs.
-
-The player should automatically move:
-
-Ayah 1
-↓
-Ayah 2
-↓
-Ayah 3
-↓
-...
-Ayah 286
-↓
-Next Surah
+The background should be felt rather than noticed.
 
 ---
 
-6. ACTIVE AYAH SYNCHRONIZATION
+4. ISLAMIC GEOMETRIC PATTERN
 
-While audio is playing:
+Introduce a subtle Islamic geometric pattern.
 
-- Highlight the currently recited Ayah
-- Scroll the current Ayah into view
-- Update playback progress
-- Show current Surah
-- Show current Ayah
-- Show total progress
-- Automatically advance to the next Ayah
-- Continue to the next Surah when enabled
+Use it as:
 
-Example:
+- Hero background
+- Section separators
+- Empty states
+- Footer decoration
+- Loading screen
 
-Al-Baqarah
+Keep opacity extremely low.
 
-Ayah 254
-normal
-
-Ayah 255
-ACTIVE / CURRENTLY PLAYING
-
-Ayah 256
-normal
-
-The active state should use a subtle glow/highlight, NOT a distracting animation.
+It should never interfere with Quran text.
 
 ---
 
-7. RECITER SYSTEM
+5. PAGE TRANSITIONS
 
-Create a reciter selector.
+Every route should have a smooth transition.
 
-The architecture must support multiple reciters.
+When navigating:
 
-Example UI:
+Current page
+      ↓
+fade + slight vertical movement
+      ↓
+new page
+      ↓
+content reveals progressively
 
-Reciter
+Use Motion/Framer Motion or an equivalent animation library.
 
-Mishary Rashid Alafasy
-Abdul Basit
-Mahmoud Khalil Al-Husary
-Saad Al-Ghamdi
-...
+Do not use long transitions.
 
-Do not claim a reciter is available unless the selected data/audio provider actually supplies that recitation.
+Target approximately:
 
-Respect the licensing/attribution requirements of each audio source. Al Quran Cloud's current terms state that its recitations are licensed for specified uses and retain their respective copyrights.
+250–600ms
 
----
-
-8. AUDIO CONTROLS
-
-Include:
-
-- Play
-- Pause
-- Previous Ayah
-- Next Ayah
-- Seek
-- Volume
-- Playback speed
-- Repeat Ayah
-- Repeat Surah
-- Continuous playback
-- Auto-next
-- Reciter selection
-
-Playback speeds:
-
-0.75x
-1x
-1.25x
-1.5x
-
-Use a persistent bottom audio player throughout the application.
+depending on the interaction.
 
 ---
 
-9. SURAH EXPLORER
+6. HOME PAGE ANIMATION
 
-Create:
-
-"/surahs"
-
-Display all 114 Surahs.
-
-Each Surah card should contain:
-
-- Surah number
-- Arabic name
-- English/transliterated name
-- Translation of name where available
-- Number of Ayahs
-- Revelation classification where reliably available
-- Juz information where appropriate
-- Play button
-- Read button
-
-Add:
-
-- Search
-- Filter
-- Sorting
-- Quick navigation
-- Arabic search
-- English search
-
----
-
-10. SURAH READER
-
-Create:
-
-"/surah/:surahId"
-
-The page should include:
-
-- Surah header
-- Arabic Surah name
-- English name
-- Revelation information
-- Number of Ayahs
-- Juz information
-- Bismillah where appropriate
-- Every Ayah
-- Translation
-- Audio controls
-- Bookmark
-- Copy
-- Share
-- Tafsir where available
-
-Use smooth transitions between Surahs.
-
----
-
-11. TRANSLATIONS
-
-Support multiple published translations where legally and technically appropriate.
-
-Example language options:
-
-- English
-- Urdu
-- Hindi
-- Arabic
-- Additional languages supported by the selected data source
-
-Each translation must retain its attribution.
-
-Do NOT use AI to silently translate an existing Quran translation.
-
-Quran Foundation specifically warns against automatic browser retranslation of vetted Quran translations because it can introduce semantic errors.
-
----
-
-12. TAFSIR
-
-Create:
-
-"/tafsir"
-
-Allow users to view available tafsir resources associated with verses.
-
-Tafsir must be clearly separated from:
-
-- Quranic Arabic
-- Translation
-- Personal notes
-- AI-generated explanations
-
-Never visually mix tafsir with Quranic text in a way that could make the user mistake tafsir for Quran.
-
----
-
-13. JUZ / PARA
-
-Create:
-
-"/juz"
-
-Display:
-
-- Juz 1
-- Juz 2
-- ...
-- Juz 30
-
-Each Juz should show:
-
-- Starting Surah/Ayah
-- Ending Surah/Ayah
-- Progress
-- Read button
-- Play button
-
----
-
-14. HIZB / RUB / RUKU / MANZIL
-
-Create an Explore section containing:
-
-- Hizb
-- Rub al-Hizb
-- Ruku
-- Manzil
-- Sajdah verses
-
-Only display metadata that comes from a reliable source.
-
----
-
-15. SEARCH
-
-Create a powerful Quran search page:
-
-"/search"
-
-Search across:
-
-- Arabic Quran text
-- Available translations
-- Surah names
-- Ayah references
-
-Results should show:
-
-Al-Baqarah 2:255
-
-[Arabic excerpt]
-
-[Translation excerpt]
-
-▶ Play
-Read
-
-Search must never return AI-invented Quranic text.
-
----
-
-16. BOOKMARKS
-
-Create:
-
-"/bookmarks"
-
-Users can bookmark:
-
-- Ayahs
-- Surahs
-- Pages
-
-Initially use localStorage so the application works without an account.
-
-Later optionally support cloud synchronization through authenticated user APIs.
-
----
-
-17. CONTINUE READING
-
-Create a reading progress system.
-
-Track:
-
-- Last Surah
-- Last Ayah
-- Last Mushaf page
-- Last Juz
-- Reading percentage
-
-Home page:
-
-Continue Reading
-
-Al-Kahf
-18:27
-
-Continue →
-
----
-
-18. NOTES
-
-Allow users to create private personal notes attached to an Ayah.
-
-Clearly label them:
-
-Personal Note
-
-Never make personal notes look like Quran, translation or tafsir.
-
----
-
-19. DAILY VERSE
-
-Create:
-
-"/daily-ayah"
-
-Display one selected Ayah with:
-
-- Arabic
-- Translation
-- Surah reference
-- Audio
-- Bookmark
-- Share
-
-The Daily Ayah must come from the actual Quran dataset.
-
----
-
-20. QURAN READING PLANS
-
-Create:
-
-"/plans"
-
-Include:
-
-30-Day Quran
-
-One Juz per day.
-
-60-Day Quran
-
-Two-Juz-per-two-day style schedule.
-
-Custom Plan
-
-Allow users to choose a reading goal.
-
-Do not gamify religious worship excessively.
-
-Keep it calm and personal.
-
----
-
-21. HOME PAGE
-
-Create a premium landing page.
-
-Sections:
+The homepage should feel cinematic.
 
 Hero
 
-نور القرآن
+On initial load:
+
+1. Background slowly fades in.
+2. Islamic pattern appears.
+3. Logo appears.
+4. Heading fades upward.
+5. Subtitle follows.
+6. Buttons appear.
+7. Ambient glow slowly moves behind the content.
+
+Example:
+
+             نور القرآن
+
+          NoorulQuran
+
+       Read. Listen. Reflect.
+
+       [ Read Quran ]  [ Listen ]
+
+              ↓
+        Explore the Quran
+
+Do not make every element animate simultaneously.
+
+Use a carefully staged reveal.
+
+---
+
+7. SCROLL ANIMATIONS
+
+Throughout the website, sections should reveal themselves as they enter the viewport.
+
+Use:
+
+- Fade
+- Translate
+- Scale from 0.97 → 1
+- Blur → sharp
+- Staggered card entrances
+
+Example:
+
+Section enters viewport
+        ↓
+Heading appears
+        ↓
+Description
+        ↓
+Cards stagger
+        ↓
+Final ambient glow
+
+Never animate the actual Quranic text unnecessarily.
+
+---
+
+8. SURAH CARDS
+
+Surah cards should feel premium.
+
+On hover:
+
+- Glass becomes slightly brighter
+- Border becomes visible
+- Card rises slightly
+- Subtle emerald/gold glow appears
+- Arabic title moves very slightly
+- Play button becomes active
+
+Use smooth transitions rather than abrupt changes.
+
+On mobile, replace hover behavior with touch-friendly active states.
+
+---
+
+9. AYAH CARDS
+
+Ayah cards should be extremely elegant.
+
+Default:
+
+┌────────────────────────────────────┐
+│  255                         🔖 ⋮   │
+│                                    │
+│       Arabic Quran text            │
+│                                    │
+│       Translation                  │
+│                                    │
+│       ▶ Play                       │
+└────────────────────────────────────┘
+
+When selected:
+
+- Border softly illuminates
+- Background becomes slightly lighter
+- Audio indicator appears
+- Current Ayah receives a subtle animated highlight
+
+Do NOT animate the Arabic text itself.
+
+---
+
+10. AUDIO VISUALIZATION
+
+Create a subtle audio animation.
+
+When audio is playing:
+
+▶  ━━━━╲╱━━━━╲╱━━━━
+
+Use a restrained waveform/equalizer animation.
+
+It should indicate playback without becoming a music-player aesthetic.
+
+When the reciter moves to another Ayah:
+
+- Previous Ayah smoothly returns to normal
+- New Ayah becomes active
+- Reader scrolls smoothly to it
+
+---
+
+11. MUSHAF READER
+
+The dedicated page-by-page Mushaf reader should have a completely different visual treatment.
+
+Create a centered Mushaf reading surface.
+
+        ┌──────────────────────┐
+        │                      │
+        │       Mushaf         │
+        │                      │
+        │      Quran text      │
+        │                      │
+        │                      │
+        └──────────────────────┘
+
+             ‹       ›
+
+The surrounding UI should remain dark glass.
+
+The Mushaf itself should prioritize readability.
+
+---
+
+12. PAGE TURN ANIMATION
+
+When moving between Mushaf pages:
+
+Desktop:
+
+Use a subtle page-slide/turn transition.
+
+Mobile:
+
+Use horizontal swipe.
+
+Animation:
+
+Page N
+   ↓
+slight movement
+   ↓
+fade
+   ↓
+Page N+1
+
+Do NOT create a heavy 3D book animation that slows down navigation.
+
+Reading performance is more important than visual effects.
+
+---
+
+13. FULL-SCREEN READING MODE
+
+Add:
+
+Focus Reading
+
+When activated:
+
+- Navigation disappears
+- Sidebars disappear
+- Background becomes darker
+- Quran content becomes the primary focus
+- Audio controls remain accessible
+- Minimal controls appear when the user taps/clicks
+
+Entering focus mode:
+
+smooth fade + scale transition
+
+Exiting:
+
+reverse transition
+
+---
+
+14. AUDIO PLAYER
+
+Create a floating glass audio player.
+
+Desktop:
+
+┌─────────────────────────────────────────────┐
+│ ▶  Al-Baqarah · Ayah 255                   │
+│                                             │
+│ ━━━━━━━━━━━━━━━○━━━━━━━━                    │
+│                                             │
+│  ◀   ▶   ▶▶       🔊   1×                   │
+└─────────────────────────────────────────────┘
+
+Use:
+
+- Glass blur
+- Rounded corners
+- Subtle border
+- Shadow
+- Smooth expansion/collapse
+
+When minimized:
+
+      ◉ ▶
+
+When expanded:
+
+animate smoothly into the full player.
+
+---
+
+15. NAVIGATION
+
+Desktop:
+
+Create a floating glass sidebar.
+
+Mobile:
+
+Create a glass bottom navigation or animated drawer.
+
+Navigation items:
+
+- Home
+- Quran
+- Listen
+- Explore
+- Bookmarks
+- Settings
+
+Active navigation item should have a subtle emerald/gold indicator.
+
+---
+
+16. MOBILE MENU
+
+Opening the menu:
+
+menu icon
+    ↓
+glass panel slides in
+    ↓
+background subtly darkens
+    ↓
+navigation items stagger in
+
+Closing:
+
+Reverse the animation.
+
+Do not use abrupt display:none behavior for the visual transition.
+
+---
+
+17. SEARCH ANIMATION
+
+Search bar should expand elegantly.
+
+Closed:
+
+🔍
+
+Opened:
+
+┌───────────────────────────────────┐
+│ 🔍 Search the Quran...            │
+└───────────────────────────────────┘
+
+Search results should appear with staggered animation.
+
+Highlight matched text subtly.
+
+---
+
+18. BOOKMARK ANIMATION
+
+When bookmarking an Ayah:
+
+- Button responds immediately
+- Small scale animation
+- Bookmark icon transitions
+- Tiny glow
+- Optional subtle particle/ripple
+
+Keep it very restrained.
+
+---
+
+19. DAILY AYAH
+
+Make the Daily Ayah card one of the most beautiful components.
+
+Use:
+
+- Large Arabic typography
+- Glass surface
+- Subtle geometric background
+- Soft emerald illumination
+- Gold detail
+- Audio button
+- Bookmark
+
+On page load:
+
+background
+   ↓
+card
+   ↓
+Arabic
+   ↓
+translation
+   ↓
+actions
+
+---
+
+20. JUZ / EXPLORE PAGE
+
+Create an animated grid.
+
+Cards should enter in a stagger:
+
+Juz 1   Juz 2   Juz 3
+  ↓       ↓       ↓
+Juz 4   Juz 5   Juz 6
+
+Hovering/tapping a card should produce a subtle lift.
+
+---
+
+21. STATISTICS / JOURNEY
+
+Create elegant animated progress indicators.
+
+Example:
+
+Your Quran Journey
+
+Surahs explored
+
+████████████░░
+
+Reading progress
+
+███████░░░░░░
+
+Current Juz
+
+12
+
+Progress bars should animate when entering the viewport.
+
+Don't make them look like game XP bars.
+
+---
+
+22. LIGHT MODE
+
+Dark mode is the primary visual identity, but implement a complete light mode.
+
+Light mode:
+
+- Ivory background
+- White glass
+- Emerald text/accent
+- Muted gold
+- Soft gray
+- Warm shadows
+
+The entire UI must be redesigned for contrast instead of simply inverting colors.
+
+---
+
+23. DARK MODE
+
+Dark mode:
+
+Background:
+#050807 style deep black/green
+
+Glass:
+translucent charcoal
+
+Accent:
+emerald
+
+Secondary accent:
+muted gold
+
+Text:
+warm white
+
+Avoid excessive brightness.
+
+The Quran should remain the brightest/readable element.
+
+---
+
+24. THEME TRANSITION
+
+Switching between Light and Dark should animate.
+
+Use:
+
+current theme
+      ↓
+soft transition
+      ↓
+background changes
+      ↓
+glass surfaces transition
+      ↓
+text/accent colors transition
+
+Do not flash white when switching to dark mode.
+
+Respect system theme by default.
+
+---
+
+25. LOADING EXPERIENCE
+
+Create a beautiful Quran-inspired loading screen.
+
+Display:
+
+          نور القرآن
+
+       Loading Quran...
+
+Use a subtle geometric animation.
+
+Do not create an unnecessarily long splash screen.
+
+---
+
+26. SKELETON LOADING
+
+When Quran data is loading, use glass skeletons.
+
+Example:
+
+████████████████
+████████
+
+████████████████████
+████████████
+
+Skeletons should softly pulse.
+
+---
+
+27. MICRO-INTERACTIONS
+
+Add polished interactions everywhere:
+
+Buttons:
+
+- hover
+- press
+- focus
+
+Cards:
+
+- hover
+- active
+
+Inputs:
+
+- focus glow
+- validation transition
+
+Dialogs:
+
+- fade
+- scale
+
+Dropdowns:
+
+- slide/fade
+
+Tooltips:
+
+- subtle fade
+
+Every interaction should feel consistent.
+
+---
+
+28. ANIMATION DESIGN SYSTEM
+
+Create reusable animation variants instead of writing random animations for every component.
+
+Create:
+
+animations/
+  pageTransition
+  fadeIn
+  fadeUp
+  fadeScale
+  staggerContainer
+  cardHover
+  modalEnter
+  drawerEnter
+  audioPulse
+  activeAyah
+  themeTransition
+
+This ensures the entire website feels like one coherent product.
+
+---
+
+29. PERFORMANCE RULE
+
+Animations MUST NOT destroy performance.
+
+Prioritize:
+
+- transform
+- opacity
+- GPU-friendly properties
+
+Avoid expensive continuous animations.
+
+Respect:
+
+prefers-reduced-motion
+
+If enabled:
+
+- Disable decorative animations
+- Keep essential state transitions
+- Keep navigation usable
+- Keep audio highlighting functional
+
+---
+
+30. ACCESSIBILITY
+
+Do not sacrifice accessibility for aesthetics.
+
+Maintain:
+
+- keyboard navigation
+- visible focus
+- readable contrast
+- screen reader support
+- RTL support
+- reduced motion
+- adjustable font size
+
+---
+
+31. RESPONSIVE ANIMATION
+
+Animations must adapt by screen size.
+
+Desktop:
+
+More spacious transitions.
+
+Tablet:
+
+Moderate transitions.
+
+Mobile:
+
+Shorter, lighter animations.
+
+Never use a desktop animation that causes lag on low-end mobile devices.
+
+---
+
+32. FOOTER
+
+Create a large elegant footer.
+
+Include:
 
 NoorulQuran
 
 Read. Listen. Reflect.
 
-[Read Quran]
-[Listen to Quran]
-
-Continue Reading
-
-Daily Ayah
-
-Surah Explorer
-
-Juz Explorer
-
-Featured Recitations
-
-Quran Journey
-
-Explore the Quran
-
+Quran
+Listen
+Explore
 Resources
+Sources
+About
 
-Footer
+Data & attribution
 
----
+GitHub
 
-22. DARK MODE + LIGHT MODE
-
-The website MUST support both.
-
-Light mode
-
-Use:
-
-- Warm ivory
-- White glass
-- Emerald
-- Muted gold
-- Soft shadows
-
-Dark mode
-
-Use:
-
-- Deep forest green
-- Near-black emerald
-- Dark translucent glass
-- Soft gold/cream typography
-
-The theme must be controlled globally.
-
-Add:
-
-Light
-Dark
-System
-
-Save the user's preference locally.
-
-Respect:
-
-"prefers-color-scheme"
+Use a subtle geometric pattern.
 
 ---
 
-23. GLASSMORPHISM
+33. FINAL DESIGN GOAL
 
-Use glassmorphism throughout the interface, but subtly.
+The finished website should feel like:
 
-Use:
+A premium digital Islamic library built around the Quran.
 
-- backdrop blur
-- translucent surfaces
-- thin borders
-- soft shadows
-- layered cards
+The user should immediately feel:
 
-Do NOT make the Quran text itself look like a glowing futuristic object.
+- Calm
+- Focused
+- Immersed
+- Respectful
+- Comfortable reading
 
-The sacred text should remain highly readable and visually dominant.
-
----
-
-24. TYPOGRAPHY
-
-Arabic typography is extremely important.
-
-Use a reliable Quran-compatible Arabic font/source.
-
-Support:
-
-- Large Arabic reading size
-- Medium
-- Small
-
-Translation typography should remain separate from Arabic typography.
-
-Make RTL handling correct throughout the application.
+The animations should enhance the experience without competing with the Quran.
 
 ---
 
-25. ANIMATION
+34. ABSOLUTE DESIGN RULES
 
-Use modern smooth animation.
+NEVER use:
 
-Good animations:
+- Cyberpunk
+- Hacker UI
+- Neon text
+- Gaming HUD
+- Excessive particles
+- Excessive glow
+- Flashing animations
+- Animated Quranic letters
+- Distracting 3D effects
+- Excessive parallax
+- AI-generated Quranic content
+- Fake Quran verses
 
-- Page transitions
-- Card entrances
-- Soft hover states
-- Audio progress
-- Active Ayah highlight
-- Navigation transitions
-- Modal transitions
-- Search transitions
+ALWAYS prioritize:
 
-Respect:
+Quran → readability → accessibility → performance → aesthetics → animation
 
-"prefers-reduced-motion"
+The Quran is the primary content.
 
-When reduced motion is enabled, disable unnecessary animations.
-
----
-
-26. MOBILE EXPERIENCE
-
-The website must be fully responsive.
-
-On mobile:
-
-- Bottom audio player
-- Swipe Mushaf pages
-- Large readable Arabic
-- Sticky navigation where appropriate
-- Easy Ayah controls
-- One-handed interaction
-- No horizontal scrolling
-
-On desktop:
-
-- Sidebar navigation
-- Large Mushaf reader
-- Persistent audio player
-- Optional verse information panel
+The UI exists to support it.
 
 ---
 
-27. ACCESSIBILITY
+35. FINAL RESULT
 
-Implement:
+Transform the existing NoorulQuran application into a cohesive:
 
-- Semantic HTML
-- Keyboard navigation
-- ARIA labels
-- Screen-reader support
-- Focus indicators
-- Reduced motion
-- High contrast
-- Adjustable font size
-- RTL support
-- Accessible audio controls
+Black + Emerald + Gold + Glassmorphism + Islamic Geometry + Cinematic Motion
 
----
-
-28. PWA
-
-Make the website installable as a Progressive Web App.
-
-Include:
-
-- Manifest
-- App icons
-- Offline shell
-- Service worker
-- Caching strategy
-
-Do NOT blindly cache copyrighted audio or translations unless their licensing permits it.
-
-Cache appropriate public/static application resources and data according to source terms.
-
----
-
-29. PERFORMANCE
-
-Optimize for:
-
-- Mobile
-- Slow connections
-- Low memory devices
-
-Use:
-
-- Lazy loading
-- Virtualized long verse lists where necessary
-- API caching
-- Image optimization
-- Code splitting
-- Efficient audio loading
-- Minimal dependencies
-
-Never download the entire Quran audio library at startup.
-
----
-
-30. SEO
-
-Create proper metadata for:
+experience with consistent animation across:
 
 - Home
-- Every Surah
+- Quran
+- Surahs
+- Ayahs
+- Mushaf
 - Juz
-- Quran reader
+- Listen
 - Search
-- Resources
-
-Use:
-
-- OpenGraph
-- Twitter/X cards
-- Structured metadata
-- Canonical URLs
-- Sitemap
-- robots.txt
-
----
-
-31. PROJECT STRUCTURE
-
-Use:
-
-noorulquran/
-│
-├── public/
-│
-├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── layouts/
-│   ├── hooks/
-│   ├── services/
-│   │   └── quran/
-│   ├── data/
-│   ├── types/
-│   ├── utils/
-│   ├── store/
-│   ├── styles/
-│   └── App.tsx
-│
-├── README.md
-├── package.json
-└── ...
-
-Recommended stack:
-
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- Motion/Framer Motion
-- Lucide icons
-
----
-
-32. DATA INTEGRITY
-
-Add validation during development.
-
-The application should verify:
-
-- Exactly 114 Surahs
-- Expected Ayah counts
-- Correct Surah ordering
-- Correct Ayah numbering
-- No duplicate Ayah IDs
-- No missing Ayahs
-- No empty Arabic text
-- No unexpected modification of Quranic text
-- Valid audio references
-- Valid page mappings
-
-Create a development validation script:
-
-npm run validate:quran
-
-It should report missing or malformed Quran data.
-
----
-
-33. SOURCE ATTRIBUTION
-
-Create:
-
-"/sources"
-
-Explain exactly where content comes from.
-
-Include source attribution for:
-
-- Quran text
-- Translations
-- Recitations
 - Tafsir
-- Fonts
-- APIs
-- Images/assets
+- Bookmarks
+- Daily Ayah
+- Reading plans
+- Settings
+- Resources
+- About
+- Error pages
+- Loading states
+- Modals
+- Navigation
+- Audio player
 
-If Tanzil Quran text is used, preserve its attribution and license requirements. Tanzil explicitly requires its source to be identified and its text to remain unchanged.
+Every page should feel like it belongs to the same premium application.
 
----
-
-34. RELIGIOUS CONTENT SAFETY
-
-The website is a Quran reading application, not an authority that invents religious rulings.
-
-Clearly distinguish:
-
-Quran
-
-Translation
-
-Tafsir
-
-Hadith
-
-Personal Notes
-
-Educational Information
-
-Do not generate a fabricated fatwa or claim that AI-generated religious answers are authoritative.
-
----
-
-35. GITHUB README
-
-Create a professional README containing:
-
-- NoorulQuran logo
-- Project description
-- Screenshots
-- Live demo
-- Features
-- Technology stack
-- Architecture
-- Data sources
-- Audio sources
-- Attribution
-- Licensing
-- Local development instructions
-- Environment variables
-- API configuration
-- Deployment
-- Accessibility
-- Roadmap
-- Contribution guide
-
----
-
-36. REQUIRED ROUTES
-
-Implement at minimum:
-
-/
-/quran
-/surahs
-/surah/:id
-/mushaf
-/mushaf/:page
-/juz
-/juz/:id
-/search
-/bookmarks
-/daily-ayah
-/tafsir
-/listen
-/plans
-/settings
-/resources
-/sources
-/about
-
-Add appropriate error/404 pages.
-
----
-
-37. ERROR STATES
-
-Do not show blank screens.
-
-Handle:
-
-- API unavailable
-- Audio unavailable
-- Missing translation
-- Invalid Surah
-- Invalid Ayah
-- Invalid page
-- Network failure
-- Rate limit
-- Loading
-- Empty search results
-
-Provide clear retry controls.
-
----
-
-38. DESIGN PRINCIPLE
-
-The application should feel like:
-
-a peaceful digital Mushaf + modern Quran study application
-
-NOT:
-
-a futuristic AI website.
-
-The interface should disappear into the reading experience.
-
-The Quran must always remain the primary focus.
-
----
-
-39. FINAL QUALITY REQUIREMENT
-
-Before considering the project complete, verify that:
-
-- All 114 Surahs exist.
-- Every Ayah is accessible.
-- No Ayahs are missing.
-- No Quranic text has been generated by AI.
-- Page-by-page Mushaf reading works.
-- Surah reading works.
-- Juz navigation works.
-- Search works.
-- Audio works.
-- Individual Ayah playback works.
-- Continuous Surah playback works.
-- Continuous Quran playback works where supported.
-- Current Ayah highlighting works.
-- Bookmarks work.
-- Reading progress works.
-- Dark mode works.
-- Light mode works.
-- Mobile layout works.
-- Desktop layout works.
-- RTL works.
-- Accessibility works.
-- Source attribution is visible.
-- API credentials remain server-side.
-- No secret API keys are committed to GitHub.
-- The README is complete.
-- Production build succeeds.
-
-Do not mark the application complete simply because the interface looks finished.
-
-Data completeness and Quranic text integrity are mandatory.
-
----
-
-Brand
-
-Name: NoorulQuran
-
-Tagline: Read. Listen. Reflect.
-
-Primary visual direction: Emerald + ivory + subtle gold glassmorphism.
-
-Overall feeling: Peaceful, elegant, scholarly, accessible, modern.
-
-Build this as a serious portfolio-quality application rather than a simple demo.
+Do not simply add animations randomly. Build a unified motion system and reusable animated components throughout the entire website.
