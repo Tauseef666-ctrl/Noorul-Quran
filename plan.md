@@ -5,6 +5,10 @@
 > Tracking file for building the complete NoorulQuran web app per `prompt.md`.
 >
 > **Workflow rule:** After every completed step — check the box `[x]`, commit, and push to GitHub.
+>
+> **Current direction (2026-08-29):** `prompt.md` restructured → Premium UI/UX Upgrade.
+> Visual identity = *Luxury Islamic + Deep Black + Emerald + Subtle Gold + Frosted Glass + Cinematic Motion*.
+> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Now working on **Phase 10**.
 
 ---
 
@@ -113,7 +117,7 @@
 - [x] Empty state + zero-AI-invented-text guarantee (every hit verbatim from bundled dataset or public API)
 - [x] Mode tabs: All / Arabic (offline) / Translation (provider); reference queries always resolve locally
 - [x] Diacritic-neutral Arabic matching (alef/hamza/wasla/ta-marbuta folding)
-- [ ] Loading/error/debounce handling
+- [x] Loading/error/debounce handling
 
 ## Phase 8 — Personal Features ✅
 
@@ -134,18 +138,97 @@
 - [x] Active ayah sync: subtle highlight, scroll-into-view, current surah/ayah + total progress shown
 - [x] Respect audio licensing/attribution per source (islamic.network CDN, on-demand, no bulk cache)
 
-## Phase 10 — Translations & Tafsir
+## Phase 10 — Premium UI/UX Upgrade (Luxury Glass + Cinematic Motion)
+
+> Supersedes the former "Animation & Responsiveness" phase. Built directly from `prompt.md` §1–§35.
+> Identity: **Luxury Islamic + Deep Black + Emerald + Subtle Gold + Frosted Glass + Cinematic Motion**,
+> meditative and respectful. Gold is an accent, never dominant. The Quran stays the brightest element.
+
+### 10.1 Visual identity & dual themes *(prompt §1, §22, §23, §24)*
+- [ ] Dark-first core: deep black (`#050807`-style), near-black charcoal, very dark emerald; subtle black→emerald radial gradients behind major sections; never pure flat black; never distract from Quran text
+- [ ] Restrained accents: emerald + deep green primary, muted gold secondary (accent only), warm ivory + soft white text — no bright neon green, no excessive glow
+- [ ] Complete light-mode redesign (NOT inverted colors): ivory background, white glass, emerald text/accent, muted gold, soft gray, warm shadows; full contrast pass
+- [ ] Animated theme switch: soft cross-fade of background/glass/text; no white flash when switching to dark; system preference respected by default (keep pre-paint FOUC guard)
+
+### 10.2 Glassmorphism design system *(prompt §2)*
+- [ ] Four glass levels app-wide: Glass 1 navigation (very transparent) · Glass 2 cards (medium) · Glass 3 important controls (slightly stronger) · Glass 4 modals (maximum readability)
+- [ ] Consistent glass recipe: translucent background + backdrop blur/saturation + subtle translucent border + soft depth shadow + faint inner highlight
+- [ ] Quran text surfaces stay opaque — never blurred or dimmed behind glass
+
+### 10.3 Animated background, geometry & loading states *(prompt §3, §4, §25, §26)*
+- [ ] Meditative animated background: slow gradient drift, soft light diffusion, extremely subtle floating particles, slow ambient glow — "felt, not noticed"; GPU-friendly, rAF-throttled, paused under `prefers-reduced-motion`
+- [ ] Islamic geometric pattern component (very low opacity): hero background, section separators, empty states, footer decoration, loading screen; never interferes with Quran text
+- [ ] Quran-inspired loading screen: نور القرآن · "Loading Quran..." with subtle geometric animation — short, never a long splash
+- [ ] Glass skeleton loaders that softly pulse (replace raw placeholder blocks across pages)
+
+### 10.4 Animation design system *(prompt §28, §5, §7)*
+- [ ] Central reusable variant library — `src/animations/`: pageTransition, fadeIn, fadeUp, fadeScale, staggerContainer, cardHover, modalEnter, drawerEnter, audioPulse, activeAyah, themeTransition
+- [ ] Consume system variants everywhere — one coherent motion language, no ad-hoc per-component animation
+- [ ] Route transitions app-wide: fade + slight vertical movement + progressive content reveal, ~250–600ms, never long
+- [ ] Viewport-entry reveals: fade + translate + subtle scale 0.97→1, blur→sharp; ordered heading → description → staggered cards → ambient glow
+- [ ] Staggered card entrances on grids (Surahs, Juz/Explore, Bookmarks, Notes, Search results)
+
+### 10.5 Home cinematic hero *(prompt §6)*
+- [ ] Staged hero on first load — never simultaneous: background fades in → Islamic pattern appears → logo → heading fades upward → subtitle → CTA buttons → ambient glow drifts behind content
+- [ ] Layout: نور القرآن / NoorulQuran / "Read. Listen. Reflect." / [Read Quran] [Listen] → then "Explore the Quran" section below
+
+### 10.6 Surah & Ayah cards *(prompt §8, §9)*
+- [ ] Surah card premium hover: glass brightens, border appears, card lifts, faint emerald/gold glow, Arabic title micro-move, play button activates — smooth, never abrupt
+- [ ] Mobile: replace hover with touch-friendly pressed/active states
+- [ ] Ayah card elegance: clean surface (# + 🔖 + ⋮ · Arabic · translation · ▶ Play); selected = border softly illuminates, background lightens, audio indicator shows, subtle animated highlight
+- [ ] NEVER animate the Arabic text itself
+
+### 10.7 Audio playback & active-ayah visuals *(prompt §10)*
+- [ ] Restrained waveform/equalizer indicator on the active play control while reciting (subtle, non-music-player)
+- [ ] Active-ayah lifecycle: previous ayah smoothly reverts to normal, new ayah activates, reader scrolls smoothly to it (extends Phase 9 sync)
+
+### 10.8 Mushaf reader & page-turn animation *(prompt §11, §12)*
+- [ ] Distinct centered Mushaf reading surface: readable Quran page as the focus; surrounding UI stays dark glass
+- [ ] Page-turn animation: desktop subtle slide + fade; mobile horizontal swipe; NO heavy 3D book — performance beats effects
+
+### 10.9 Focus Reading mode *(prompt §13)*
+- [ ] Full-screen Focus Reading: navigation/sidebar/chrome disappear, background darkens further, Quran content primary, audio controls stay reachable, minimal controls appear on tap/click
+- [ ] Enter = smooth fade + scale; exit = reverse animation
+
+### 10.10 Floating glass audio player *(prompt §14)*
+- [ ] Player upgraded to floating glass: blur + rounded corners + subtle border + shadow; smooth expand/collapse
+- [ ] Collapsed: minimal pill (◉ ▶ + now-playing); expanded: full controls (track, seek, prev/next, volume, speed, repeat/auto-next) with animated transition between states
+
+### 10.11 Navigation & mobile menu *(prompt §15, §16)*
+- [ ] Desktop: floating glass sidebar, active item gets subtle emerald/gold indicator
+- [ ] Mobile: glass bottom navigation or animated glass drawer; bottom audio player stays reachable above it
+- [ ] Menu behavior: glass panel slides in → backdrop darkens → items stagger in; closing reverses it; no abrupt `display:none` transitions
+
+### 10.12 Search & micro-interactions *(prompt §17, §18, §27)*
+- [ ] Search bar expands elegantly (icon → full field); results stagger in; matched text subtly highlighted
+- [ ] Bookmark feedback: immediate response, small scale pop, icon transitions, tiny glow (optional restrained ripple)
+- [ ] Consistent micro-interactions: buttons hover/press/focus; cards hover/active; inputs focus-glow; dialogs fade+scale; dropdowns slide/fade; tooltips subtle fade
+
+### 10.13 Daily Ayah & Juz/Explore showcase *(prompt §19, §20)*
+- [ ] Daily Ayah = signature component: large Arabic typography, glass surface, subtle geometric background, soft emerald illumination, gold detail, audio + bookmark actions
+- [ ] Daily Ayah staged load: background → card → Arabic → translation → actions
+- [ ] Juz / Explore: animated grid, cards stagger in, subtle lift on hover/tap
+
+### 10.14 Journey stats & footer *(prompt §21, §32)*
+- [ ] "Your Quran Journey" indicators (surahs explored / reading progress / current juz): bars animate on viewport entry — elegant, NOT game XP bars
+- [ ] Large elegant footer: NoorulQuran · "Read. Listen. Reflect." · links (Quran, Listen, Explore, Resources, Sources, About) · Data & attribution · GitHub link · subtle geometric pattern
+
+### 10.15 Performance, accessibility & responsiveness *(prompt §29, §30, §31)*
+- [ ] Animate only transform + opacity (GPU-friendly composited properties); no expensive continuous animations; ambience rAF-throttled
+- [ ] Honor `prefers-reduced-motion`: disable decorative animations, keep essential state transitions, navigation, and audio highlighting functional
+- [ ] Maintain accessibility: keyboard nav, visible focus, readable contrast, screen-reader support, RTL, adjustable font size
+- [ ] Responsive animation scaling: spacious desktop, moderate tablet, short + light mobile — never lag on low-end devices
+- [ ] Mobile ergonomics: swipe mushaf, bottom player, sticky bottom nav, one-handed use, no horizontal scroll · Desktop: floating glass sidebar, large mushaf, persistent player, verse-info panel available
+
+### 10.16 Final cohesion audit *(prompt §33, §34, §35)*
+- [ ] Full walk of every surface (Home, Surahs, Reader, Mushaf, Juz, Listen, Search, Tafsir, Bookmarks, Daily Ayah, Plans, Settings, Resources, About, Error) + loading states, modals, navigation, audio player — one cohesive premium identity
+- [ ] Absolute-rules audit: no cyberpunk / hacker UI / neon text / gaming HUD / excessive particles / excessive glow / flashing / animated Quranic letters / distracting 3D / parallax abuse / AI-generated or fake Quran content
+
+## Phase 11 — Translations & Tafsir
 
 - [ ] Multiple published translations (English, Urdu, Hindi, Arabic + supported langs), attribution retained
 - [ ] No browser auto-retranslation of vetted translations
 - [ ] Tafsir view clearly separated from Quran text/translation/notes/AI content
-
-## Phase 11 — Animation & Responsiveness
-
-- [ ] Smooth page/card/nav/modal/search transitions; hover states; audio progress visuals
-- [ ] Honor `prefers-reduced-motion`
-- [ ] Fully responsive; mobile: swipe mushaf, bottom player, sticky nav, one-handed use, no horizontal scroll
-- [ ] Desktop: sidebar nav, large mushaf, persistent player, optional verse-info panel
 
 ## Phase 12 — Accessibility
 
@@ -210,4 +293,5 @@
 | 2026-08-28 | Phase 6 — Mushaf Reader complete (swipe nav, jump-to dialog, fullscreen, progress + last-page restore, layout selection, per-edition boundaries) | `d5d10ec` |
 | 2026-08-28 | Phase 7 — Search complete (offline Arabic corpus search, provider translations, surah-name + reference matching, mode tabs, play/read actions, zero-AI guarantee) | `4fde527` |
 | 2026-08-29 | Phase 8 — Personal Features complete (personal notes store + modal + per-ayah wiring in surah/juz readers, `/notes` page, functional 30/60/custom reading plans with calm day tracking, continue-reading % on Home, cloud-sync note) | `c16a713` |
-| 2026-08-29 | Phase 9 — Audio Recitation System complete (queue playback engine with single/range/surah/continuous modes, persistent bottom player, prev/next/seek/volume/repeat/auto-next, speeds, reciter selector in Settings + Listen, play actions across Home/Surahs/Reader/Juz/DailyAyah/Listen, active-ayah highlight + scroll-into-view, streaming attribution) | `PENDING` |
+| 2026-08-29 | Phase 9 — Audio Recitation System complete (queue playback engine with single/range/surah/continuous modes, persistent bottom player, prev/next/seek/volume/repeat/auto-next, speeds, reciter selector in Settings + Listen, play actions across Home/Surahs/Reader/Juz/DailyAyah/Listen, active-ayah highlight + scroll-into-view, streaming attribution) | `cca496c` |
+| 2026-08-29 | `prompt.md` restructured — new Premium UI/UX Upgrade direction (Luxury Islamic + Deep Black + Emerald + Gold + Frosted Glass + Cinematic Motion); plan reorganized: superseded old Animation phase with detailed **Phase 10** (10.1–10.16), shifted Translations & Tafsir to Phase 11, closed leftover search debounce/loading/error checkbox | `PENDING` |
