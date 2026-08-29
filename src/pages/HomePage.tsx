@@ -183,7 +183,7 @@ export default function HomePage() {
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewportOnce}>
           <Link
             to={`/surah/${progress.surahNumber}?ayah=${progress.ayahNumber}`}
-            className="card group block rounded-2xl p-5 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-[var(--shadow-glow)])] sm:p-6"
+            className="card group block rounded-2xl p-5 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)] sm:p-6"
           >
             <div className="flex items-center justify-between gap-4">
               <div className="min-w-0">
@@ -289,7 +289,7 @@ export default function HomePage() {
             <Link
               key={to}
               to={to}
-              className="card group flex flex-col items-center gap-2 rounded-2xl p-4 text-center transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-[var(--shadow-glow)])]"
+              className="card group flex flex-col items-center gap-2 rounded-2xl p-4 text-center transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-glow)]"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand transition-colors group-hover:bg-brand group-hover:text-white">
                 <Icon className="h-5 w-5" aria-hidden />
@@ -315,7 +315,7 @@ export default function HomePage() {
               <Link
                 key={surah.number}
                 to={`/surah/${surah.number}`}
-                className="card group flex items-center gap-4 rounded-2xl p-4 transition-all hover:-translate-y-1 hover:border-gold/40 hover:shadow-[var(--shadow-[var(--shadow-glow)])]"
+                className="card group flex items-center gap-4 rounded-2xl p-4 transition-all hover:-translate-y-1 hover:border-gold/40 hover:shadow-[var(--shadow-glow)]"
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-sm font-bold text-brand transition-colors group-hover:bg-gold group-hover:text-white">
                   {surah.number}
@@ -356,7 +356,7 @@ export default function HomePage() {
               <motion.div
                 key={surah}
                 variants={fadeUp}
-                className="card group flex items-center gap-4 rounded-2xl p-4 transition-all hover:-translate-y-1 hover:border-gold/40 hover:shadow-[var(--shadow-[var(--shadow-glow)])]"
+                className="card group flex items-center gap-4 rounded-2xl p-4 transition-all hover:-translate-y-1 hover:border-gold/40 hover:shadow-[var(--shadow-glow)]"
               >
                 <button
                   type="button"
