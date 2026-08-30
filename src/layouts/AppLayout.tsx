@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useOutlet } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   BookOpen,
@@ -23,6 +23,7 @@ import { UiSizeSelector } from '../components/UiSizeSelector'
 import { AudioPlayer } from '../components/AudioPlayer'
 import { AppFooter } from '../components/AppFooter'
 import { AmbientBackground } from '../components/AmbientBackground'
+import { LoadingScreen } from '../components/LoadingScreen'
 import { useAudio } from '../store/audio'
 import {
   pageTransition,
@@ -124,7 +125,14 @@ function RoutedPage() {
         animate="animate"
         exit="exit"
       >
-        {outlet}
+        <Suspense
+          fallback={
+            // Keeps the nav/footer mounted while a lazily-split route chunk loads
+            <LoadingScreen label="Loading…" />
+          }
+        >
+          {outlet}
+        </Suspense>
       </motion.div>
     </AnimatePresence>
   )

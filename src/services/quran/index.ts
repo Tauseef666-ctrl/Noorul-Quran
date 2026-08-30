@@ -1,24 +1,48 @@
 import { appConfig } from '../../config/env'
-import { alQuranCloudProvider } from './alQuranCloudProvider'
 import { canonicalProvider } from './canonicalProvider'
-import { quranFoundationProvider } from './quranFoundationProvider'
 import type { QuranProvider } from './quranProvider'
 
-const REGISTRY: Record<string, QuranProvider> = {
-  canonical: canonicalProvider,
-  alqurancloud: alQuranCloudProvider,
-  quranfoundation: quranFoundationProvider,
+/**
+ * Only the bundled canonical provider is eagerly imported. The remote
+ * providers (and their network stack, http cache, translations/tafsir/search
+ * engines) are code-split behind dynamic import() so the initial bundle stays
+ * light and pulls tooling on a first-use basis.
+ */
+type RemoteProviderId = 'alqurancloud' | 'quranfoundation'
+
+let remotePromise: Promise<Record<RemoteProviderId, QuranProvider>> | null = null
+
+function loadRemotes(): Promise<Record<RemoteProviderId, QuranProvider>> {
+  remotePromise ??= Promise.all([
+    import('./alQuranCloudProvider'),
+    import('./quranFoundationProvider'),
+  ]).then(([alqurancloud, quranfoundation]) => ({
+    alqurancloud: alqurancloud.alQuranCloudProvider,
+    quranfoundation: quranfoundation.quranFoundationProvider,
+  }))
+  return remotePromise
 }
 
-export function listProviders(): QuranProvider[] {
-  return Object.values(REGISTRY)
+async function resolveProvider(id: string): Promise<QuranProvider | undefined> {
+  if (id === 'canonical') return canonicalProvider
+  const remotes = await loadRemotes()
+  return remotes[id as RemoteProviderId]
 }
 
-export function getProvider(id: string): QuranProvider | undefined {
-  return REGISTRY[id]
+export async function listProviders(): Promise<QuranProvider[]> {
+  const remotes = await loadRemotes()
+  return [canonicalProvider, remotes.alqurancloud, remotes.quranfoundation]
 }
 
-export function getActiveProvider(): QuranProvider {
-  const provider = REGISTRY[appConfig.activeProviderId]
-  return provider ?? canonicalProvider
+export async function getProvider(id: string): Promise<QuranProvider | undefined> {
+  return resolveProvider(id)
+}
+
+let activeProviderPromise: Promise<QuranProvider> | null = null
+
+export function getActiveProvider(): Promise<QuranProvider> {
+  activeProviderPromise ??= resolveProvider(appConfig.activeProviderId).then(
+    (provider) => provider ?? canonicalProvider,
+  )
+  return activeProviderPromise
 }

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Bookmark, Share2, Sparkles, Play, Pause } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
-import { getTranslationsForAyah } from '../services/quran/alQuranCloudProvider'
 import type { Ayah } from '../types/quran'
 import { useBookmarks } from '../store/bookmarks'
 import { useTranslations } from '../store/translations'
@@ -44,7 +43,7 @@ export default function DailyAyahPage() {
   const bookmarkId = `${daily.surahNumber}:${daily.ayahNumber}`
 
   const { data: ayah, loading } = useAsyncData<Ayah>(
-    (signal) => getActiveProvider().getAyah(daily.surahNumber, daily.ayahNumber, { signal }),
+    async (signal) => (await getActiveProvider()).getAyah(daily.surahNumber, daily.ayahNumber, { signal }),
     [],
   )
 
@@ -53,13 +52,15 @@ export default function DailyAyahPage() {
     if (!ayah) return
     const controller = new AbortController()
 
-    getTranslationsForAyah(
-      daily.surahNumber,
-      daily.ayahNumber,
-      activeIds,
-      controller.signal,
-    ).then((trans) => {
-      if (!controller.signal.aborted) setTranslations(trans)
+    import('../services/quran/alQuranCloudProvider').then(({ getTranslationsForAyah }) => {
+      getTranslationsForAyah(
+        daily.surahNumber,
+        daily.ayahNumber,
+        activeIds,
+        controller.signal,
+      ).then((trans) => {
+        if (!controller.signal.aborted) setTranslations(trans)
+      })
     })
 
     return () => controller.abort()

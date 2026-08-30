@@ -18,6 +18,7 @@ import type {
   Ayah,
   MushafLayout,
 } from '../types/quran'
+import type { QuranProvider } from '../services/quran/quranProvider'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useReadingProgress } from '../hooks/useReadingProgress'
 import { useAudio } from '../store/audio'
@@ -150,9 +151,18 @@ export default function MushafPageReader() {
   const [cachedPage, setCachedPage] = useState<MushafPageType | null>(null)
   const { updateProgress } = useReadingProgress()
 
-  const provider = useMemo(() => getActiveProvider(), [])
+  const [provider, setProvider] = useState<QuranProvider | null>(null)
+  useEffect(() => {
+    let mounted = true
+    getActiveProvider().then((p) => {
+      if (mounted) setProvider(p)
+    })
+    return () => {
+      mounted = false
+    }
+  }, [])
   const supportedLayouts = useMemo(
-    () => LAYOUT_OPTIONS.filter((option) => provider.supportsMushaf(option.id)),
+    () => (provider ? LAYOUT_OPTIONS.filter((option) => provider.supportsMushaf(option.id)) : []),
     [provider],
   )
 
@@ -162,8 +172,12 @@ export default function MushafPageReader() {
     : 1
 
   const { data: mushafPage, loading, error } = useAsyncData<MushafPageType>(
-    (signal) => provider.getPage(pageNumber, { signal, mushaf: layout }),
+    (signal) => {
+      if (!provider) return Promise.reject(new Error('Loading source…'))
+      return provider.getPage(pageNumber, { signal, mushaf: layout })
+    },
     [pageNumber, provider, layout],
+    Boolean(provider),
   )
 
   // Keep the last complete page in state so the page-turn can animate out of it

@@ -85,16 +85,17 @@ export default function JuzPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const provider = getActiveProvider()
     let cancelled = false
 
-    provider.getSurahList().then((list) => {
-      if (cancelled) return
-      const map = new Map(list.map((s) => [s.number, s]))
-      setSurahMap(map)
-      setJuzInfos(computeJuzInfos(list))
-      setLoading(false)
-    })
+    getActiveProvider().then((provider) =>
+      provider.getSurahList().then((list) => {
+        if (cancelled) return
+        const map = new Map(list.map((s) => [s.number, s]))
+        setSurahMap(map)
+        setJuzInfos(computeJuzInfos(list))
+        setLoading(false)
+      }),
+    )
 
     return () => { cancelled = true }
   }, [])

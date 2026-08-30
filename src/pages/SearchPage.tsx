@@ -86,7 +86,7 @@ export default function SearchPage() {
     setSearched(true)
 
     try {
-      const provider = getActiveProvider()
+      const provider = await getActiveProvider()
       const { hits: nextHits, surahs: nextSurahs, reference: nextRef } = await searchQuran(
         trimmed,
         provider,

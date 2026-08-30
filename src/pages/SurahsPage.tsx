@@ -21,7 +21,7 @@ export default function SurahsPage() {
   const { playSurah, mode, currentAyah, playing, pause, resume } = useAudio()
 
   const { data: surahs, loading, error } = useAsyncData<Surah[]>(
-    (signal) => getActiveProvider().getSurahList({ signal }),
+    async (signal) => (await getActiveProvider()).getSurahList({ signal }),
     [],
   )
 

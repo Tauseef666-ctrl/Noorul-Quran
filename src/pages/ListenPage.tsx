@@ -10,7 +10,7 @@ import { fadeUp, staggerContainer } from '../animations'
 
 export default function ListenPage() {
   const { data: surahs, loading } = useAsyncData<Surah[]>(
-    (signal) => getActiveProvider().getSurahList({ signal }),
+    async (signal) => (await getActiveProvider()).getSurahList({ signal }),
     [],
   )
   const { reciterId, setReciter, playSurah, mode, currentAyah, playing, pause, resume } = useAudio()

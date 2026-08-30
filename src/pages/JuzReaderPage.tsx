@@ -55,7 +55,7 @@ export default function JuzReaderPage() {
   )
 
   const { data: juz, loading, error: dataError } = useAsyncData<JuzDetail>(
-    (signal) => getActiveProvider().getJuz(juzNumber, { signal }),
+    async (signal) => (await getActiveProvider()).getJuz(juzNumber, { signal }),
     [juzNumber],
   )
 

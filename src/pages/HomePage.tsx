@@ -60,7 +60,7 @@ const viewportOnce = { once: true, margin: '-60px' } as const
 
 export default function HomePage() {
   const { data: surahs } = useAsyncData<Surah[]>(
-    (signal) => getActiveProvider().getSurahList({ signal }),
+    async (signal) => (await getActiveProvider()).getSurahList({ signal }),
     [],
   )
 
@@ -69,14 +69,15 @@ export default function HomePage() {
   const { activeIds, primaryEdition } = useTranslations()
 
   useEffect(() => {
-    const provider = getActiveProvider()
     const controller = new AbortController()
 
-    provider
-      .getAyah(daily.surahNumber, daily.ayahNumber, { signal: controller.signal })
-      .then((ayah) => {
-        if (!controller.signal.aborted) setDailyAyah(ayah)
-      })
+    getActiveProvider().then((provider) =>
+      provider
+        .getAyah(daily.surahNumber, daily.ayahNumber, { signal: controller.signal })
+        .then((ayah) => {
+          if (!controller.signal.aborted) setDailyAyah(ayah)
+        }),
+    )
 
     return () => controller.abort()
   }, [])

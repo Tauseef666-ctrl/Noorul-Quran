@@ -1,6 +1,5 @@
 import { globalAyahNumber } from '../../data/ayahCounts'
 import type { Reciter } from '../../types/quran'
-import { fetchJson } from '../http'
 
 export interface ReciterCatalogEntry extends Reciter {
   bitrate: number
@@ -45,6 +44,9 @@ interface AqcAudioEdition {
 }
 
 export async function fetchAvailableReciters(): Promise<Reciter[]> {
+  // http.ts (and its network + cache layer) is code-split: eager audio URL
+  // building must not drag the API stack into the initial bundle.
+  const { fetchJson } = await import('../http')
   const response = await fetchJson<{ data: AqcAudioEdition[] }>(
     'https://api.alquran.cloud/v1/edition/format/audio',
   )

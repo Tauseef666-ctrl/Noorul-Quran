@@ -1,17 +1,26 @@
+import { lazy } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
+
+// Heavy pages (readers, search, tafsir, listeners) load their subtree — the
+// translation/tafsir/search engines and remote providers — only when opened.
+const SurahReaderPage = lazy(() => import('./pages/SurahReaderPage'))
+const MushafPageReader = lazy(() => import('./pages/MushafPage'))
+const MushafIndex = lazy(() =>
+  import('./pages/MushafPage').then((module) => ({ default: module.MushafIndex })),
+)
+const JuzReaderPage = lazy(() => import('./pages/JuzReaderPage'))
+const SearchPage = lazy(() => import('./pages/SearchPage'))
+const TafsirPage = lazy(() => import('./pages/TafsirPage'))
+const ListenPage = lazy(() => import('./pages/ListenPage'))
+
+// Light pages stay eager so first paint stays instant.
 import HomePage from './pages/HomePage'
 import SurahsPage from './pages/SurahsPage'
-import SurahReaderPage from './pages/SurahReaderPage'
-import MushafPageReader, { MushafIndex } from './pages/MushafPage'
 import JuzPage from './pages/JuzPage'
-import JuzReaderPage from './pages/JuzReaderPage'
-import SearchPage from './pages/SearchPage'
+import DailyAyahPage from './pages/DailyAyahPage'
 import BookmarksPage from './pages/BookmarksPage'
 import NotesPage from './pages/NotesPage'
-import DailyAyahPage from './pages/DailyAyahPage'
-import TafsirPage from './pages/TafsirPage'
-import ListenPage from './pages/ListenPage'
 import PlansPage from './pages/PlansPage'
 import SettingsPage from './pages/SettingsPage'
 import SourcesPage from './pages/SourcesPage'

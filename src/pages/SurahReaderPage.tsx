@@ -213,7 +213,7 @@ export default function SurahReaderPage() {
   )
 
   const { data: surah, loading, error: dataError } = useAsyncData<SurahDetail>(
-    (signal) => getActiveProvider().getSurah(surahNumber, { signal }),
+    async (signal) => (await getActiveProvider()).getSurah(surahNumber, { signal }),
     [surahNumber],
   )
 
