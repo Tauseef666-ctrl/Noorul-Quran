@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "typecheck": "tsc -b",
     "generate:quran": "node scripts/generate-quran-data.mjs",
+    "generate:icons": "node scripts/generate-pwa-icons.mjs",
     "validate:quran": "node scripts/validate-quran.mjs"
   },
   "dependencies": {
