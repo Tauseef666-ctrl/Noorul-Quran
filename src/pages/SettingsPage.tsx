@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { ArabicSizeSelector } from '../components/ArabicSizeSelector'
+import { UiSizeSelector } from '../components/UiSizeSelector'
 import { TranslationSelector } from '../components/TranslationSelector'
 import { usePreferences } from '../store/preferences'
 import { useAudio } from '../store/audio'
@@ -17,7 +18,7 @@ const stagger = {
 }
 
 export default function SettingsPage() {
-  const { arabicSize } = usePreferences()
+  const { arabicSize, uiSize } = usePreferences()
   const { reciterId, setReciter } = useAudio()
   const { activeEditions } = useTranslations()
 
@@ -36,6 +37,19 @@ export default function SettingsPage() {
         <div className="mt-4">
           <ThemeToggle />
         </div>
+      </motion.section>
+
+      <motion.section variants={fadeIn} className="card rounded-2xl p-5 sm:p-6">
+        <h2 className="text-sm font-semibold text-ink">Interface Text Size</h2>
+        <p className="mt-1 text-xs text-ink-muted">
+          Adjust the size of the app interface and translated text
+        </p>
+        <div className="mt-4">
+          <UiSizeSelector />
+        </div>
+        <p className="mt-3 text-xs text-ink-faint">
+          Current: {uiSize}
+        </p>
       </motion.section>
 
       <motion.section variants={fadeIn} className="card rounded-2xl p-5 sm:p-6">

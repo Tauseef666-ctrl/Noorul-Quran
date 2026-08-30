@@ -159,6 +159,20 @@
   --quran-size: 2.5rem;
 }
 
+/* Interface text size setting: scales all rem-based text & spacing uniformly. */
+[data-ui-size='small'] {
+  --ui-scale: 0.925;
+}
+[data-ui-size='medium'] {
+  --ui-scale: 1;
+}
+[data-ui-size='large'] {
+  --ui-scale: 1.1;
+}
+html {
+  font-size: calc(100% * var(--ui-scale, 1));
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

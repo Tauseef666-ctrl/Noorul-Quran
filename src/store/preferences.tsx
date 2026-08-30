@@ -10,9 +10,11 @@ import {
 
 export type ThemeChoice = 'light' | 'dark' | 'system'
 export type ArabicFontSize = 'small' | 'medium' | 'large'
+export type UiFontSize = 'small' | 'medium' | 'large'
 
 const THEME_KEY = 'nq:theme'
 const ARABIC_SIZE_KEY = 'nq:arabic-size'
+const UI_SIZE_KEY = 'nq:ui-size'
 
 interface Preferences {
   theme: ThemeChoice
@@ -20,6 +22,8 @@ interface Preferences {
   setTheme: (theme: ThemeChoice) => void
   arabicSize: ArabicFontSize
   setArabicSize: (size: ArabicFontSize) => void
+  uiSize: UiFontSize
+  setUiSize: (size: UiFontSize) => void
 }
 
 const PreferencesContext = createContext<Preferences | null>(null)
@@ -48,28 +52,44 @@ function readStoredArabicSize(): ArabicFontSize {
   return 'medium'
 }
 
-function applyToDocument(theme: ThemeChoice, size: ArabicFontSize): void {
+function readStoredUiSize(): UiFontSize {
+  try {
+    const stored = localStorage.getItem(UI_SIZE_KEY)
+    if (stored === 'small' || stored === 'medium' || stored === 'large') return stored
+  } catch {
+    return 'medium'
+  }
+  return 'medium'
+}
+
+function applyToDocument(
+  theme: ThemeChoice,
+  size: ArabicFontSize,
+  uiSize: UiFontSize,
+): void {
   const dark = theme === 'dark' || (theme === 'system' && systemPrefersDark())
   document.documentElement.classList.toggle('dark', dark)
   document.documentElement.setAttribute('data-arabic-size', size)
+  document.documentElement.setAttribute('data-ui-size', uiSize)
 }
 
 export function PreferencesProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeChoice>(readStoredTheme)
   const [arabicSize, setArabicSizeState] = useState<ArabicFontSize>(readStoredArabicSize)
+  const [uiSize, setUiSizeState] = useState<UiFontSize>(readStoredUiSize)
 
   useEffect(() => {
-    applyToDocument(theme, arabicSize)
-  }, [theme, arabicSize])
+    applyToDocument(theme, arabicSize, uiSize)
+  }, [theme, arabicSize, uiSize])
 
   // Follow the OS while in "system" mode.
   useEffect(() => {
     if (theme !== 'system') return
     const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const onChange = () => applyToDocument('system', arabicSize)
+    const onChange = () => applyToDocument('system', arabicSize, uiSize)
     media.addEventListener('change', onChange)
     return () => media.removeEventListener('change', onChange)
-  }, [theme, arabicSize])
+  }, [theme, arabicSize, uiSize])
 
   const setTheme = useCallback((next: ThemeChoice) => {
     setThemeState(next)
@@ -89,6 +109,15 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const setUiSize = useCallback((next: UiFontSize) => {
+    setUiSizeState(next)
+    try {
+      localStorage.setItem(UI_SIZE_KEY, next)
+    } catch {
+      return
+    }
+  }, [])
+
   const value = useMemo<Preferences>(
     () => ({
       theme,
@@ -97,8 +126,10 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
       setTheme,
       arabicSize,
       setArabicSize,
+      uiSize,
+      setUiSize,
     }),
-    [theme, arabicSize, setTheme, setArabicSize],
+    [theme, arabicSize, uiSize, setTheme, setArabicSize, setUiSize],
   )
 
   return (

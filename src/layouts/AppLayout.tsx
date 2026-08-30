@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { ArabicSizeSelector } from '../components/ArabicSizeSelector'
+import { UiSizeSelector } from '../components/UiSizeSelector'
 import { AudioPlayer } from '../components/AudioPlayer'
 import { AppFooter } from '../components/AppFooter'
 import { AmbientBackground } from '../components/AmbientBackground'
@@ -244,7 +245,13 @@ export default function AppLayout() {
                 ))}
               </nav>
               <div className="mt-6 border-t border-line/70 pt-4">
-                <ArabicSizeSelector />
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-ink-faint">
+                  Text size
+                </p>
+                <div className="space-y-2.5">
+                  <UiSizeSelector />
+                  <ArabicSizeSelector />
+                </div>
               </div>
             </motion.div>
           </>
