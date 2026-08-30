@@ -113,6 +113,21 @@
   --font-urdu: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
 }
 
+/* Base layer: global safety + accessibility */
+@layer base {
+  html {
+    overflow-x: clip;
+  }
+
+  /* Accessible focus ring — emerald, clearly visible in both themes.
+     Keyboard users get a crisp outline; mouse users keep clean hover states. */
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+}
+
 /* Arabic font size setting: small | medium | large */
 [data-arabic-size='small'] {
   --quran-size: 1.6rem;
