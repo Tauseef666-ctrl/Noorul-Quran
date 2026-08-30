@@ -322,9 +322,9 @@
 - [x] Mushaf already paginated (≤ ~15 ayahs/page) — documented as intentional
 
 ### 14.3 Efficient audio loading
-- [ ] Verified on-demand streaming: one `HTMLAudioElement` instance, one CDN MP3 at a time, nothing queued/bulk-prefetched; cross-origin audio never touches `http.ts` cache or the service worker
-- [ ] `preload="metadata"` to avoid aggressive buffering before play; autoplay `AbortError` (user-gesture) treated as paused, not an error
-- [ ] AudioPlayer error surface gained a “Try again” retry that reloads the current item
+- [x] Verified on-demand streaming: one `HTMLAudioElement` instance, one CDN MP3 at a time, nothing queued/bulk-prefetched; cross-origin audio never touches `http.ts` cache or the service worker
+- [x] `preload="metadata"` to avoid aggressive buffering before play; autoplay `AbortError` (user-gesture) treated as paused, not an error
+- [x] AudioPlayer error surface gained a “Try again” retry that reloads the current item
 
 ### 14.4 Error states — never blank, always retry
 - [ ] Shared `ErrorState` component (icon + message + Retry) and `useAsyncData.reload` (attempt counter) for every data fetch

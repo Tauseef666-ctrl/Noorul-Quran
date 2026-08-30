@@ -62,6 +62,7 @@ interface PlaybackState {
   pause: () => void
   resume: () => void
   stop: () => void
+  retry: () => void
   next: () => void
   prev: () => void
   seek: (time: number) => void
@@ -222,11 +223,12 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
-  // Create / reuse a single audio element
+  // Create / reuse a single audio element. preload=metadata: we set a fresh
+  // src per item and never bulk-prefetch — buffer only once playback starts.
   useEffect(() => {
     if (!audioRef.current) {
       audioRef.current = new Audio()
-      audioRef.current.preload = 'auto'
+      audioRef.current.preload = 'metadata'
     }
     return () => {
       audioRef.current?.pause()
@@ -288,7 +290,17 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     setDuration(0)
     if (autoplay) {
       const result = audio.play()
-      if (result) result.catch(() => setError('Unable to play audio. Check your connection.'))
+      if (result) {
+        result.catch((err: unknown) => {
+          // Autoplay blocked without a user gesture is expected (AbortError),
+          // not a transport failure — surface it as paused, not an alert.
+          if (err instanceof DOMException && err.name === 'AbortError') {
+            setPlaying(false)
+            return
+          }
+          setError('Unable to play audio. Check your connection.')
+        })
+      }
     }
   }, [])
 
@@ -448,8 +460,16 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const resume = useCallback(() => {
     const audio = audioRef.current
     if (!audio || !currentAyah) return
-    audio.play().catch(() => setError('Unable to resume audio. Check your connection.'))
+    audio.play().catch((err: unknown) => {
+      if (err instanceof DOMException && err.name === 'AbortError') return
+      setError('Unable to resume audio. Check your connection.')
+    })
   }, [currentAyah])
+
+  const retry = useCallback(() => {
+    if (!currentAyah) return
+    loadItem(currentAyah, true)
+  }, [currentAyah, loadItem])
 
   const toggle = useCallback(
     (surahNumber: number, ayahNumber: number) => {
@@ -526,6 +546,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       pause,
       resume,
       stop,
+      retry,
       next,
       prev,
       seek,
@@ -560,6 +581,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       pause,
       resume,
       stop,
+      retry,
       next,
       prev,
       seek,

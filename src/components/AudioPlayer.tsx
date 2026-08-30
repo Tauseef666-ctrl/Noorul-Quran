@@ -96,6 +96,7 @@ export function AudioPlayer() {
     toggleAutoNext,
     pause,
     resume,
+    retry,
     next,
     prev,
     seek,
@@ -230,9 +231,16 @@ export function AudioPlayer() {
             </div>
 
             {error && (
-              <p className="px-4 pb-1 text-[11px] text-red-700 dark:text-red-300" role="alert">
-                {error}
-              </p>
+              <div className="px-4 pb-1" role="alert">
+                <p className="text-[11px] text-red-700 dark:text-red-300">{error}</p>
+                <button
+                  type="button"
+                  onClick={retry}
+                  className="mt-1 text-[11px] font-semibold text-brand underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/30 rounded"
+                >
+                  Try again
+                </button>
+              </div>
             )}
 
             <div className="space-y-3 border-t border-line/60 px-4 py-3">
