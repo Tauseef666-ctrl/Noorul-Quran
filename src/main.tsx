@@ -15,6 +15,16 @@ import { BookmarksProvider } from './store/bookmarks.tsx'
 import { NotesProvider } from './store/notes.tsx'
 import { AudioProvider } from './store/audio.tsx'
 
+// Register the PWA service worker only in production builds — the dev server
+// must never be shadowed by a cached shell. Registration is fire-and-forget.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      /* offline support degrades silently */
+    })
+  })
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PreferencesProvider>
