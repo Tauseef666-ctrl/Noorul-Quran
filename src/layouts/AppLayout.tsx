@@ -121,7 +121,7 @@ export default function AppLayout() {
             <BookOpen className="h-5 w-5" aria-hidden />
           </span>
           <div>
-            <p className="arabic-heading text-lg leading-none" lang="ar" dir="rtl">
+            <p className="arabic-heading text-lg leading-none" lang="ar" dir="rtl" translate="no">
               نور القرآن
             </p>
             <p className="mt-0.5 text-xs font-medium text-ink-muted">
@@ -155,7 +155,7 @@ export default function AppLayout() {
           <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand/10 text-brand">
             <BookOpen className="h-4 w-4" aria-hidden />
           </span>
-          <p className="arabic-heading text-base leading-none" lang="ar" dir="rtl">
+          <p className="arabic-heading text-base leading-none" lang="ar" dir="rtl" translate="no">
             نور القرآن
           </p>
         </div>

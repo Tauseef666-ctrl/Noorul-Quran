@@ -8,7 +8,7 @@
 >
 > **Current direction (2026-08-29):** `prompt.md` restructured → Premium UI/UX Upgrade.
 > Visual identity = *Luxury Islamic + Deep Black + Emerald + Subtle Gold + Frosted Glass + Cinematic Motion*.
-> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning. Now working on **Phase 11 — Translations & Tafsir**.
+> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning. Phase 11 delivered (`634434d` → `28d200c`): translations catalogue + persisted selection, dynamic translation rendering, Arabic tafsir fix + selector + hard safety guard, attribution, content-safety guardrails. Now working on **Phase 12 — Accessibility**.
 
 ---
 
@@ -253,8 +253,8 @@
 - [x] Footer + About copy updated to name the translators & tafsirs in use
 
 ### 11.5 Content-safety guardrails
-- [ ] Explicit `lang` + `dir` + `translate="no"` on every vetted surface (Arabic, translations, tafsir) — no browser auto-retranslation
-- [ ] All Settings/reader copy is truthful (real selector, real editions shown); remove placeholder wording
+- [x] Explicit `lang` + `dir` + `translate="no"` on every Arabic surface (Quran ayahs in readers/Daily/Home/Mushaf, bismillah, surah names, brand wordmark) and on every translation & tafsir paragraph — no browser auto-retranslation
+- [x] All Settings/reader copy is truthful (real selector, real editions shown); placeholder wording removed
 
 ## Phase 12 — Accessibility
 
@@ -329,3 +329,8 @@
 | 2026-08-30 | **10.14 delivered** — shared `AppFooter` (bismillah + tagline brand block, link groups, data & attribution, source link, geometric pattern) once in AppLayout; Home "Your Quran Journey" stat tiles with spring-unfurled gradient fill bars + continue-reading link | `1a09182` |
 | 2026-08-30 | **10.15 + 10.16 delivered** — global emerald `:focus-visible` ring + `overflow-x: clip` guard; cohesion sweep: replaced last straggler `hover:shadow-lg` cards (Notes, Search, Plans, Surahs) with the premium hover-language, verified pulse skeletons / no neon-3D-parallax violations registry | `4e16f2b` |
 | 2026-08-30 | **Phase 10 complete** (`17f2ab6` → `4e16f2b`). Open follow-ups tracked in the section headers: 10.11 nav toggle (glass nav already premium), 10.6 mobile hover→touch states, 10.15 reduced-motion + low-end tuning | `4e16f2b` |
+| 2026-08-30 | **Phase 11.1 delivered** — curated catalogue of 20 vetted published translation editions; persisted active-edition selection (`nq:translations`, min-one guard); Settings Translations section with real grouped selector | `634434d` |
+| 2026-08-30 | **Phase 11.2 delivered** — shared `AyahTranslations` renderer (lang/dir/`translate="no"`, skeleton); Surah/Juz readers + Daily Ayah fetch exactly the active editions; reader header attribution captions naming active translators; Home Daily Ayah uses primary edition | `4cf2295` |
+| 2026-08-30 | **Phase 11.3 delivered** — tafsir fixed: direct Al Quran Cloud fetch, edition selector fed by live `getTafsirs()` with static catalogue fallback, default `ar.muyassar` (King Fahd Quran Complex); `getTafsir` hard guard rejects any edition the API answers with raw Quran text (`type !== 'tafsir'`); only the published Arabic tafsirs offered (Al-Muyassar, Jalalayn, Al-Qurtubi, Al-Waseet, Al-Baghawi, Tanwir al-Miqbas); choice persisted (`nq:tafsir`); clearer "commentary, not Quranic text" separation + `translate="no"`/`lang`/`dir` | `bff94af` |
+| 2026-08-30 | **Phase 11.4 delivered** — `attribution.ts` dedicated `tafsir`-kind source row (six editions + safety note) and translation note naming in-use translators; `/sources` tafsir section auto-populated; Footer + About copy name the translators & tafsirs | `28d200c` |
+| 2026-08-30 | **Phase 11.5 delivered** — `translate="no"` on every Arabic surface (Quran ayahs in readers/Daily/Home/Mushaf, bismillah, surah names, brand wordmark) plus all translation & tafsir paragraphs; honest Settings/reader copy | `pending-commit` |

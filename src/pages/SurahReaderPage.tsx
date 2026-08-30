@@ -374,7 +374,7 @@ export default function SurahReaderPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">
               Surah {surah.number} · {surah.revelationType}
             </p>
-            <h1 className="arabic-heading mt-2 text-4xl sm:text-5xl" lang="ar" dir="rtl">
+            <h1 className="arabic-heading mt-2 text-4xl sm:text-5xl" lang="ar" dir="rtl" translate="no">
               {surah.nameArabic}
             </h1>
             <p className="mt-1 text-sm text-ink-muted">
@@ -484,7 +484,7 @@ export default function SurahReaderPage() {
       {/* Bismillah */}
       {showBismillah && (
         <motion.div variants={fadeIn} className="text-center py-2">
-          <p className="arabic-heading text-2xl text-ink" lang="ar" dir="rtl">
+          <p className="arabic-heading text-2xl text-ink" lang="ar" dir="rtl" translate="no">
             بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
           </p>
           <p className="mt-1 text-xs text-ink-faint italic">
@@ -556,7 +556,7 @@ export default function SurahReaderPage() {
               </div>
 
               {/* Arabic text */}
-              <p className="quran-text text-right" lang="ar" dir="rtl">
+              <p className="quran-text text-right" lang="ar" dir="rtl" translate="no">
                 {ayah.arabic}
               </p>
 

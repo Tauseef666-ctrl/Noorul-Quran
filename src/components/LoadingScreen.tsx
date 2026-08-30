@@ -28,6 +28,7 @@ export function LoadingScreen({ label = 'Loading Quran…' }: { label?: string }
             className="arabic-heading text-3xl leading-none text-ink"
             lang="ar"
             dir="rtl"
+            translate="no"
           >
             نور القرآن
           </p>

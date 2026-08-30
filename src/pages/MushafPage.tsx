@@ -97,6 +97,7 @@ function AyahList({ ayahs }: { ayahs: Ayah[] }) {
             className="quran-text text-right transition-opacity hover:opacity-80"
             lang="ar"
             dir="rtl"
+            translate="no"
           >
             {ayah.arabic}
           </Link>

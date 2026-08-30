@@ -201,7 +201,7 @@ export default function SurahsPage() {
                       {surah.numberOfAyahs} ayahs · {surah.revelationType}
                     </p>
                   </div>
-                  <p className="arabic-heading text-xl text-ink-faint group-hover:text-ink" lang="ar" dir="rtl">
+                  <p className="arabic-heading text-xl text-ink-faint group-hover:text-ink" lang="ar" dir="rtl" translate="no">
                     {surah.nameArabic}
                   </p>
                 </Link>

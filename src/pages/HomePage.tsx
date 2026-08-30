@@ -188,6 +188,7 @@ export default function HomePage() {
             className="arabic-heading text-5xl text-ink sm:text-6xl"
             lang="ar"
             dir="rtl"
+            translate="no"
           >
             نور القرآن
           </motion.h1>
@@ -279,7 +280,13 @@ export default function HomePage() {
                   Ayah of the Day
                 </p>
               </motion.div>
-              <motion.p variants={fadeUp} className="quran-text text-right" lang="ar" dir="rtl">
+              <motion.p
+                variants={fadeUp}
+                className="quran-text text-right"
+                lang="ar"
+                dir="rtl"
+                translate="no"
+              >
                 {dailyAyah.arabic}
               </motion.p>
               {dailyPrimaryText && primaryEdition && (
@@ -386,6 +393,7 @@ export default function HomePage() {
                   className="arabic-heading text-lg text-ink-faint transition-all duration-300 group-hover:-translate-y-0.5 group-hover:text-gold"
                   lang="ar"
                   dir="rtl"
+                  translate="no"
                 >
                   {surah.nameArabic}
                 </p>

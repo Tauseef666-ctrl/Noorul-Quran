@@ -253,7 +253,7 @@ export default function SearchPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-lg text-ink-muted" lang="ar" dir="rtl">
+                      <span className="text-lg text-ink-muted" lang="ar" dir="rtl" translate="no">
                         {surah.nameArabic}
                       </span>
                       <ArrowUpRight className="h-4 w-4 text-ink-faint group-hover:text-brand" />
@@ -368,7 +368,7 @@ function HitCard({
       </div>
 
       {hit.excerptArabic && (
-        <p className="arabic-heading mt-2 text-lg leading-relaxed" lang="ar" dir="rtl">
+        <p className="arabic-heading mt-2 text-lg leading-relaxed" lang="ar" dir="rtl" translate="no">
           <Highlighted text={hit.excerptArabic} query={query} />
         </p>
       )}

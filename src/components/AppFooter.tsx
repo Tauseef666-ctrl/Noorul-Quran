@@ -51,7 +51,7 @@ export function AppFooter() {
       <div className="relative grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {/* Brand */}
         <motion.div variants={fadeUp} className="lg:col-span-2">
-          <p className="arabic-heading text-2xl text-ink" lang="ar" dir="rtl">
+          <p className="arabic-heading text-2xl text-ink" lang="ar" dir="rtl" translate="no">
             نور القرآن
           </p>
           <p className="mt-1 text-base font-semibold text-ink">

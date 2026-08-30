@@ -397,7 +397,7 @@ export default function JuzReaderPage() {
                   </div>
                 </div>
 
-                <p className="quran-text text-right" lang="ar" dir="rtl">
+                <p className="quran-text text-right" lang="ar" dir="rtl" translate="no">
                   {ayah.arabic}
                 </p>
 

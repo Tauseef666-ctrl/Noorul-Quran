@@ -89,7 +89,7 @@ export default function DailyAyahPage() {
             </p>
           </div>
 
-          <p className="quran-text mt-6 text-center" lang="ar" dir="rtl">
+          <p className="quran-text mt-6 text-center" lang="ar" dir="rtl" translate="no">
             {ayah.arabic}
           </p>
 

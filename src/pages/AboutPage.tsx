@@ -17,7 +17,7 @@ export default function AboutPage() {
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-brand/10 text-brand">
           <BookOpen className="h-8 w-8" aria-hidden />
         </div>
-        <h1 className="arabic-heading text-3xl" lang="ar" dir="rtl">
+        <h1 className="arabic-heading text-3xl" lang="ar" dir="rtl" translate="no">
           نور القرآن
         </h1>
         <p className="mt-1 text-lg font-semibold text-ink">
@@ -95,7 +95,7 @@ export default function AboutPage() {
       </motion.section>
 
       <motion.footer variants={fadeIn} className="text-center py-4">
-        <p className="arabic-heading text-sm text-ink-faint" lang="ar" dir="rtl">
+        <p className="arabic-heading text-sm text-ink-faint" lang="ar" dir="rtl" translate="no">
           بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
         </p>
         <p className="mt-2 text-xs text-ink-faint">

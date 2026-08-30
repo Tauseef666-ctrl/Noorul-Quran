@@ -208,7 +208,7 @@ export function JumpToDialog({ open, onClose, currentPage, onJump }: JumpToDialo
                                 </span>
                                 {s.nameTransliterated}
                               </span>
-                              <span className="text-sm text-ink-muted" lang="ar" dir="rtl">
+                              <span className="text-sm text-ink-muted" lang="ar" dir="rtl" translate="no">
                                 {s.nameArabic}
                               </span>
                             </button>

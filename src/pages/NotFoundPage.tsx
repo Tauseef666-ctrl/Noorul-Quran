@@ -15,7 +15,7 @@ export default function NotFoundPage() {
       variants={fadeIn}
       className="flex flex-col items-center justify-center py-20 text-center"
     >
-      <p className="arabic-heading text-5xl text-ink-faint" lang="ar" dir="rtl">
+      <p className="arabic-heading text-5xl text-ink-faint" lang="ar" dir="rtl" translate="no">
         ٤٠٤
       </p>
       <h1 className="mt-4 text-xl font-bold text-ink">Page Not Found</h1>
