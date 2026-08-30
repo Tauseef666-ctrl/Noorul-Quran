@@ -247,6 +247,7 @@ export default function JuzReaderPage() {
               }}
               data-ayah-key={ayah.key}
               variants={fadeIn}
+              className="content-visibility-auto"
             >
               {/* Surah header when surah changes */}
               {showSurahHeader && (

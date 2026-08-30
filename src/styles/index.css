@@ -416,6 +416,16 @@ html {
   }
 }
 
+/* Long-list rendering — rows off-screen skip layout/paint; the intrinsic-size
+   hint reserves enough space (long ayahs ~ double the default) so browser
+   scroll-into-view and scroll anchoring still land in the right neighbourhood.
+   Safe with framer-motion opacity/y since containment is skipped while on-screen. */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px;
+  contain: layout style paint;
+}
+
 /* ── Meditative ambient background ────────────────────────────────────────────
    Slow gradient balls + floating motes. Felt, not noticed. GPU-friendly
    (transform + opacity only); disabled globally under prefers-reduced-motion. */

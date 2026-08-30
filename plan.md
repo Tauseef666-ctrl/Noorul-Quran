@@ -311,15 +311,15 @@
 - [ ] Handle every failure: API down, audio unavailable, missing translation, invalid surah/ayah/page, network fail, rate limit, loading skeletons, empty search — always retry options, never blank screens
 
 ### 14.1 Code splitting & lazy loading
-- [ ] Route-level `React.lazy` + `Suspense` (fallback `LoadingScreen`) for the heavy routes: SurahReader, Mushaf (default + index), JuzReader, Search, Tafsir, Listen
-- [ ] `services/quran/index.ts` emits only the bundled canonical provider statically; alQuranCloud + quranFoundation + http resolve via dynamic `import()` (memoized); `getActiveProvider()`/`listProviders()` become async; all call sites await the resolved provider
-- [ ] `audioProvider.ts` dynamic-imports `fetchJson` so `http.ts` leaves the eager bundle (audio URL building stays dependency-light)
-- [ ] API caching already shipped (`http.ts` memory + localStorage TTL cache + Settings “Clear API cache”); image optimization N/A — only bundled vector/PWA-raster assets exist
-- [ ] Build verified: main bundle shrinks, providers/translations/tafsir/search + canonical dataset split into async chunks
+- [x] Route-level `React.lazy` + `Suspense` (fallback `LoadingScreen`) for the heavy routes: SurahReader, Mushaf (default + index), JuzReader, Search, Tafsir, Listen
+- [x] `services/quran/index.ts` emits only the bundled canonical provider statically; alQuranCloud + quranFoundation + http resolve via dynamic `import()` (memoized); `getActiveProvider()`/`listProviders()` become async; all call sites await the resolved provider
+- [x] `audioProvider.ts` dynamic-imports `fetchJson` so `http.ts` leaves the eager bundle (audio URL building stays dependency-light)
+- [x] API caching already shipped (`http.ts` memory + localStorage TTL cache + Settings “Clear API cache”); image optimization N/A — only bundled vector/PWA-raster assets exist
+- [x] Build verified: main bundle shrinks, providers/translations/tafsir/search + canonical dataset split into async chunks
 
 ### 14.2 Long-list rendering (virtualization-grade containment)
-- [ ] `content-visibility: auto` + `contain-intrinsic-size` + `contain: layout style paint` utility applied to ayah rows in SurahReader/JuzReader (keeps scroll-into-view + motion intact) and tafsir list rows
-- [ ] Mushaf already paginated (≤ ~15 ayahs/page) — documented as intentional
+- [x] `content-visibility: auto` + `contain-intrinsic-size` + `contain: layout style paint` utility applied to per-ayah rows in SurahReader and JuzReader (keeps scroll-into-view + motion intact); tafsir shows one long text so containment is not applicable there
+- [x] Mushaf already paginated (≤ ~15 ayahs/page) — documented as intentional
 
 ### 14.3 Efficient audio loading
 - [ ] Verified on-demand streaming: one `HTMLAudioElement` instance, one CDN MP3 at a time, nothing queued/bulk-prefetched; cross-origin audio never touches `http.ts` cache or the service worker

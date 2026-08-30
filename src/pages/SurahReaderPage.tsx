@@ -507,7 +507,7 @@ export default function SurahReaderPage() {
               }}
               data-ayah-key={ayah.key}
               variants={fadeIn}
-              className={`group relative rounded-2xl p-4 transition-[background-color,box-shadow] sm:p-6 ${
+              className={`content-visibility-auto group relative rounded-2xl p-4 transition-[background-color,box-shadow] sm:p-6 ${
                 isActive
                   ? 'bg-brand/5 shadow-[var(--shadow-glow)] ring-1 ring-brand/25'
                   : 'hover:bg-surface/60 hover:shadow-[var(--shadow-glow)]'
