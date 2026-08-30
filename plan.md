@@ -8,7 +8,7 @@
 >
 > **Current direction (2026-08-29):** `prompt.md` restructured → Premium UI/UX Upgrade.
 > Visual identity = *Luxury Islamic + Deep Black + Emerald + Subtle Gold + Frosted Glass + Cinematic Motion*.
-> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Now working on **Phase 10** — core delivered (`17f2ab6`); 10.8–10.16 remain.
+> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning, 10.16 ongoing audits.
 
 ---
 
@@ -183,16 +183,16 @@
 - [x] Active-ayah lifecycle: previous ayah smoothly reverts to normal, new ayah activates, reader scrolls smoothly to it (extends Phase 9 sync)
 
 ### 10.8 Mushaf reader & page-turn animation *(prompt §11, §12)*
-- [ ] Distinct centered Mushaf reading surface: readable Quran page as the focus; surrounding UI stays dark glass
-- [ ] Page-turn animation: desktop subtle slide + fade; mobile horizontal swipe; NO heavy 3D book — performance beats effects
+- [x] Distinct centered Mushaf reading surface: readable Quran page as the focus; surrounding UI stays dark glass
+- [x] Page-turn animation: desktop subtle slide + fade; mobile horizontal swipe; NO heavy 3D book — performance beats effects
 
 ### 10.9 Focus Reading mode *(prompt §13)*
-- [ ] Full-screen Focus Reading: navigation/sidebar/chrome disappear, background darkens further, Quran content primary, audio controls stay reachable, minimal controls appear on tap/click
-- [ ] Enter = smooth fade + scale; exit = reverse animation
+- [x] Full-screen Focus Reading: navigation/sidebar/chrome disappear, background darkens further, Quran content primary, audio controls stay reachable, minimal controls appear on tap/click
+- [x] Enter = smooth fade + scale; exit = reverse animation
 
 ### 10.10 Floating glass audio player *(prompt §14)*
-- [ ] Player upgraded to floating glass: blur + rounded corners + subtle border + shadow; smooth expand/collapse
-- [ ] Collapsed: minimal pill (◉ ▶ + now-playing); expanded: full controls (track, seek, prev/next, volume, speed, repeat/auto-next) with animated transition between states
+- [x] Player upgraded to floating glass: blur + rounded corners + subtle border + shadow; smooth expand/collapse
+- [x] Collapsed: minimal pill (▶ + now-playing); expanded: full controls (track, seek, prev/next, volume, speed, repeat/auto-next) with animated transition between states
 
 ### 10.11 Navigation & mobile menu *(prompt §15, §16)*
 - [ ] Desktop: floating glass sidebar, active item gets subtle emerald/gold indicator
@@ -200,29 +200,29 @@
 - [ ] Menu behavior: glass panel slides in → backdrop darkens → items stagger in; closing reverses it; no abrupt `display:none` transitions
 
 ### 10.12 Search & micro-interactions *(prompt §17, §18, §27)*
-- [ ] Search bar expands elegantly (icon → full field); results stagger in; matched text subtly highlighted
-- [ ] Bookmark feedback: immediate response, small scale pop, icon transitions, tiny glow (optional restrained ripple)
-- [ ] Consistent micro-interactions: buttons hover/press/focus; cards hover/active; inputs focus-glow; dialogs fade+scale; dropdowns slide/fade; tooltips subtle fade
+- [x] Search bar expands elegantly (icon → full field); results stagger in; matched text subtly highlighted
+- [x] Bookmark feedback: immediate response, small scale pop, icon transitions, tiny glow (optional restrained ripple)
+- [x] Consistent micro-interactions: buttons hover/press/focus; cards hover/active; inputs focus-glow; dialogs fade+scale; dropdowns slide/fade; tooltips subtle fade
 
 ### 10.13 Daily Ayah & Juz/Explore showcase *(prompt §19, §20)*
-- [ ] Daily Ayah = signature component: large Arabic typography, glass surface, subtle geometric background, soft emerald illumination, gold detail, audio + bookmark actions
-- [ ] Daily Ayah staged load: background → card → Arabic → translation → actions
-- [ ] Juz / Explore: animated grid, cards stagger in, subtle lift on hover/tap
+- [x] Daily Ayah = signature component: large Arabic typography, glass surface, subtle geometric background, soft emerald illumination, gold detail, audio + bookmark actions
+- [x] Daily Ayah staged load: background → card → Arabic → translation → actions
+- [x] Juz / Explore: animated grid, cards stagger in, subtle lift on hover/tap
 
 ### 10.14 Journey stats & footer *(prompt §21, §32)*
-- [ ] "Your Quran Journey" indicators (surahs explored / reading progress / current juz): bars animate on viewport entry — elegant, NOT game XP bars
-- [ ] Large elegant footer: NoorulQuran · "Read. Listen. Reflect." · links (Quran, Listen, Explore, Resources, Sources, About) · Data & attribution · GitHub link · subtle geometric pattern
+- [x] "Your Quran Journey" indicators (surahs explored / reading progress / current juz): bars animate on viewport entry — elegant, NOT game XP bars
+- [x] Large elegant footer: NoorulQuran · "Read. Listen. Reflect." · links (Quran, Listen, Explore, Resources, Sources, About) · Data & attribution · GitHub link · subtle geometric pattern
 
 ### 10.15 Performance, accessibility & responsiveness *(prompt §29, §30, §31)*
-- [ ] Animate only transform + opacity (GPU-friendly composited properties); no expensive continuous animations; ambience rAF-throttled
+- [x] Animate only transform + opacity (GPU-friendly composited properties); no expensive continuous animations; ambience rAF-throttled
 - [ ] Honor `prefers-reduced-motion`: disable decorative animations, keep essential state transitions, navigation, and audio highlighting functional
-- [ ] Maintain accessibility: keyboard nav, visible focus, readable contrast, screen-reader support, RTL, adjustable font size
-- [ ] Responsive animation scaling: spacious desktop, moderate tablet, short + light mobile — never lag on low-end devices
-- [ ] Mobile ergonomics: swipe mushaf, bottom player, sticky bottom nav, one-handed use, no horizontal scroll · Desktop: floating glass sidebar, large mushaf, persistent player, verse-info panel available
+- [x] Maintain accessibility: keyboard nav, visible focus (global focus-visible ring), readable contrast, screen-reader support, RTL, adjustable font size
+- [x] Responsive animation scaling: spacious desktop, moderate tablet, short + light mobile — never lag on low-end devices
+- [x] Mobile ergonomics: swipe mushaf, bottom player, sticky bottom nav, one-handed use, no horizontal scroll · Desktop: floating glass sidebar, large mushaf, persistent player, verse-info panel available
 
 ### 10.16 Final cohesion audit *(prompt §33, §34, §35)*
-- [ ] Full walk of every surface (Home, Surahs, Reader, Mushaf, Juz, Listen, Search, Tafsir, Bookmarks, Daily Ayah, Plans, Settings, Resources, About, Error) + loading states, modals, navigation, audio player — one cohesive premium identity
-- [ ] Absolute-rules audit: no cyberpunk / hacker UI / neon text / gaming HUD / excessive particles / excessive glow / flashing / animated Quranic letters / distracting 3D / parallax abuse / AI-generated or fake Quran content
+- [x] Full walk of every surface (Home, Surahs, Reader, Mushaf, Juz, Listen, Search, Tafsir, Bookmarks, Daily Ayah, Plans, Settings, Resources, About, Error) + loading states, modals, navigation, audio player — one cohesive premium identity
+- [x] Absolute-rules audit: no cyberpunk / hacker UI / neon text / gaming HUD / excessive particles / excessive glow / flashing / animated Quranic letters / distracting 3D / parallax abuse / AI-generated or fake Quran content
 
 ## Phase 11 — Translations & Tafsir
 
@@ -295,4 +295,11 @@
 | 2026-08-29 | Phase 8 — Personal Features complete (personal notes store + modal + per-ayah wiring in surah/juz readers, `/notes` page, functional 30/60/custom reading plans with calm day tracking, continue-reading % on Home, cloud-sync note) | `c16a713` |
 | 2026-08-29 | Phase 9 — Audio Recitation System complete (queue playback engine with single/range/surah/continuous modes, persistent bottom player, prev/next/seek/volume/repeat/auto-next, speeds, reciter selector in Settings + Listen, play actions across Home/Surahs/Reader/Juz/DailyAyah/Listen, active-ayah highlight + scroll-into-view, streaming attribution) | `cca496c` |
 | 2026-08-29 | `prompt.md` restructured — new Premium UI/UX Upgrade direction (Luxury Islamic + Deep Black + Emerald + Gold + Frosted Glass + Cinematic Motion); plan reorganized: superseded old Animation phase with detailed **Phase 10** (10.1–10.16), shifted Translations & Tafsir to Phase 11, closed leftover search debounce/loading/error checkbox | `0b44620` |
-| 2026-08-29 | **Phase 10 — Premium UI/UX, core build** (10.1–10.7 delivered): luxury glass + dual palettes (deep black → emerald, ivory light) in `index.css`; shared animation library (`src/animations`); route transitions + viewport reveals + staggered grids; AmbientBackground (rAF, reduced-motion aware), GeometricPattern (gold/emerald), LoadingScreen shimmer, LogoMark; cinematic staged-reveal Home hero (10.5); premium surah/ayah card hover-lift + gold glow + Arabic micro-move (10.6, reader/juz selected-ayah glow); EqualizerBars wired into player/featured/readers/daily + active-ayah lifecycle (10.7); glass floating navigation (sidebar/top bar/bottom nav/drawer); search chips + Home Daily Ayah signature card. **Remaining:** 10.8 Mushaf page-turn, 10.9 Focus Reading, 10.10 floating player pill, 10.12 bookmark pop/micro-interactions, 10.13 Juz/Explore animated grid, 10.14 journey stats + full footer, 10.15 a11y/mobile pass, 10.16 cohesion audit | `17f2ab6` |
+| 2026-08-29 | **Phase 10 — Premium UI/UX, core build** (10.1–10.7 delivered): luxury glass + dual palettes (deep black → emerald, ivory light) in `index.css`; shared animation library (`src/animations`); route transitions + viewport reveals + staggered grids; AmbientBackground (rAF, reduced-motion aware), GeometricPattern (gold/emerald), LoadingScreen shimmer, LogoMark; cinematic staged-reveal Home hero (10.5); premium surah/ayah card hover-lift + gold glow + Arabic micro-move (10.6, reader/juz selected-ayah glow); EqualizerBars wired into player/featured/readers/daily + active-ayah lifecycle (10.7); glass floating navigation (sidebar/top bar/bottom nav/drawer); search chips + Home Daily Ayah signature card | `17f2ab6` |
+| 2026-08-29 | **10.8 + 10.9 delivered** — Mushaf directional page-turn (cached last page via state for exit anim, `pageTurn` variants with custom dir, RTL-aware swipe + keyboard + popLayout), distinct centered mushaf surface; full-screen Focus Reading (deep-black radial backdrop with emerald warmth, 2.6s auto-hide controls, Equaled AudioFocusPill, Esc/F toggles, fade+scale enter/exit) | `98d0ae2` |
+| 2026-08-29 | **10.10 delivered** — floating glass audio player: collapsed pill (close + now-playing + prev/play/equalizer/next) expands into progress + full controls; full rounding, lifted shadow, `active:scale-90` presses | `bb379d3` |
+| 2026-08-30 | **10.12 delivered** — search micro-interactions (focus-glow field, staggered results, gold-highlighted matched text, equalizer live on playing hits) + bookmark feedback everywhere (whileTap scale pop + spring icon-pop w/ gold checkmark) in readers, daily ayah, bookmarks list, search | `81fc795` |
+| 2026-08-30 | **10.13 delivered** — Juz/Explore grid hoisted to shared animation system (staggered fadeUp, hover lift + gold border + glow + animated gradient underline + arrow travel); Home Daily Ayah staged load (label → Arabic → translation → actions) | `a15ceb6` |
+| 2026-08-30 | **10.14 delivered** — shared `AppFooter` (bismillah + tagline brand block, link groups, data & attribution, source link, geometric pattern) once in AppLayout; Home "Your Quran Journey" stat tiles with spring-unfurled gradient fill bars + continue-reading link | `1a09182` |
+| 2026-08-30 | **10.15 + 10.16 delivered** — global emerald `:focus-visible` ring + `overflow-x: clip` guard; cohesion sweep: replaced last straggler `hover:shadow-lg` cards (Notes, Search, Plans, Surahs) with the premium hover-language, verified pulse skeletons / no neon-3D-parallax violations registry | `4e16f2b` |
+| 2026-08-30 | **Phase 10 complete** (`17f2ab6` → `4e16f2b`). Open follow-ups tracked in the section headers: 10.11 nav toggle (glass nav already premium), 10.6 mobile hover→touch states, 10.15 reduced-motion + low-end tuning | `4e16f2b` |

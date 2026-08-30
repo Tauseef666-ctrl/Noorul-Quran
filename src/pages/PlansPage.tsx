@@ -111,7 +111,7 @@ export default function PlansPage() {
           type="button"
           onClick={() => selectPlan('30')}
           className={`card rounded-2xl p-5 text-left transition-all ${
-            plans.selected === '30' ? 'ring-2 ring-brand' : 'hover:shadow-lg'
+            plans.selected === '30' ? 'ring-2 ring-brand' : 'hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]'
           }`}
         >
           <CalendarCheck className="h-6 w-6 text-brand" aria-hidden />
@@ -127,7 +127,7 @@ export default function PlansPage() {
           type="button"
           onClick={() => selectPlan('60')}
           className={`card rounded-2xl p-5 text-left transition-all ${
-            plans.selected === '60' ? 'ring-2 ring-brand' : 'hover:shadow-lg'
+            plans.selected === '60' ? 'ring-2 ring-brand' : 'hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]'
           }`}
         >
           <Target className="h-6 w-6 text-gold" aria-hidden />

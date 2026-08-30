@@ -77,7 +77,7 @@ export default function NotesPage() {
             : `Surah ${note.surahNumber}`
           return (
             <motion.div key={note.key} variants={fadeIn}>
-              <div className="card group flex items-center gap-4 rounded-2xl border border-gold/20 bg-gold/5 p-4 transition-all hover:shadow-lg">
+              <div className="card group flex items-center gap-4 rounded-2xl border border-gold/20 bg-gold/5 p-4 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]">
                 <Link
                   to={`/surah/${note.surahNumber}?ayah=${note.ayahNumber}`}
                   className="flex min-w-0 flex-1 items-center gap-4"

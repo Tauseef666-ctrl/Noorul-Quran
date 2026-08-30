@@ -241,7 +241,7 @@ export default function SearchPage() {
                   <Link
                     key={surah.number}
                     to={`/surah/${surah.number}`}
-                    className="card group flex items-center justify-between rounded-2xl p-4 transition-all hover:shadow-lg"
+                    className="card group flex items-center justify-between rounded-2xl p-4 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
                   >
                     <div className="flex items-center gap-3">
                       <span className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-xs font-semibold text-ink-faint">

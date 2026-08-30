@@ -157,7 +157,7 @@ export default function SurahsPage() {
         <motion.div variants={staggerContainer} className="grid gap-3 sm:grid-cols-2">
           {filtered.map((surah) => (
             <motion.div key={surah.number} variants={fadeUp}>
-              <div className="card group relative flex items-center gap-4 rounded-2xl p-4 transition-all hover:shadow-lg">
+              <div className="card group relative flex items-center gap-4 rounded-2xl p-4 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]">
                 <button
                   type="button"
                   onClick={() => {
