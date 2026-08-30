@@ -225,22 +225,34 @@ export default function HomePage() {
               className="absolute inset-0 h-full w-full object-cover"
               opacity={0.3}
             />
-            <div className="relative">
-              <div className="mb-4 flex items-center gap-2">
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewportOnce}
+              className="relative"
+            >
+              <motion.div variants={fadeUp} className="mb-4 flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-gold" aria-hidden />
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
                   Ayah of the Day
                 </p>
-              </div>
-              <p className="quran-text text-right" lang="ar" dir="rtl">
+              </motion.div>
+              <motion.p variants={fadeUp} className="quran-text text-right" lang="ar" dir="rtl">
                 {dailyAyah.arabic}
-              </p>
+              </motion.p>
               {dailyTranslation && (
-                <p className="translation-en mt-4 text-[15px] leading-relaxed text-ink-muted">
+                <motion.p
+                  variants={fadeUp}
+                  className="translation-en mt-4 text-[15px] leading-relaxed text-ink-muted"
+                >
                   {dailyTranslation}
-                </p>
+                </motion.p>
               )}
-              <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+              <motion.div
+                variants={fadeUp}
+                className="mt-5 flex flex-wrap items-center justify-between gap-3"
+              >
                 <span className="text-xs font-semibold text-ink-faint">
                   {dailyAyah.surahNumber}:{dailyAyah.ayahNumber}
                 </span>
@@ -249,7 +261,7 @@ export default function HomePage() {
                     type="button"
                     onClick={() => toggle(dailyAyah.surahNumber, dailyAyah.ayahNumber)}
                     aria-label={dailyIsPlaying ? 'Pause this ayah' : 'Listen to this ayah'}
-                    className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-xs font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-brand-deep"
+                    className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-xs font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-brand-deep active:scale-95"
                   >
                     {dailyIsPlaying ? (
                       <>
@@ -270,8 +282,8 @@ export default function HomePage() {
                     Read full context →
                   </Link>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </motion.section>
       )}

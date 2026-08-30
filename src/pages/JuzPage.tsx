@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
 import type { Surah } from '../types/quran'
 import { AYAH_COUNTS } from '../data/ayahCounts'
+import { fadeUp, staggerContainer } from '../animations'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 12 },
@@ -118,12 +119,12 @@ export default function JuzPage() {
           ))}
         </div>
       ) : (
-        <motion.div variants={stagger} className="grid gap-3 sm:grid-cols-2">
+        <motion.div variants={staggerContainer} className="grid gap-3 sm:grid-cols-2">
           {juzInfos.map((juz) => (
-            <motion.div key={juz.number} variants={fadeIn}>
+            <motion.div key={juz.number} variants={fadeUp}>
               <Link
                 to={`/juz/${juz.number}`}
-                className="card group block rounded-2xl p-5 transition-all hover:shadow-lg"
+                className="card group block rounded-2xl p-5 transition-all hover:-translate-y-1 hover:border-gold/40 hover:shadow-[var(--shadow-glow)] active:scale-[0.99]"
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -140,7 +141,13 @@ export default function JuzPage() {
                       {juz.ayahCount} ayahs
                     </p>
                   </div>
-                  <ArrowRight className="mt-1 h-4 w-4 text-brand opacity-0 transition-opacity group-hover:opacity-100" />
+                  <ArrowRight className="mt-1 h-4 w-4 text-brand transition-transform duration-300 group-hover:translate-x-1 group-hover:opacity-100 opacity-40" />
+                </div>
+                <div className="mt-3 h-0.5 overflow-hidden rounded-full bg-line/60">
+                  <div
+                    className="h-full w-full origin-left scale-x-0 rounded-full bg-gradient-to-r from-brand/50 to-gold/60 transition-transform duration-500 group-hover:scale-x-100"
+                    aria-hidden
+                  />
                 </div>
               </Link>
             </motion.div>
