@@ -5,7 +5,6 @@ import {
   ChevronUp,
   ChevronDown,
   Play,
-  Pause,
   SkipBack,
   SkipForward,
   Loader2,
@@ -53,7 +52,7 @@ function IconButton({
       disabled={disabled}
       aria-label={label}
       title={label}
-      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-colors disabled:opacity-40 ${
+      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all active:scale-90 disabled:opacity-40 ${
         active
           ? 'bg-brand/15 text-brand'
           : 'text-ink-muted hover:bg-brand/10 hover:text-brand'
@@ -108,7 +107,7 @@ export function AudioPlayer() {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 80, opacity: 0 }}
       transition={{ type: 'spring', damping: 26, stiffness: 260 }}
-      className="glass-ctl fixed inset-x-0 bottom-14 z-40 rounded-t-2xl sm:rounded-2xl lg:inset-x-auto lg:bottom-5 lg:left-1/2 lg:w-[min(46rem,96vw)] lg:-translate-x-1/2"
+      className="glass-ctl fixed inset-x-0 bottom-14 z-40 rounded-2xl shadow-[var(--shadow-lifted)] sm:rounded-2xl lg:inset-x-auto lg:bottom-5 lg:left-1/2 lg:w-[min(46rem,96vw)] lg:-translate-x-1/2"
       role="region"
       aria-label="Audio player"
     >
@@ -160,7 +159,7 @@ export function AudioPlayer() {
           {loading && !playing ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : playing ? (
-            <Pause className="h-4 w-4" />
+            <EqualizerBars />
           ) : (
             <Play className="h-4 w-4" />
           )}
@@ -179,44 +178,44 @@ export function AudioPlayer() {
         </IconButton>
       </div>
 
-      {/* Progress */}
-      <div className="flex items-center gap-2 px-3 pb-2.5 sm:gap-3 sm:px-4">
-        <span className="w-9 shrink-0 text-right text-[10px] tabular-nums text-ink-faint">
-          {formatTime(currentTime)}
-        </span>
-        <input
-          type="range"
-          className="slider-audio min-w-0 flex-1"
-          min={0}
-          max={duration || 0}
-          step={0.1}
-          value={currentTime}
-          onChange={(e) => seek(Number(e.target.value))}
-          aria-label="Seek"
-          style={{ background: `linear-gradient(to right, var(--brand) ${progressPct}%, var(--line-strong) ${progressPct}%)` }}
-          disabled={duration <= 0}
-        />
-        <span className="w-9 shrink-0 text-[10px] tabular-nums text-ink-faint">
-          {formatTime(duration)}
-        </span>
-      </div>
-
-      {error && (
-        <p className="px-4 pb-2 text-[11px] text-red-700 dark:text-red-300" role="alert">
-          {error}
-        </p>
-      )}
-
-      {/* Expanded controls */}
+      {/* Collapsed pill — progress + advanced controls live inside expanded */}
       <AnimatePresence>
         {expanded && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.22 }}
             className="overflow-hidden"
           >
+            {/* Progress */}
+            <div className="flex items-center gap-2 px-3 pb-1.5 sm:gap-3 sm:px-4">
+              <span className="w-9 shrink-0 text-right text-[10px] tabular-nums text-ink-faint">
+                {formatTime(currentTime)}
+              </span>
+              <input
+                type="range"
+                className="slider-audio min-w-0 flex-1"
+                min={0}
+                max={duration || 0}
+                step={0.1}
+                value={currentTime}
+                onChange={(e) => seek(Number(e.target.value))}
+                aria-label="Seek"
+                style={{ background: `linear-gradient(to right, var(--brand) ${progressPct}%, var(--line-strong) ${progressPct}%)` }}
+                disabled={duration <= 0}
+              />
+              <span className="w-9 shrink-0 text-[10px] tabular-nums text-ink-faint">
+                {formatTime(duration)}
+              </span>
+            </div>
+
+            {error && (
+              <p className="px-4 pb-1 text-[11px] text-red-700 dark:text-red-300" role="alert">
+                {error}
+              </p>
+            )}
+
             <div className="space-y-3 border-t border-line/60 px-4 py-3">
               <div className="flex h-4 items-center justify-center">
                 <div className="gold-divider w-16" />
