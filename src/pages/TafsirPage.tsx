@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { BookMarked, Loader2 } from 'lucide-react'
-import { getActiveProvider } from '../services/quran'
+import { tafsirProvider, readTafsirId, persistTafsirId, TAFSIR_CATALOG } from '../services/quran/tafsirProvider'
+import { langDir } from '../services/quran/translationProvider'
+import type { TafsirContent, TafsirEdition } from '../types/quran'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 12 },
@@ -11,24 +13,38 @@ const fadeIn = {
 export default function TafsirPage() {
   const [surahNum, setSurahNum] = useState(1)
   const [ayahNum, setAyahNum] = useState(1)
-  const [tafsirText, setTafsirText] = useState('')
+  const [editions, setEditions] = useState<TafsirEdition[]>([])
+  const [tafsirId, setTafsirId] = useState(readTafsirId)
+  const [tafsir, setTafsir] = useState<TafsirContent | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleSearch = async () => {
-    const provider = getActiveProvider()
-    if (!provider.getTafsir) {
-      setError('Tafsir is not available with the current provider.')
-      return
+  useEffect(() => {
+    let cancelled = false
+    tafsirProvider
+      .listTafsirs()
+      .then((list) => {
+        if (!cancelled && list.length > 0) setEditions(list)
+      })
+      .catch(() => {
+        // static catalogue used at render time
+      })
+    return () => {
+      cancelled = true
     }
+  }, [])
 
+  const editionOptions = editions.length > 0 ? editions : TAFSIR_CATALOG
+  const selectedEdition = editionOptions.find((e) => e.id === tafsirId) ?? null
+
+  const handleSearch = async () => {
     setLoading(true)
     setError(null)
-    setTafsirText('')
+    setTafsir(null)
 
     try {
-      const result = await provider.getTafsir(surahNum, ayahNum, 'en.jalalayn')
-      setTafsirText(result.text)
+      const result = await tafsirProvider.tafsirForAyah(surahNum, ayahNum, tafsirId)
+      setTafsir(result)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load tafsir.')
     } finally {
@@ -78,6 +94,26 @@ export default function TafsirPage() {
               className="w-20 rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
             />
           </div>
+          <div className="min-w-[220px] flex-1 sm:max-w-xs">
+            <label htmlFor="tafsir-edition" className="mb-1 block text-xs text-ink-faint">
+              Commentary edition
+            </label>
+            <select
+              id="tafsir-edition"
+              value={tafsirId}
+              onChange={(e) => {
+                setTafsirId(e.target.value)
+                persistTafsirId(e.target.value)
+              }}
+              className="w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+            >
+              {editionOptions.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.translator ?? item.name} · {item.languageName}
+                </option>
+              ))}
+            </select>
+          </div>
           <button
             type="button"
             onClick={handleSearch}
@@ -102,14 +138,27 @@ export default function TafsirPage() {
         </div>
       )}
 
-      {tafsirText && (
+      {tafsir && (
         <motion.div variants={fadeIn} className="card rounded-2xl p-5 sm:p-6">
           <div className="mb-3 rounded-xl bg-gold/5 p-3 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-              Tafsir · Surah {surahNum}:{ayahNum} · Jalalayn
+              Tafsir · Surah {surahNum}:{ayahNum}
             </p>
+            {selectedEdition && (
+              <p className="mt-1 text-[11px] text-ink-faint tabular-nums">
+                {selectedEdition.translator ?? selectedEdition.name} ·{' '}
+                {selectedEdition.languageName}
+              </p>
+            )}
           </div>
-          <p className="text-sm leading-relaxed text-ink-muted">{tafsirText}</p>
+          <p
+            lang="ar"
+            dir={langDir(tafsir.language)}
+            translate="no"
+            className="translation-ar text-[15px] leading-relaxed text-ink"
+          >
+            {tafsir.text}
+          </p>
           <div className="mt-4 border-t border-line pt-3 text-center">
             <p className="text-[10px] text-ink-faint italic">
               This is scholarly tafsir (commentary), not Quranic text.
@@ -118,7 +167,7 @@ export default function TafsirPage() {
         </motion.div>
       )}
 
-      {!loading && !tafsirText && !error && (
+      {!loading && !tafsir && !error && (
         <motion.div variants={fadeIn} className="py-12 text-center">
           <BookMarked className="mx-auto h-10 w-10 text-ink-faint/40" />
           <p className="mt-3 text-sm text-ink-muted">

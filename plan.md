@@ -243,9 +243,10 @@
 - [ ] Reader headers show an attribution caption with the active translators' names
 
 ### 11.3 Tafsir fixes & edition selector
-- [ ] `TafsirModal` no longer gate-kept by provider capabilities — fetch from alQuran.cloud directly (same pattern as translations); Jalalayn default, edition `<select>` fed by `getTafsirs()`
-- [ ] Standalone `/tafsir` page gets the same edition selector + attribution line
-- [ ] Tafsir separation: rendered in its own surface with explicit "commentary, not Quranic text" badge in both modal and page; `translate="no"` + edition `lang`/`dir`; never styled as Quran glyphs
+- [x] `TafsirModal` no longer gate-kept by provider capabilities — fetch from alQuran.cloud directly (same pattern as translations); Arabic tafsir default `ar.muyassar`, edition `<select>` fed by live `getTafsirs()` with static catalogue fallback
+- [x] Standalone `/tafsir` page gets the same edition selector + attribution line
+- [x] Safety: `getTafsir` rejects any edition the API is not actually serving as commentary (`type !== 'tafsir'`) — historically advertised English tafsirs now silently return Quran text, so only the published Arabic tafsir editions (Al-Muyassar, Jalalayn, Al-Qurtubi, Al-Waseet, Al-Baghawi, Tanwir al-Miqbas) are offered; choice persisted (`nq:tafsir`)
+- [x] Tafsir separation: rendered in its own surface with explicit "commentary, not Quranic text" line in both modal and page; `translate="no"` + edition `lang`/`dir`; never styled as Quran glyphs
 
 ### 11.4 Attribution & sources
 - [ ] `attribution.ts`: dedicated `tafsir`-kind data-source row + translation-editions note naming each in-use translator; `/sources` tafsir filter populated

@@ -312,8 +312,18 @@ export const alQuranCloudProvider: QuranProvider = {
     options?: FetchOptions,
   ): Promise<TafsirContent> {
     const response = await fetchJson<{
-      data: { text: string; edition: { language: string; englishName: string; name: string } }
+      data: {
+        text: string
+        edition: { identifier: string; language: string; englishName: string; name: string; type: string }
+      }
     }>(`${BASE_URL}/ayah/${surahNumber}:${ayahNumber}/${tafsirId}`, options)
+    // Safety: if the edition id is stale/unsupported the API silently returns the
+    // raw quran-uthmani text instead of commentary. Never present Quran text as tafsir.
+    if (response.data.edition.type !== 'tafsir') {
+      throw new Error(
+        `Tafsir edition "${tafsirId}" is not available — the API is not serving it.`,
+      )
+    }
     return {
       ayahKey: `${surahNumber}:${ayahNumber}`,
       tafsirId,

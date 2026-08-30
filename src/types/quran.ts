@@ -80,6 +80,7 @@ export interface TafsirEdition {
   language: string
   languageName: string
   name: string
+  translator?: string
 }
 
 export interface TafsirContent {
