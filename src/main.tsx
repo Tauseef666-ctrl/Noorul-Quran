@@ -10,6 +10,7 @@ import '@fontsource/noto-nastaliq-urdu/600.css'
 import './styles/index.css'
 import App from './App.tsx'
 import { PreferencesProvider } from './store/preferences.tsx'
+import { TranslationsProvider } from './store/translations.tsx'
 import { BookmarksProvider } from './store/bookmarks.tsx'
 import { NotesProvider } from './store/notes.tsx'
 import { AudioProvider } from './store/audio.tsx'
@@ -17,13 +18,15 @@ import { AudioProvider } from './store/audio.tsx'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PreferencesProvider>
-      <BookmarksProvider>
-        <NotesProvider>
-          <AudioProvider>
-            <App />
-          </AudioProvider>
-        </NotesProvider>
-      </BookmarksProvider>
+      <TranslationsProvider>
+        <BookmarksProvider>
+          <NotesProvider>
+            <AudioProvider>
+              <App />
+            </AudioProvider>
+          </NotesProvider>
+        </BookmarksProvider>
+      </TranslationsProvider>
     </PreferencesProvider>
   </StrictMode>,
 )

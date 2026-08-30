@@ -8,7 +8,7 @@
 >
 > **Current direction (2026-08-29):** `prompt.md` restructured → Premium UI/UX Upgrade.
 > Visual identity = *Luxury Islamic + Deep Black + Emerald + Subtle Gold + Frosted Glass + Cinematic Motion*.
-> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning, 10.16 ongoing audits.
+> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning. Now working on **Phase 11 — Translations & Tafsir**.
 
 ---
 
@@ -226,9 +226,34 @@
 
 ## Phase 11 — Translations & Tafsir
 
-- [ ] Multiple published translations (English, Urdu, Hindi, Arabic + supported langs), attribution retained
-- [ ] No browser auto-retranslation of vetted translations
-- [ ] Tafsir view clearly separated from Quran text/translation/notes/AI content
+> Builds on the existing alQuran.cloud plumbing. Every edition is a *published* translation/tafsir from the
+> Al Quran Cloud catalogue — vetted, never machine-paraphrased, always attributed. Browser auto-translation
+> of vetted content is suppressed with explicit `lang`/`dir` + `translate="no"`.
+
+### 11.1 Translation catalogue & persisted selection
+- [ ] Expanded edition catalogue (`translationProvider.ts`): English (Saheeh International, Muhammad Asad, Pickthall), Urdu (Jalandhry), Hindi (Farooq), Arabic (Al-Muyassar) — every entry a real Al Quran Cloud edition with name + translator metadata
+- [ ] Persisted selection store (`src/store/translations.tsx`, localStorage `nq:translations`) mounted app-wide; default = English (Saheeh International) + Urdu (Jalandhry); gracefully falls back if a stored id is unknown
+- [ ] Settings → Translations: selectable cards grouped by language, translator names visible, toggle on/off per edition (min one active)
+
+### 11.2 Dynamic translation rendering
+- [ ] Shared `AyahTranslations` component: renders each *active* edition with the right `lang`/`dir` + typography + `translate="no"`, with a single skeleton line while data is loading
+- [ ] Readers (Surah + Juz) and Daily Ayah fetch exactly the active editions — no hard-coded `en.sahih`/`ur.jalandhry` keys; stale edition text cleared when selection changes
+- [ ] Home Daily Ayah shows the primary (first) active edition
+- [ ] Per-language typography classes: `.translation-en / -ur / -hi / -ar` (Nastaliq Urdu, Amiri Arabic, system Devanagari); Mushaf stays Arabic-only by design
+- [ ] Reader headers show an attribution caption with the active translators' names
+
+### 11.3 Tafsir fixes & edition selector
+- [ ] `TafsirModal` no longer gate-kept by provider capabilities — fetch from alQuran.cloud directly (same pattern as translations); Jalalayn default, edition `<select>` fed by `getTafsirs()`
+- [ ] Standalone `/tafsir` page gets the same edition selector + attribution line
+- [ ] Tafsir separation: rendered in its own surface with explicit "commentary, not Quranic text" badge in both modal and page; `translate="no"` + edition `lang`/`dir`; never styled as Quran glyphs
+
+### 11.4 Attribution & sources
+- [ ] `attribution.ts`: dedicated `tafsir`-kind data-source row + translation-editions note naming each in-use translator; `/sources` tafsir filter populated
+- [ ] Footer + About copy updated to name the translators & tafsirs in use
+
+### 11.5 Content-safety guardrails
+- [ ] Explicit `lang` + `dir` + `translate="no"` on every vetted surface (Arabic, translations, tafsir) — no browser auto-retranslation
+- [ ] All Settings/reader copy is truthful (real selector, real editions shown); remove placeholder wording
 
 ## Phase 12 — Accessibility
 

@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { ArabicSizeSelector } from '../components/ArabicSizeSelector'
+import { TranslationSelector } from '../components/TranslationSelector'
 import { usePreferences } from '../store/preferences'
 import { useAudio } from '../store/audio'
+import { useTranslations } from '../store/translations'
 import { CURATED_RECITERS } from '../services/quran/audioProvider'
 
 const fadeIn = {
@@ -17,6 +19,7 @@ const stagger = {
 export default function SettingsPage() {
   const { arabicSize } = usePreferences()
   const { reciterId, setReciter } = useAudio()
+  const { activeEditions } = useTranslations()
 
   return (
     <motion.div initial="hidden" animate="visible" variants={stagger} className="space-y-8">
@@ -91,12 +94,25 @@ export default function SettingsPage() {
       </motion.section>
 
       <motion.section variants={fadeIn} className="card rounded-2xl p-5 sm:p-6">
-        <h2 className="text-sm font-semibold text-ink">Translations</h2>
-        <p className="mt-1 text-xs text-ink-muted">
-          Manage which translations are displayed alongside the Arabic text
-        </p>
-        <p className="mt-4 text-xs text-ink-faint italic">
-          Default: English (Saheeh International) + Urdu (Jalandhry)
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-semibold text-ink">Translations</h2>
+            <p className="mt-1 text-xs text-ink-muted">
+              Choose which published translations appear under each verse
+            </p>
+          </div>
+          <span className="shrink-0 rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand tabular-nums">
+            {activeEditions.length} active
+          </span>
+        </div>
+        <div className="mt-4">
+          <TranslationSelector />
+        </div>
+        <p className="mt-4 text-xs leading-relaxed text-ink-faint">
+          Published translations are streamed from the Al Quran Cloud catalogue. Vetted text is
+          marked <code className="rounded bg-line/40 px-1">translate="no"</code> so your browser will
+          not auto-translate it. Copyright in each translation remains with its publisher — the
+          Arabic is always shown in the original Uthmani script.
         </p>
       </motion.section>
 
