@@ -258,9 +258,29 @@
 
 ## Phase 12 — Accessibility
 
-- [ ] Semantic HTML, keyboard navigation, ARIA labels, screen-reader support
-- [ ] Focus indicators, high contrast, adjustable font size, RTL support
-- [ ] Accessible audio controls
+### 12.1 Semantic landmarks, keyboard nav & screen-reader support
+- [ ] Skip-to-content link (visually hidden until focused) + `<main id="main-content" tabindex="-1">` in `AppLayout`
+- [ ] Modal focus trap + focus restore to opener on close (`useFocusTrap`) for TafsirModal and NoteModal (Tab/Shift+Tab cycles inside; initial focus lands on the dialog)
+- [ ] `aria-expanded` + `aria-controls` on the mobile menu button; `id` on the drawer nav; per-route `document.title` (central route-title map) so the active page is announced/readable
+- [ ] Screen-reader audit of existing good practices retained (icon `aria-label`s, `aria-pressed` toggles, native range inputs, `role`/`aria-modal` dialogs, radio groups)
+
+### 12.2 Focus indicators & high contrast
+- [ ] Global `:focus-visible` emerald ring (Phase 10.15) extended to custom range sliders (`.slider-audio` thumb) and select elements
+- [ ] Non-color-only state signals verified (active audio ayah gold glow, bookmarks, navigation `aria-current` from NavLink); selected/active states never rely on colour alone
+- [ ] `prefers-reduced-motion: reduce` CSS guard (disable smooth scroll / long animations); high-contrast pass on `text-ink-faint` commentary captions inside cards
+
+### 12.3 Adjustable font size
+- [ ] New `uiSize` preference (`nq:ui-size`: small | medium | large) in the preferences store + `[data-ui-size]` root CSS scaling all rem-based text (Tailwind default) — pure-CSS, no layout flashes
+- [ ] Settings "Interface text size" selector (radiogroup, same a11y pattern as `ArabicSizeSelector`); Arabic size stays separate (`nq:arabic-size`)
+
+### 12.4 RTL & bidi correctness
+- [ ] Audit + guard bidi isolation: add `.num-ltr` (`unicode-bidi: isolate; direction: ltr`) utility and apply to surah:ayah references / timecodes / queue counters that sit inside RTL flows so they never reorder
+- [ ] Verify lang + dir on every Arabic / Urdu / Hindi / Farsi surface (Phase 11.5 baseline) and document RTL content status; full mirrored-UI RTL layout tracked as a Phase 12 follow-up
+
+### 12.5 Accessible audio controls
+- [ ] `aria-live="polite"` announce region in `AudioPlayer` announcing current recitation, play/pause state, mode toggles
+- [ ] `aria-expanded` on the player expand control; `aria-valuetext` (time) on the seek slider; focus-visible styling for `.slider-audio`
+- [ ] Labelled transparent controls kept minimal but complete (existing `aria-label`s retained)
 
 ## Phase 13 — PWA
 

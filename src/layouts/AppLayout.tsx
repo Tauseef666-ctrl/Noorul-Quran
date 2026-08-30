@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useOutlet } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   BookOpen,
@@ -61,6 +61,24 @@ const MOBILE_BOTTOM: NavItem[] = [
   { to: '/settings', label: 'More', Icon: Menu },
 ]
 
+/** Routes ordered longest-first so prefix matching picks the correct page title. */
+const ROUTE_TITLES: Array<[string, string]> = [
+  ['/daily-ayah', 'Daily Ayah'],
+  ['/bookmarks', 'Bookmarks'],
+  ['/sources', 'Sources & Attribution'],
+  ['/settings', 'Settings'],
+  ['/mushaf', 'Mushaf'],
+  ['/surahs', 'Surahs'],
+  ['/search', 'Search'],
+  ['/listen', 'Recitations'],
+  ['/tafsir', 'Tafsir'],
+  ['/plans', 'Reading Plans'],
+  ['/notes', 'Notes'],
+  ['/juz', 'Juz'],
+  ['/about', 'About'],
+  ['/surah', 'Surah Reader'],
+]
+
 function SidebarLink({
   to,
   label,
@@ -86,10 +104,16 @@ function SidebarLink({
   )
 }
 
-/* Page shell — animates the routed page in/out on pathname change */
+/* Page shell — animates the routed page in/out on pathname change + sets the title */
 function RoutedPage() {
   const outlet = useOutlet()
   const location = useLocation()
+
+  useEffect(() => {
+    const match = ROUTE_TITLES.find(([prefix]) => location.pathname.startsWith(prefix))
+    document.title = match ? `${match[1]} · NoorulQuran` : 'NoorulQuran'
+  }, [location.pathname])
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -111,6 +135,11 @@ export default function AppLayout() {
 
   return (
     <div className="flex min-h-screen">
+      {/* Skip to content — first tab stop for keyboard users */}
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
+
       {/* Meditative animated background (fixed, behind everything) */}
       <AmbientBackground />
 
@@ -164,6 +193,8 @@ export default function AppLayout() {
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="flex h-9 w-9 items-center justify-center rounded-xl text-ink-muted transition-colors hover:bg-brand/5 hover:text-ink"
           aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-navigation"
         >
           <motion.span
             key={mobileMenuOpen ? 'close' : 'open'}
@@ -199,7 +230,11 @@ export default function AppLayout() {
               exit="exit"
               className="glass-nav fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto border-y-0 border-l-0 p-4 pt-20 shadow-xl lg:hidden"
             >
-              <nav aria-label="Mobile navigation" className="space-y-0.5">
+              <nav
+                id="mobile-navigation"
+                aria-label="Mobile navigation"
+                className="space-y-0.5"
+              >
                 {DESKTOP_NAV.map((item) => (
                   <SidebarLink
                     key={item.to}
@@ -217,7 +252,7 @@ export default function AppLayout() {
       </AnimatePresence>
 
       {/* Main content — route transition + audio-aware bottom padding */}
-      <main className="relative min-w-0 flex-1 overflow-x-hidden">
+      <main id="main-content" tabIndex={-1} className="relative min-w-0 flex-1 overflow-x-hidden">
         <div
           className={`mx-auto max-w-5xl px-4 pt-16 lg:px-8 lg:pt-8 ${
             activeAudio ? 'pb-56 lg:pb-36' : 'pb-24 lg:pb-10'

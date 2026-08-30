@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Loader2, BookMarked } from 'lucide-react'
 import {
@@ -9,6 +9,7 @@ import {
 } from '../services/quran/tafsirProvider'
 import { langDir } from '../services/quran/translationProvider'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { useFocusTrap } from '../hooks/useFocusTrap'
 import type { TafsirContent, TafsirEdition } from '../types/quran'
 
 interface TafsirModalProps {
@@ -21,12 +22,15 @@ interface TafsirModalProps {
 export function TafsirModal({ surahNumber, ayahNumber, isOpen, onClose }: TafsirModalProps) {
   const [editions, setEditions] = useState<TafsirEdition[]>([])
   const [tafsirId, setTafsirId] = useState(readTafsirId)
+  const dialogRef = useRef<HTMLDivElement>(null)
 
   const { data, loading, error } = useAsyncData<TafsirContent>(
     (signal) => tafsirProvider.tafsirForAyah(surahNumber, ayahNumber, tafsirId, signal),
     [surahNumber, ayahNumber, tafsirId],
     isOpen,
   )
+
+  useFocusTrap(isOpen, dialogRef)
 
   // Load the available tafsir editions when the modal opens
   useEffect(() => {
@@ -77,6 +81,7 @@ export function TafsirModal({ surahNumber, ayahNumber, isOpen, onClose }: Tafsir
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            ref={dialogRef}
             className="fixed inset-x-4 top-[8%] z-50 mx-auto max-w-xl overflow-hidden rounded-2xl border border-line bg-surface-opaque shadow-xl sm:inset-x-auto"
             role="dialog"
             aria-modal="true"

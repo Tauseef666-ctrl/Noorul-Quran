@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, StickyNote, Trash2, Save } from 'lucide-react'
 import { useNotes, NOTE_SYNC_LABEL } from '../store/notes'
+import { useFocusTrap } from '../hooks/useFocusTrap'
 
 interface NoteModalProps {
   surahNumber: number
@@ -14,6 +15,7 @@ export function NoteModal({ surahNumber, ayahNumber, isOpen, onClose }: NoteModa
   const { getNote, upsertNote, deleteNote } = useNotes()
   const existing = getNote(surahNumber, ayahNumber)
   const [text, setText] = useState(existing?.text ?? '')
+  const dialogRef = useRef<HTMLDivElement>(null)
 
   // Close on Escape
   useEffect(() => {
@@ -24,6 +26,8 @@ export function NoteModal({ surahNumber, ayahNumber, isOpen, onClose }: NoteModa
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
   }, [isOpen, onClose])
+
+  useFocusTrap(isOpen, dialogRef)
 
   const handleSave = () => {
     upsertNote(surahNumber, ayahNumber, text)
@@ -57,6 +61,7 @@ export function NoteModal({ surahNumber, ayahNumber, isOpen, onClose }: NoteModa
             role="dialog"
             aria-modal="true"
             aria-label={`Personal note for ${surahNumber}:${ayahNumber}`}
+            ref={dialogRef}
             className="fixed inset-x-4 top-[15%] z-50 mx-auto max-w-lg overflow-hidden rounded-2xl border border-gold/30 bg-surface-opaque shadow-xl sm:inset-x-auto"
           >
             {/* Header */}

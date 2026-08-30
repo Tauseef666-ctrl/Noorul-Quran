@@ -126,6 +126,26 @@
     outline-offset: 2px;
     border-radius: 8px;
   }
+
+  /* Skip-to-content link — visually hidden until focused (first tab stop) */
+  .skip-link {
+    position: fixed;
+    top: -6rem;
+    left: 1rem;
+    z-index: 1000;
+    border-radius: 0.75rem;
+    background: var(--brand);
+    color: #fff;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-lifted);
+    transition: top 0.15s ease;
+  }
+
+  .skip-link:focus-visible {
+    top: 0.75rem;
+  }
 }
 
 /* Arabic font size setting: small | medium | large */
