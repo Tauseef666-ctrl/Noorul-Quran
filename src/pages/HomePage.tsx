@@ -92,6 +92,35 @@ export default function HomePage() {
   const dailyIsPlaying = dailyAyah
     ? isCurrentAyah(dailyAyah.surahNumber, dailyAyah.ayahNumber) && playing
     : false
+  const journeyTotalPct = progress
+    ? readingPercent(progress.surahNumber, progress.ayahNumber)
+    : 0
+  const currentJuz = progress?.juz ?? 1
+  const currentSurah = progress?.surahNumber ?? 1
+  const continuePage = progress?.page ?? 1
+  const journeyStats = [
+    {
+      label: 'Reading Progress',
+      value: `${journeyTotalPct}% of Quran`,
+      pct: journeyTotalPct,
+      delay: 0,
+      icon: BookOpen,
+    },
+    {
+      label: 'Current Juz',
+      value: `Juz ${currentJuz} of 30`,
+      pct: (currentJuz / 30) * 100,
+      delay: 0.08,
+      icon: Compass,
+    },
+    {
+      label: 'Surahs Explored',
+      value: `Surah ${currentSurah} of 114`,
+      pct: (currentSurah / 114) * 100,
+      delay: 0.16,
+      icon: Library,
+    },
+  ]
 
   return (
     <motion.div variants={pageTransition} initial="initial" animate="animate" className="space-y-10">
@@ -425,20 +454,48 @@ export default function HomePage() {
         </motion.section>
       )}
 
-      {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      <footer className="relative overflow-hidden rounded-3xl border-t border-line/70 pt-8 pb-4 text-center">
-        <GeometricPattern
-          variant="gold"
-          className="pointer-events-none absolute inset-x-0 top-0 mx-auto h-24 w-full object-cover"
-          opacity={0.25}
-        />
-        <p className="arabic-heading text-sm text-ink-faint" lang="ar" dir="rtl">
-          بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-        </p>
-        <p className="mt-2 text-xs text-ink-faint">
-          NoorulQuran · Read. Listen. Reflect.
-        </p>
-      </footer>
+      {/* ── Your Quran Journey ─────────────────────────────────────────────── */}
+      <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewportOnce}>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-ink">Your Quran Journey</h2>
+          <Link
+            to={`/mushaf/${continuePage}`}
+            className="text-sm font-semibold text-brand hover:underline"
+          >
+            Continue reading →
+          </Link>
+        </div>
+        <motion.div variants={staggerContainer} className="grid gap-3 sm:grid-cols-3">
+          {journeyStats.map((stat) => (
+            <motion.div
+              key={stat.label}
+              variants={fadeUp}
+              className="card rounded-2xl p-5 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
+                  <stat.icon className="h-4 w-4" aria-hidden />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-medium tracking-wide text-ink-faint uppercase">
+                    {stat.label}
+                  </p>
+                  <p className="text-sm font-semibold text-ink tabular-nums">{stat.value}</p>
+                </div>
+              </div>
+              <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-line/60" aria-hidden>
+                <motion.div
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${stat.pct}%` }}
+                  viewport={viewportOnce}
+                  transition={{ type: 'spring', stiffness: 60, damping: 18, delay: stat.delay }}
+                  className="h-full rounded-full bg-gradient-to-r from-brand via-brand to-gold"
+                />
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.section>
     </motion.div>
   )
 }

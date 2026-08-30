@@ -20,6 +20,7 @@ import {
 import { ThemeToggle } from '../components/ThemeToggle'
 import { ArabicSizeSelector } from '../components/ArabicSizeSelector'
 import { AudioPlayer } from '../components/AudioPlayer'
+import { AppFooter } from '../components/AppFooter'
 import { AmbientBackground } from '../components/AmbientBackground'
 import { useAudio } from '../store/audio'
 import {
@@ -223,6 +224,7 @@ export default function AppLayout() {
           }`}
         >
           <RoutedPage />
+          <AppFooter />
         </div>
       </main>
 
