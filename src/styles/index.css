@@ -362,6 +362,37 @@
     border: 2px solid var(--paper);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   }
+  .slider-audio:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 4px;
+    border-radius: 9999px;
+  }
+  .slider-audio:focus-visible::-webkit-slider-thumb {
+    box-shadow:
+      0 0 0 4px var(--brand-tint),
+      0 1px 4px rgba(0, 0, 0, 0.25);
+  }
+  .slider-audio:focus-visible::-moz-range-thumb {
+    box-shadow:
+      0 0 0 4px var(--brand-tint),
+      0 1px 4px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* Respect the OS preference for less motion: settle CSS animations/transitions
+   to near-instant (framers' JS motion already uses reduced-motion-aware hooks). */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ── Meditative ambient background ────────────────────────────────────────────

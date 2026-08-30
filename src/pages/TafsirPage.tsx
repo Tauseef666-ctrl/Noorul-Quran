@@ -145,7 +145,7 @@ export default function TafsirPage() {
               Tafsir · Surah {surahNum}:{ayahNum}
             </p>
             {selectedEdition && (
-              <p className="mt-1 text-[11px] text-ink-faint tabular-nums">
+              <p className="mt-1 text-[11px] text-ink-muted tabular-nums">
                 {selectedEdition.translator ?? selectedEdition.name} ·{' '}
                 {selectedEdition.languageName}
               </p>
@@ -160,7 +160,7 @@ export default function TafsirPage() {
             {tafsir.text}
           </p>
           <div className="mt-4 border-t border-line pt-3 text-center">
-            <p className="text-[10px] text-ink-faint italic">
+            <p className="text-[10px] text-ink-muted italic">
               This is scholarly tafsir (commentary), not Quranic text.
             </p>
           </div>

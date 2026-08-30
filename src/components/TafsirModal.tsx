@@ -161,8 +161,8 @@ export function TafsirModal({ surahNumber, ayahNumber, isOpen, onClose }: Tafsir
                   </p>
 
                   <div className="mt-4 space-y-2 border-t border-line pt-3 text-center">
-                    <p className="text-[10px] text-ink-faint tabular-nums">{data.name}</p>
-                    <p className="text-[10px] text-ink-faint italic">
+                    <p className="text-[10px] text-ink-muted tabular-nums">{data.name}</p>
+                    <p className="text-[10px] text-ink-muted italic">
                       This is scholarly tafsir (commentary), not Quranic text.
                     </p>
                   </div>
