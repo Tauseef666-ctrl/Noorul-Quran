@@ -99,8 +99,9 @@ export function AppFooter() {
 
       <div className="relative mt-10 flex flex-col items-center justify-between gap-3 border-t border-line/60 pt-6 sm:flex-row">
         <p className="text-center text-[11px] text-ink-faint">
-          Quran text © Tanzil Project. Translations & recitations remain the property of their
-          respective authors & reciters, used here with attribution.
+          Quran text © Tanzil Project. Translations & tafsir remain the property of their
+          respective translators & scholars, used here with attribution. Recitations remain the
+          property of their reciters.
         </p>
         <div className="flex shrink-0 items-center gap-4">
           <Link

@@ -68,9 +68,12 @@ export default function AboutPage() {
             <p className="mt-1 text-sm text-ink-muted leading-relaxed">
               This application clearly distinguishes between Quranic Arabic,
               translations, tafsir, personal notes, and educational information.
-              Translations retain their original attribution. Tafsir is visually
-              separated from the Quran text. This application does not generate
-              fatwas or present AI-generated content as religious authority.
+              Translations retain the names of their translators (e.g. Saheeh
+              International, Fateh Muhammad Jalandhry — switchable in Settings).
+              Tafsir is commentary by named scholars (e.g. Tafsir al-Muyassar by
+              the King Fahd Quran Complex) and is visually separated from the
+              Quran text. This application does not generate fatwas or present
+              AI-generated content as religious authority.
             </p>
           </div>
         </div>

@@ -41,7 +41,17 @@ export const DATA_SOURCES: readonly DataSourceInfo[] = [
     name: 'Al Quran Cloud API (translations & tafsir editions)',
     url: 'https://alquran.cloud',
     license: 'Free API. Individual translation copyrights remain with their publishers.',
-    notes: 'Default translations: en.sahih (Saheeh International), ur.jalandhry (Fateh Muhammad Jalandhry).',
+    notes:
+      'Curated catalogue of 20 vetted published translation editions (Never machine-paraphrased; listed in reader attribution captions and the Settings selector). Defaults in use: en.sahih (Saheeh International) and ur.jalandhry (Fateh Muhammad Jalandhry).',
+  },
+  {
+    id: 'published-tafsirs',
+    kind: 'tafsir',
+    name: 'Published Arabic tafsir editions — Al Quran Cloud',
+    url: 'https://alquran.cloud',
+    license: 'Free API. Individual tafsir works remain with their authors and publishers.',
+    notes:
+      'Arabic commentary editions offered in the tafsir selector: Tafsir al-Muyassar (King Fahd Quran Complex; default), Tafsir al-Jalalayn (Jalal ad-Din al-Mahalli & Jalal ad-Din as-Suyuti), Tafsir al-Qurtubi (Imam Al-Qurtubi), Tafsir al-Waseet, Tafsir al-Baghawi, and Tanwir al-Miqbas. Tafsir is scholarly commentary — never presented as Quranic text. The API no longer serves the previously advertised English tafsir editions, so only these published Arabic works are offered.',
   },
   {
     id: 'quran-foundation',

@@ -249,8 +249,8 @@
 - [x] Tafsir separation: rendered in its own surface with explicit "commentary, not Quranic text" line in both modal and page; `translate="no"` + edition `lang`/`dir`; never styled as Quran glyphs
 
 ### 11.4 Attribution & sources
-- [ ] `attribution.ts`: dedicated `tafsir`-kind data-source row + translation-editions note naming each in-use translator; `/sources` tafsir filter populated
-- [ ] Footer + About copy updated to name the translators & tafsirs in use
+- [x] `attribution.ts`: dedicated `tafsir`-kind data-source row (naming the six published Arabic tafsir editions + safety note) and translation-editions note naming the in-use translators (Saheeh International, Fateh Muhammad Jalandhry, catalogue of 20); `/sources` tafsir filter auto-populated via `kind`
+- [x] Footer + About copy updated to name the translators & tafsirs in use
 
 ### 11.5 Content-safety guardrails
 - [ ] Explicit `lang` + `dir` + `translate="no"` on every vetted surface (Arabic, translations, tafsir) — no browser auto-retranslation
