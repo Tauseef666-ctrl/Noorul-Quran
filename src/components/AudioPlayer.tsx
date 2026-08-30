@@ -36,12 +36,14 @@ function IconButton({
   label,
   onClick,
   active,
+  expanded,
   children,
   disabled,
 }: {
   label: string
   onClick: () => void
   active?: boolean
+  expanded?: boolean
   disabled?: boolean
   children: React.ReactNode
 }) {
@@ -51,6 +53,7 @@ function IconButton({
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
+      aria-expanded={expanded}
       title={label}
       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all active:scale-90 disabled:opacity-40 ${
         active
@@ -101,6 +104,13 @@ export function AudioPlayer() {
 
   const progressPct = duration > 0 ? (currentTime / duration) * 100 : 0
 
+  const reciterLabel = reciterId.replace('ar.', '').replace(/[_.-]/g, ' ')
+  const announce = `Surah ${currentAyah.surahNumber}, ayah ${currentAyah.ayahNumber}, ${reciterLabel}, ${
+    loading ? 'loading' : playing ? 'playing' : 'paused'
+  }. Mode ${mode ? MODE_LABELS[mode] : 'none'}. Aayah repeat ${repeatAyah ? 'on' : 'off'}. Surah repeat ${
+    repeatSurah ? 'on' : 'off'
+  }. Auto next ${autoNext ? 'on' : 'off'}.`
+
   return (
     <motion.div
       initial={{ y: 80, opacity: 0 }}
@@ -111,6 +121,11 @@ export function AudioPlayer() {
       role="region"
       aria-label="Audio player"
     >
+      {/* Screen-reader announcement of recitation + playback state */}
+      <span role="status" className="sr-only">
+        {announce}
+      </span>
+
       {/* Primary row */}
       <div className="flex items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-4">
         {/* Close */}
@@ -175,6 +190,7 @@ export function AudioPlayer() {
           label={expanded ? 'Hide controls' : 'More controls'}
           onClick={() => setExpanded(!expanded)}
           active={expanded}
+          expanded={expanded}
         >
           {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
         </IconButton>
@@ -204,6 +220,7 @@ export function AudioPlayer() {
                 value={currentTime}
                 onChange={(e) => seek(Number(e.target.value))}
                 aria-label="Seek"
+                aria-valuetext={formatTime(currentTime)}
                 style={{ background: `linear-gradient(to right, var(--brand) ${progressPct}%, var(--line-strong) ${progressPct}%)` }}
                 disabled={duration <= 0}
               />
@@ -280,6 +297,7 @@ export function AudioPlayer() {
                   value={volume}
                   onChange={(e) => setVolume(Number(e.target.value))}
                   aria-label="Volume"
+                  aria-valuetext={`${Math.round(volume * 100)} percent`}
                   style={{ background: `linear-gradient(to right, var(--brand) ${volume * 100}%, var(--line-strong) ${volume * 100}%)` }}
                 />
                 <span className="w-8 text-right text-[10px] tabular-nums text-ink-faint">
