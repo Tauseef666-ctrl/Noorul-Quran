@@ -129,10 +129,12 @@ export function AudioPlayer() {
             {playing && (
               <EqualizerBars />
             )}
-            {loading ? 'Loading…' : `Surah ${currentAyah.surahNumber} · Ayah ${currentAyah.ayahNumber}`}
+            <span className="num-ltr">
+              {loading ? 'Loading…' : `Surah ${currentAyah.surahNumber} · Ayah ${currentAyah.ayahNumber}`}
+            </span>
           </p>
           <p className="flex items-center gap-1 text-[10px] text-ink-faint">
-            <span>{queueProgress} / {queue.length}</span>
+            <span className="num-ltr">{queueProgress} / {queue.length}</span>
             {mode && (
               <span className="inline-flex items-center gap-0.5 rounded-full bg-brand/10 px-1.5 py-px text-[9px] font-semibold text-brand">
                 <ListVideo className="h-2.5 w-2.5" aria-hidden />
@@ -190,7 +192,7 @@ export function AudioPlayer() {
           >
             {/* Progress */}
             <div className="flex items-center gap-2 px-3 pb-1.5 sm:gap-3 sm:px-4">
-              <span className="w-9 shrink-0 text-right text-[10px] tabular-nums text-ink-faint">
+              <span className="num-ltr w-9 shrink-0 text-right text-[10px] tabular-nums text-ink-faint">
                 {formatTime(currentTime)}
               </span>
               <input
@@ -205,7 +207,7 @@ export function AudioPlayer() {
                 style={{ background: `linear-gradient(to right, var(--brand) ${progressPct}%, var(--line-strong) ${progressPct}%)` }}
                 disabled={duration <= 0}
               />
-              <span className="w-9 shrink-0 text-[10px] tabular-nums text-ink-faint">
+              <span className="num-ltr w-9 shrink-0 text-[10px] tabular-nums text-ink-faint">
                 {formatTime(duration)}
               </span>
             </div>

@@ -84,7 +84,7 @@ export default function DailyAyahPage() {
       ) : ayah && (
         <motion.div variants={fadeIn} className="card rounded-2xl p-6 sm:p-10">
           <div className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">
+            <p className="num-ltr text-xs font-semibold uppercase tracking-[0.25em] text-gold">
               {daily.surahNumber}:{daily.ayahNumber}
             </p>
           </div>

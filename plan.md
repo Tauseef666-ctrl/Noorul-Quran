@@ -274,8 +274,9 @@
 - [ ] Settings "Interface text size" selector (radiogroup, same a11y pattern as `ArabicSizeSelector`); Arabic size stays separate (`nq:arabic-size`)
 
 ### 12.4 RTL & bidi correctness
-- [ ] Audit + guard bidi isolation: add `.num-ltr` (`unicode-bidi: isolate; direction: ltr`) utility and apply to surah:ayah references / timecodes / queue counters that sit inside RTL flows so they never reorder
-- [ ] Verify lang + dir on every Arabic / Urdu / Hindi / Farsi surface (Phase 11.5 baseline) and document RTL content status; full mirrored-UI RTL layout tracked as a Phase 12 follow-up
+- [x] Bidi isolation guard: `.num-ltr` utility (`unicode-bidi: isolate; direction: ltr`) applied to surah:ayah references, timecodes, and queue counters so they never reorder inside RTL flows
+- [x] Verified `lang` + `dir` on every Arabic / Urdu / Hindi / Farsi surface (Phase 11.5 baseline) and documented the RTL content status below
+- [ ] Follow-up: full mirrored-UI RTL layout (`dir="rtl"` document toggle) — deferred, would need logical-property pass over the premium fixed layout (player, drawer, sidebar)
 
 ### 12.5 Accessible audio controls
 - [ ] `aria-live="polite"` announce region in `AudioPlayer` announcing current recitation, play/pause state, mode toggles

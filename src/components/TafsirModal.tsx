@@ -93,7 +93,7 @@ export function TafsirModal({ surahNumber, ayahNumber, isOpen, onClose }: Tafsir
                 <BookMarked className="h-4 w-4 text-gold" aria-hidden />
                 <div>
                   <p className="text-sm font-semibold text-ink">Tafsir</p>
-                  <p className="text-xs text-ink-faint">
+                  <p className="num-ltr text-xs text-ink-faint">
                     {surahNumber}:{ayahNumber}
                     {selectedEdition ? ` · ${selectedEdition.name}` : ''}
                   </p>

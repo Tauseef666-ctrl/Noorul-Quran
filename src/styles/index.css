@@ -333,6 +333,13 @@ html {
     line-height: 2.2;
   }
 
+  /* Bidirectional safety — pin LTR reading of numbers/refs so they never
+     reorder inside RTL flows (e.g. "12 : 5" stays "12:5"). */
+  .num-ltr {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
   .translation-hi {
     line-height: 1.9;
   }

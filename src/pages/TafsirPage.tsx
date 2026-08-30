@@ -141,7 +141,7 @@ export default function TafsirPage() {
       {tafsir && (
         <motion.div variants={fadeIn} className="card rounded-2xl p-5 sm:p-6">
           <div className="mb-3 rounded-xl bg-gold/5 p-3 text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+            <p className="num-ltr text-xs font-semibold uppercase tracking-[0.2em] text-gold">
               Tafsir · Surah {surahNum}:{ayahNum}
             </p>
             {selectedEdition && (
