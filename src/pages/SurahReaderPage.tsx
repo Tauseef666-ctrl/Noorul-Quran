@@ -97,19 +97,30 @@ function AyahActions({
         )}
       </button>
 
-      {/* Bookmark */}
-      <button
+      {/* Bookmark — small scale-pop feedback */}
+      <motion.button
         type="button"
+        whileTap={{ scale: 0.86 }}
         onClick={onBookmark}
         className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-brand/10 hover:text-brand"
         aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark this ayah'}
+        title={isBookmarked ? 'Remove bookmark' : 'Bookmark this ayah'}
       >
-        {isBookmarked ? (
-          <BookmarkCheck className="h-4 w-4 text-gold" />
-        ) : (
-          <Bookmark className="h-4 w-4" />
-        )}
-      </button>
+        <motion.span
+          key={isBookmarked ? 'on' : 'off'}
+          initial={{ scale: 0.5, opacity: 0.4 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+          className="flex"
+          aria-hidden
+        >
+          {isBookmarked ? (
+            <BookmarkCheck className="h-4 w-4 text-gold" />
+          ) : (
+            <Bookmark className="h-4 w-4" />
+          )}
+        </motion.span>
+      </motion.button>
 
       {/* Copy */}
       <button
@@ -413,18 +424,29 @@ export default function SurahReaderPage() {
             )}
             {mode === 'surah' && currentAyah?.surahNumber === surahNumber ? 'Pause Surah' : 'Play Surah'}
           </button>
-          <button
+          <motion.button
             type="button"
+            whileTap={{ scale: 0.92 }}
             onClick={handleBookmarkToggle}
             className="flex items-center gap-2 rounded-full border border-line px-4 py-2 text-xs font-medium text-ink-muted transition-colors hover:border-brand hover:text-brand"
+            aria-pressed={isBookmarked('surah', String(surah.number))}
           >
-            {isBookmarked('surah', String(surah.number)) ? (
-              <BookmarkCheck className="h-3.5 w-3.5 text-gold" />
-            ) : (
-              <Bookmark className="h-3.5 w-3.5" />
-            )}
+            <motion.span
+              key={isBookmarked('surah', String(surah.number)) ? 'on' : 'off'}
+              initial={{ scale: 0.6, opacity: 0.4 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+              className="flex"
+              aria-hidden
+            >
+              {isBookmarked('surah', String(surah.number)) ? (
+                <BookmarkCheck className="h-3.5 w-3.5 text-gold" />
+              ) : (
+                <Bookmark className="h-3.5 w-3.5" />
+              )}
+            </motion.span>
             Bookmark Surah
-          </button>
+          </motion.button>
           <button
             type="button"
             onClick={() => setShowInfo(!showInfo)}

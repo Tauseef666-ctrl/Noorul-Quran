@@ -142,8 +142,9 @@ export default function DailyAyahPage() {
             >
               Read in Context
             </Link>
-            <button
+            <motion.button
               type="button"
+              whileTap={{ scale: 0.92 }}
               onClick={() => {
                 if (isBookmarked('ayah', bookmarkId)) {
                   removeBookmark('ayah', bookmarkId)
@@ -158,10 +159,20 @@ export default function DailyAyahPage() {
                 }
               }}
               className="flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-ink-muted transition-colors hover:border-brand hover:text-brand"
+              aria-pressed={isBookmarked('ayah', bookmarkId)}
             >
-              <Bookmark className="h-4 w-4" />
+              <motion.span
+                key={isBookmarked('ayah', bookmarkId) ? 'on' : 'off'}
+                initial={{ scale: 0.6, opacity: 0.4 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+                className="flex"
+                aria-hidden
+              >
+                <Bookmark className="h-4 w-4" />
+              </motion.span>
               {isBookmarked('ayah', bookmarkId) ? 'Bookmarked' : 'Bookmark'}
-            </button>
+            </motion.button>
             <button
               type="button"
               onClick={() => {

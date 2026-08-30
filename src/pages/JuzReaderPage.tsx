@@ -187,8 +187,9 @@ export default function JuzReaderPage() {
             )}
             {mode === 'range' && playing ? 'Pause Juz' : 'Play Juz'}
           </button>
-          <button
+          <motion.button
             type="button"
+            whileTap={{ scale: 0.92 }}
             onClick={() => {
               if (isBookmarked('ayah', bookmarkId)) {
                 removeBookmark('ayah', bookmarkId)
@@ -203,14 +204,24 @@ export default function JuzReaderPage() {
               }
             }}
             className="flex items-center gap-2 rounded-full border border-line px-4 py-2 text-xs font-medium text-ink-muted transition-colors hover:border-brand hover:text-brand"
+            aria-pressed={isBookmarked('ayah', bookmarkId)}
           >
-            {isBookmarked('ayah', bookmarkId) ? (
-              <BookmarkCheck className="h-3.5 w-3.5 text-gold" />
-            ) : (
-              <Bookmark className="h-3.5 w-3.5" />
-            )}
+            <motion.span
+              key={isBookmarked('ayah', bookmarkId) ? 'on' : 'off'}
+              initial={{ scale: 0.6, opacity: 0.4 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+              className="flex"
+              aria-hidden
+            >
+              {isBookmarked('ayah', bookmarkId) ? (
+                <BookmarkCheck className="h-3.5 w-3.5 text-gold" />
+              ) : (
+                <Bookmark className="h-3.5 w-3.5" />
+              )}
+            </motion.span>
             Bookmark Juz
-          </button>
+          </motion.button>
         </div>
       </motion.div>
 
@@ -295,11 +306,20 @@ export default function JuzReaderPage() {
                       className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition-colors hover:bg-brand/10 hover:text-brand"
                       aria-label={isBookmarked('ayah', bookmarkId) ? 'Remove bookmark' : 'Bookmark'}
                     >
-                      {isBookmarked('ayah', bookmarkId) ? (
-                        <BookmarkCheck className="h-3.5 w-3.5 text-gold" />
-                      ) : (
-                        <Bookmark className="h-3.5 w-3.5" />
-                      )}
+                      <motion.span
+                        key={isBookmarked('ayah', bookmarkId) ? 'on' : 'off'}
+                        initial={{ scale: 0.6, opacity: 0.4 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+                        className="flex"
+                        aria-hidden
+                      >
+                        {isBookmarked('ayah', bookmarkId) ? (
+                          <BookmarkCheck className="h-3.5 w-3.5 text-gold" />
+                        ) : (
+                          <Bookmark className="h-3.5 w-3.5" />
+                        )}
+                      </motion.span>
                     </button>
                     <button
                       type="button"

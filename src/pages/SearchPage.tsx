@@ -6,7 +6,6 @@ import {
   BookOpen,
   Loader2,
   Play,
-  Pause,
   ShieldCheck,
   ArrowUpRight,
 } from 'lucide-react'
@@ -16,10 +15,29 @@ import type { RichHit } from '../data/corpus'
 import type { Surah } from '../types/quran'
 import { useAudio } from '../store/audio'
 import { GeometricPattern } from '../components/GeometricPattern'
+import { EqualizerBars } from '../components/EqualizerBars'
+import { fadeUp, staggerContainer } from '../animations'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 12 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+}
+
+/* Subtle gold highlight of the queried slice of a result excerpt. */
+function Highlighted({ text, query }: { text: string; query: string }) {
+  const q = query.trim()
+  if (!q) return <>{text}</>
+  const idx = text.toLowerCase().indexOf(q.toLowerCase())
+  if (idx === -1) return <>{text}</>
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark className="rounded-sm bg-gold/25 px-0.5 text-ink">
+        {text.slice(idx, idx + q.length)}
+      </mark>
+      {text.slice(idx + q.length)}
+    </>
+  )
 }
 
 const MODES: { id: SearchMode; label: string; sub: string }[] = [
@@ -137,7 +155,11 @@ export default function SearchPage() {
         </p>
       </motion.header>
 
-      <motion.form variants={fadeIn} onSubmit={handleSubmit} className="relative">
+      <motion.form
+        variants={fadeIn}
+        onSubmit={handleSubmit}
+        className="relative transition-shadow duration-300 focus-within:shadow-[var(--shadow-glow)]"
+      >
         <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-faint" aria-hidden />
         <input
           ref={inputRef}
@@ -145,7 +167,7 @@ export default function SearchPage() {
           value={query}
           onChange={(e) => handleChange(e.target.value)}
           placeholder="e.g. رحمة, mercy, or 2:255"
-          className="w-full rounded-2xl border border-line bg-surface py-3.5 pl-12 pr-4 text-sm text-ink placeholder:text-ink-faint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+          className="w-full rounded-2xl border border-line bg-surface py-3.5 pl-12 pr-4 text-sm text-ink placeholder:text-ink-faint transition-colors focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           aria-label="Search the Quran"
         />
       </motion.form>
@@ -204,7 +226,7 @@ export default function SearchPage() {
               <p className="text-[10px] font-semibold uppercase tracking-widest text-gold">
                 Exact match
               </p>
-              <HitCard hit={reference} toggle={toggle} playing={playing} isCurrentAyah={isCurrentAyah} />
+              <HitCard hit={reference} query={query} toggle={toggle} playing={playing} isCurrentAyah={isCurrentAyah} />
             </div>
           )}
 
@@ -250,18 +272,21 @@ export default function SearchPage() {
                 {matchesProvider ? ' · from provider' : ''}
               </p>
               <div className="space-y-2">
-                <AnimatePresence initial={false}>
-                  {hits.map((hit) => (
-                    <motion.div key={hit.ayahKey} variants={fadeIn}>
-                      <HitCard
-                        hit={hit}
-                        toggle={toggle}
-                        playing={playing}
-                        isCurrentAyah={isCurrentAyah}
-                      />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+                <motion.div variants={staggerContainer} className="space-y-2">
+                  <AnimatePresence initial={false}>
+                    {hits.map((hit) => (
+                      <motion.div key={hit.ayahKey} variants={fadeUp}>
+                        <HitCard
+                          hit={hit}
+                          query={query}
+                          toggle={toggle}
+                          playing={playing}
+                          isCurrentAyah={isCurrentAyah}
+                        />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
               </div>
             </div>
           )}
@@ -293,11 +318,13 @@ export default function SearchPage() {
 
 function HitCard({
   hit,
+  query,
   toggle,
   playing,
   isCurrentAyah,
 }: {
   hit: RichHit
+  query: string
   toggle: (s: number, a: number) => void
   playing: boolean
   isCurrentAyah: (s: number, a: number) => boolean
@@ -307,15 +334,16 @@ function HitCard({
   return (
     <Link
       to={`/surah/${hit.surahNumber}?ayah=${hit.ayahNumber}`}
-      className="card group relative block rounded-2xl p-4 transition-all hover:shadow-lg"
+      className="card group relative block rounded-2xl p-4 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
     >
       <div className="flex items-center justify-between gap-3">
         <p className="text-xs font-semibold text-gold">
           {hit.surahName} {hit.surahNumber}:{hit.ayahNumber}
         </p>
         <div className="flex items-center gap-1">
-          <button
+          <motion.button
             type="button"
+            whileTap={{ scale: 0.86 }}
             onClick={(e) => {
               e.preventDefault()
               toggle(hit.surahNumber, hit.ayahNumber)
@@ -328,11 +356,11 @@ function HitCard({
             aria-label={active ? 'Pause' : 'Play'}
           >
             {active && playing ? (
-              <Pause className="h-4 w-4" />
+              <EqualizerBars />
             ) : (
               <Play className="h-4 w-4" />
             )}
-          </button>
+          </motion.button>
           <span className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-faint">
             <BookOpen className="h-4 w-4 group-hover:text-brand" />
           </span>
@@ -341,11 +369,13 @@ function HitCard({
 
       {hit.excerptArabic && (
         <p className="arabic-heading mt-2 text-lg leading-relaxed" lang="ar" dir="rtl">
-          {hit.excerptArabic}
+          <Highlighted text={hit.excerptArabic} query={query} />
         </p>
       )}
       {hit.excerptTranslation && (
-        <p className="mt-2 line-clamp-2 text-sm text-ink-muted">{hit.excerptTranslation}</p>
+        <p className="mt-2 line-clamp-2 text-sm text-ink-muted">
+          <Highlighted text={hit.excerptTranslation} query={query} />
+        </p>
       )}
     </Link>
   )
