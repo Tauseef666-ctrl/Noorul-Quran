@@ -17,9 +17,9 @@ import {
 } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
 import { getTranslationsForAyah } from '../services/quran/alQuranCloudProvider'
-import { DEFAULT_TRANSLATION_IDS } from '../services/quran/translationProvider'
 import type { JuzDetail, Ayah } from '../types/quran'
 import { useBookmarks } from '../store/bookmarks'
+import { useTranslations } from '../store/translations'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
 import { TafsirModal } from '../components/TafsirModal'
@@ -28,6 +28,7 @@ import { NoteModal } from '../components/NoteModal'
 import { useNotes } from '../store/notes'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { EqualizerBars } from '../components/EqualizerBars'
+import { AyahTranslations } from '../components/AyahTranslations'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 16 },
@@ -41,6 +42,7 @@ export default function JuzReaderPage() {
   const [verseInfoAyah, setVerseInfoAyah] = useState<Ayah | null>(null)
   const [noteAyah, setNoteAyah] = useState<Ayah | null>(null)
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
+  const { activeIds, activeEditions } = useTranslations()
   const { toggle, playing, isCurrentAyah, currentAyah, mode, playRange, pause, resume } = useAudio()
   const notes = useNotes()
   const ayahRefs = useRef<Map<string, HTMLLIElement>>(new Map())
@@ -74,7 +76,7 @@ export default function JuzReaderPage() {
               const trans = await getTranslationsForAyah(
                 ayah.surahNumber,
                 ayah.ayahNumber,
-                DEFAULT_TRANSLATION_IDS,
+                activeIds,
                 controller.signal,
               )
               return [ayah.key, trans] as const
@@ -97,7 +99,7 @@ export default function JuzReaderPage() {
 
     fetchTranslations()
     return () => controller.abort()
-  }, [juz])
+  }, [juz, activeIds])
 
   const error = !isValid ? 'Invalid juz number.' : dataError
 
@@ -223,6 +225,11 @@ export default function JuzReaderPage() {
             Bookmark Juz
           </motion.button>
         </div>
+
+        <p className="mt-4 text-center text-[11px] text-ink-faint tabular-nums">
+          Translation{activeEditions.length !== 1 ? 's' : ''}:{' '}
+          {activeEditions.map((e) => e.translator).join(' · ')}
+        </p>
       </motion.div>
 
       {/* Ayahs */}
@@ -394,20 +401,12 @@ export default function JuzReaderPage() {
                   {ayah.arabic}
                 </p>
 
-                <div className="mt-3 space-y-2 border-t border-line/50 pt-3">
-                  {translations[ayah.key]?.['en.sahih'] && (
-                    <p className="translation-en text-[15px] leading-relaxed text-ink-muted">
-                      {translations[ayah.key]['en.sahih']}
-                    </p>
-                  )}
-                  {translations[ayah.key]?.['ur.jalandhry'] && (
-                    <p className="translation-ur text-right text-base" lang="ur" dir="rtl">
-                      {translations[ayah.key]['ur.jalandhry']}
-                    </p>
-                  )}
-                  {!translations[ayah.key] && (
-                    <div className="h-4 w-48 animate-pulse rounded bg-line" />
-                  )}
+                <div className="mt-3 border-t border-line/50 pt-3">
+                  <AyahTranslations
+                    textByEdition={translations[ayah.key] ?? {}}
+                    editions={activeEditions}
+                    hasData={Boolean(translations[ayah.key])}
+                  />
                 </div>
 
                 {/* Personal note */}

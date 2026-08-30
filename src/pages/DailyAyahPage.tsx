@@ -4,12 +4,13 @@ import { motion } from 'framer-motion'
 import { Bookmark, Share2, Sparkles, Play, Pause } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
 import { getTranslationsForAyah } from '../services/quran/alQuranCloudProvider'
-import { DEFAULT_TRANSLATION_IDS } from '../services/quran/translationProvider'
 import type { Ayah } from '../types/quran'
 import { useBookmarks } from '../store/bookmarks'
+import { useTranslations } from '../store/translations'
 import { useAudio } from '../store/audio'
 import { AYAH_COUNTS } from '../data/ayahCounts'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { AyahTranslations } from '../components/AyahTranslations'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 16 },
@@ -35,9 +36,9 @@ function getDailyAyah(): { surahNumber: number; ayahNumber: number } {
 const daily = getDailyAyah()
 
 export default function DailyAyahPage() {
-  const [translation, setTranslation] = useState('')
-  const [urduTranslation, setUrduTranslation] = useState('')
+  const [translations, setTranslations] = useState<Record<string, string>>({})
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
+  const { activeIds, activeEditions } = useTranslations()
   const { toggle, playing, isCurrentAyah, playSurah } = useAudio()
 
   const bookmarkId = `${daily.surahNumber}:${daily.ayahNumber}`
@@ -55,15 +56,14 @@ export default function DailyAyahPage() {
     getTranslationsForAyah(
       daily.surahNumber,
       daily.ayahNumber,
-      DEFAULT_TRANSLATION_IDS,
+      activeIds,
       controller.signal,
     ).then((trans) => {
-      setTranslation(trans['en.sahih'] ?? '')
-      setUrduTranslation(trans['ur.jalandhry'] ?? '')
+      if (!controller.signal.aborted) setTranslations(trans)
     })
 
     return () => controller.abort()
-  }, [ayah])
+  }, [ayah, activeIds])
 
   return (
     <motion.div initial="hidden" animate="visible" className="space-y-6">
@@ -95,16 +95,13 @@ export default function DailyAyahPage() {
 
           <div className="gold-divider mx-auto my-6 w-32" />
 
-          {translation && (
-            <p className="translation-en text-center text-[15px] leading-relaxed text-ink-muted">
-              {translation}
-            </p>
-          )}
-          {urduTranslation && (
-            <p className="translation-ur mt-3 text-center text-base" lang="ur" dir="rtl">
-              {urduTranslation}
-            </p>
-          )}
+          <div className="text-center">
+            <AyahTranslations
+              textByEdition={translations}
+              editions={activeEditions}
+              hasData={Object.keys(translations).length > 0}
+            />
+          </div>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <button

@@ -5,6 +5,13 @@ import type { QuranProvider } from './quranProvider'
 export const DEFAULT_TRANSLATION_IDS = ['en.sahih', 'ur.jalandhry'] as const
 export const DEFAULT_ENGLISH_ID = 'en.sahih' as const
 
+const RTL_LANGUAGES = new Set(['ar', 'ur', 'fa', 'ps', 'sd', 'ug', 'dv', 'he'])
+
+/** Correct text direction for a translation edition's language. */
+export function langDir(language: string): 'rtl' | 'ltr' {
+  return RTL_LANGUAGES.has(language) ? 'rtl' : 'ltr'
+}
+
 /**
  * Curated catalogue of published translations served by Al Quran Cloud.
  * Every entry is a real, vetted published edition — never machine-paraphrased.

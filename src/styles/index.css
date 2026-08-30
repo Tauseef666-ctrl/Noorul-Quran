@@ -294,6 +294,15 @@
     line-height: 2.2;
   }
 
+  .translation-ar {
+    font-family: var(--font-arabic);
+    line-height: 2.2;
+  }
+
+  .translation-hi {
+    line-height: 1.9;
+  }
+
   .gold-divider {
     height: 1px;
     background: linear-gradient(

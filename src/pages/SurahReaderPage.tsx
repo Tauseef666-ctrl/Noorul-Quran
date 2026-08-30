@@ -17,9 +17,9 @@ import {
 } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
 import { getTranslationsForAyah } from '../services/quran/alQuranCloudProvider'
-import { DEFAULT_TRANSLATION_IDS } from '../services/quran/translationProvider'
 import type { SurahDetail, Ayah } from '../types/quran'
 import { useBookmarks } from '../store/bookmarks'
+import { useTranslations } from '../store/translations'
 import { useReadingProgress } from '../hooks/useReadingProgress'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
@@ -29,6 +29,7 @@ import { VerseInfoPanel } from '../components/VerseInfoPanel'
 import { NoteModal } from '../components/NoteModal'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { EqualizerBars } from '../components/EqualizerBars'
+import { AyahTranslations } from '../components/AyahTranslations'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 16 },
@@ -200,6 +201,7 @@ export default function SurahReaderPage() {
   const ayahRefs = useRef<Map<string, HTMLLIElement>>(new Map())
   const { currentAyah, playing, isCurrentAyah, mode, playSurah, pause, resume } = useAudio()
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
+  const { activeIds, activeEditions } = useTranslations()
   const { updateProgress } = useReadingProgress()
   const notes = useNotes()
 
@@ -242,7 +244,7 @@ export default function SurahReaderPage() {
               const trans = await getTranslationsForAyah(
                 ayah.surahNumber,
                 ayah.ayahNumber,
-                DEFAULT_TRANSLATION_IDS,
+                activeIds,
                 controller.signal,
               )
               return [ayah.key, trans] as const
@@ -266,7 +268,7 @@ export default function SurahReaderPage() {
     fetchTranslations()
     return () => controller.abort()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [surah])
+  }, [surah, activeIds])
 
   // Scroll to target ayah
   useEffect(() => {
@@ -457,6 +459,11 @@ export default function SurahReaderPage() {
           </button>
         </div>
 
+        <p className="mt-4 text-center text-[11px] text-ink-faint tabular-nums">
+          Translation{activeEditions.length !== 1 ? 's' : ''}:{' '}
+          {activeEditions.map((e) => e.translator).join(' · ')}
+        </p>
+
         {showInfo && (
           <div className="mt-4 rounded-xl bg-brand/5 p-4 text-left text-sm text-ink-muted">
             <p><span className="font-semibold text-ink">Name:</span> {surah.nameTransliterated}</p>
@@ -554,20 +561,12 @@ export default function SurahReaderPage() {
               </p>
 
               {/* Translations */}
-              <div className="mt-4 space-y-2 border-t border-line/50 pt-3">
-                {translations[ayah.key]?.['en.sahih'] && (
-                  <p className="translation-en text-[15px] leading-relaxed text-ink-muted">
-                    {translations[ayah.key]['en.sahih']}
-                  </p>
-                )}
-                {translations[ayah.key]?.['ur.jalandhry'] && (
-                  <p className="translation-ur text-right text-base" lang="ur" dir="rtl">
-                    {translations[ayah.key]['ur.jalandhry']}
-                  </p>
-                )}
-                {!translations[ayah.key] && (
-                  <div className="h-4 w-48 animate-pulse rounded bg-line" />
-                )}
+              <div className="mt-4 border-t border-line/50 pt-3">
+                <AyahTranslations
+                  textByEdition={translations[ayah.key] ?? {}}
+                  editions={activeEditions}
+                  hasData={Boolean(translations[ayah.key])}
+                />
               </div>
 
               {/* Personal note */}

@@ -16,11 +16,13 @@ import { getActiveProvider } from '../services/quran'
 import type { Surah, Ayah } from '../types/quran'
 import { useReadingProgress } from '../hooks/useReadingProgress'
 import { useBookmarks } from '../store/bookmarks'
+import { useTranslations } from '../store/translations'
 import { AYAH_COUNTS, TOTAL_AYAHS } from '../data/ayahCounts'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
 import { GeometricPattern } from '../components/GeometricPattern'
 import { EqualizerBars } from '../components/EqualizerBars'
+import { langDir } from '../services/quran/translationProvider'
 import {
   heroStagger,
   heroItem,
@@ -63,26 +65,35 @@ export default function HomePage() {
   )
 
   const [dailyAyah, setDailyAyah] = useState<Ayah | null>(null)
-  const [dailyTranslation, setDailyTranslation] = useState('')
+  const [dailyTranslations, setDailyTranslations] = useState<Record<string, string>>({})
+  const { activeIds, primaryEdition } = useTranslations()
 
   useEffect(() => {
     const provider = getActiveProvider()
     const controller = new AbortController()
 
-    provider.getAyah(daily.surahNumber, daily.ayahNumber, { signal: controller.signal }).then((ayah) => {
-      setDailyAyah(ayah)
-    })
+    provider
+      .getAyah(daily.surahNumber, daily.ayahNumber, { signal: controller.signal })
+      .then((ayah) => {
+        if (!controller.signal.aborted) setDailyAyah(ayah)
+      })
+
+    return () => controller.abort()
+  }, [])
+
+  useEffect(() => {
+    const controller = new AbortController()
 
     import('../services/quran/alQuranCloudProvider').then(({ getTranslationsForAyah }) => {
-      getTranslationsForAyah(daily.surahNumber, daily.ayahNumber, ['en.sahih'], controller.signal).then(
+      getTranslationsForAyah(daily.surahNumber, daily.ayahNumber, activeIds, controller.signal).then(
         (trans) => {
-          setDailyTranslation(trans['en.sahih'] ?? '')
+          if (!controller.signal.aborted) setDailyTranslations(trans)
         },
       )
     })
 
     return () => controller.abort()
-  }, [])
+  }, [activeIds])
 
   const { progress } = useReadingProgress()
   const { bookmarks } = useBookmarks()
@@ -92,6 +103,7 @@ export default function HomePage() {
   const dailyIsPlaying = dailyAyah
     ? isCurrentAyah(dailyAyah.surahNumber, dailyAyah.ayahNumber) && playing
     : false
+  const dailyPrimaryText = primaryEdition ? (dailyTranslations[primaryEdition.id] ?? '') : ''
   const journeyTotalPct = progress
     ? readingPercent(progress.surahNumber, progress.ayahNumber)
     : 0
@@ -270,12 +282,15 @@ export default function HomePage() {
               <motion.p variants={fadeUp} className="quran-text text-right" lang="ar" dir="rtl">
                 {dailyAyah.arabic}
               </motion.p>
-              {dailyTranslation && (
+              {dailyPrimaryText && primaryEdition && (
                 <motion.p
                   variants={fadeUp}
-                  className="translation-en mt-4 text-[15px] leading-relaxed text-ink-muted"
+                  lang={primaryEdition.language}
+                  dir={langDir(primaryEdition.language)}
+                  translate="no"
+                  className={`translation-${primaryEdition.language} mt-4 text-[15px] leading-relaxed text-ink-muted`}
                 >
-                  {dailyTranslation}
+                  {dailyPrimaryText}
                 </motion.p>
               )}
               <motion.div
