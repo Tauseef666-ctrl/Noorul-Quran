@@ -86,8 +86,11 @@ export default function AboutPage() {
             <h2 className="text-sm font-semibold text-ink">Technology</h2>
             <p className="mt-1 text-sm text-ink-muted leading-relaxed">
               Built with React, TypeScript, Vite, and Tailwind CSS.
-              Responsive design with light/dark theme support.
-              Progressive Web App with offline capabilities.
+              Responsive design with light/dark theme support, adjustable text
+              sizes, and voice-guide keyboard navigation. Installable as a
+              Progressive Web App — the Mushaf reading shell works offline.
+              Audio, translations, and tafsir are streamed on demand and never
+              cached offline (respecting their publishers’ rights).
               Data sourced from Quran.com API and Al Quran Cloud.
             </p>
           </div>

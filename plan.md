@@ -8,7 +8,7 @@
 >
 > **Current direction (2026-08-29):** `prompt.md` restructured → Premium UI/UX Upgrade.
 > Visual identity = *Luxury Islamic + Deep Black + Emerald + Subtle Gold + Frosted Glass + Cinematic Motion*.
-> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning. Phase 11 delivered (`634434d` → `28d200c`): translations catalogue + persisted selection, dynamic translation rendering, Arabic tafsir fix + selector + hard safety guard, attribution, content-safety guardrails. Phase 12 delivered (`cb7ecbd` → `32841b4`): skip link + landmarks + modal focus trap + per-route titles, slider focus/reduced-motion/contrast, adjustable UI text size, bidi isolation, accessible audio announcements. Remaining follow-up: 12.4 mirrored-UI RTL layout. Now working on **Phase 13 — PWA**.
+> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning. Phase 11 delivered (`634434d` → `28d200c`): translations catalogue + persisted selection, dynamic translation rendering, Arabic tafsir fix + selector + hard safety guard, attribution, content-safety guardrails. Phase 12 delivered (`cb7ecbd` → `32841b4`): skip link + landmarks + modal focus trap + per-route titles, slider focus/reduced-motion/contrast, adjustable UI text size, bidi isolation, accessible audio announcements. Remaining follow-up: 12.4 mirrored-UI RTL layout. Phase 13 delivered (`c653599` → `f8a9b0d`): PWA manifest + generated icon suite, license-safe offline service worker, honest About copy. Now working on **Phase 14 — Performance & Error States**.
 
 ---
 
@@ -285,9 +285,24 @@
 
 ## Phase 13 — PWA
 
-- [ ] Manifest + app icons
-- [ ] Service worker + offline app shell
-- [ ] Caching strategy that does NOT cache copyrighted audio/translations against license terms
+- [x] Manifest + app icons
+- [x] Service worker + offline app shell
+- [x] Caching strategy that does NOT cache copyrighted audio/translations against license terms
+
+### 13.1 Manifest & icons
+- [x] `public/manifest.webmanifest` — name/short_name/description, standalone display, brand `theme_color` + dark `background_color`, purpose `any` + `maskable` icons
+- [x] Dependency-free icon pipeline: `scripts/generate-pwa-icons.mjs` PNG-encodes the brand mark (deep-emerald gradient, gold crescent, sparkle motes) into 192/512/maskable-512/apple-touch-180/favicon-32; `npm run generate:icons`
+- [x] `index.html`: manifest link, apple-touch-icon, `mobile-web-app-*` meta, PNG favicon (SVG favicon retained)
+
+### 13.2 Service worker & offline shell
+- [x] `public/sw.js`: cache-on-install app shell (`/`, manifest, icons); network-first navigations with offline shell fallback; cache-first for Vite hashed `/assets/` (immutable) with background revalidate
+- [x] Production-only registration in `main.tsx` (never shadows the dev server); old cache versions pruned on activate; `clients.claim` for instant control
+- [x] Build verified — `dist` includes `sw.js` + manifest + icons
+
+### 13.3 License-safe caching
+- [x] The SW only intercepts SAME-ORIGIN GET requests; `Range` (streaming) requests pass through untouched
+- [x] Cross-origin responses (Al Quran Cloud translations/tafsir, islamic.network recitation CDN) are never cached — audio/translations/tafsir remain streamed on demand per publisher rights
+- [x] About "Technology" copy made truthful: installable PWA, offline Mushaf shell, streamed (non-cached) external content
 
 ## Phase 14 — Performance & Error States
 
@@ -361,3 +376,5 @@
 | 2026-08-30 | **Phase 12.4 delivered** — bidi isolation `.num-ltr` (dir ltr + unicode-bidi isolate) on surah:ayah refs, timecodes, queue counters; RTL content status documented; mirrored-UI RTL layout tracked as follow-up | `1218d1f` |
 | 2026-08-30 | **Phase 12.5 delivered** — accessible audio: `aria-live` (role=status) recitation/play-state/mode announcements, `aria-expanded` expand control, `aria-valuetext` on seek + volume | `32841b4` |
 | 2026-08-30 | **Phase 12 complete** (`cb7ecbd` → `32841b4`). Open follow-up: 12.4 mirrored-UI RTL layout (logical-property pass over the premium fixed layout) | `32841b4` |
+| 2026-08-30 | **Phase 13.1 delivered** — PWA manifest (`manifest.webmanifest`: standalone, brand theme/background, any + maskable icons); dependency-free `scripts/generate-pwa-icons.mjs` rasterizes the emerald/gold mark (crescent + sparkles) → 192/512/maskable/apple-touch/favicon PNGs; `index.html` app meta + icon links | `c653599` |
+| 2026-08-30 | **Phase 13.2 + 13.3 delivered** — `public/sw.js`: cached app shell + network-first navigations w/ offline fallback, cache-first hashed `/assets/`, old-version pruning, `skipWaiting`/`clients.claim`; registration PROD-only in `main.tsx`; license-safe — only same-origin GETs, `Range`/streaming + ALL cross-origin (translations/tafsir/audio) pass through uncached; About Technology copy now truthful | `f8a9b0d` |
