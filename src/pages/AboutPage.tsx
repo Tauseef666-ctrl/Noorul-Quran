@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { BookOpen, Heart, Globe, Shield, Code } from 'lucide-react'
+import { Heart, Globe, Shield, Code } from 'lucide-react'
+import { LogoMark } from '../components/Brand'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 12 },
@@ -14,8 +15,8 @@ export default function AboutPage() {
   return (
     <motion.div initial="hidden" animate="visible" variants={stagger} className="space-y-6">
       <motion.header variants={fadeIn} className="text-center py-6">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-brand/10 text-brand">
-          <BookOpen className="h-8 w-8" aria-hidden />
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-brand/10 text-brand ring-1 ring-gold/20 shadow-[var(--shadow-glow)]">
+          <LogoMark className="h-9 w-9" />
         </div>
         <h1 className="arabic-heading text-3xl" lang="ar" dir="rtl" translate="no">
           نور القرآن
@@ -24,6 +25,7 @@ export default function AboutPage() {
           Noorul<span className="text-gold">Quran</span>
         </p>
         <p className="mt-1 text-sm text-ink-muted italic">Read. Listen. Reflect.</p>
+        <p className="mt-2 text-xs text-ink-faint">Created by Tauseef Khan</p>
         <div className="gold-divider mx-auto mt-4 w-24" />
       </motion.header>
 
