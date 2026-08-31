@@ -118,14 +118,42 @@ export function AudioPlayer() {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 80, opacity: 0 }}
       transition={{ type: 'spring', damping: 26, stiffness: 260 }}
-      className="glass-ctl fixed inset-x-0 bottom-14 z-40 rounded-2xl shadow-[var(--shadow-lifted)] sm:rounded-2xl lg:inset-x-auto lg:bottom-5 lg:left-1/2 lg:w-[min(46rem,96vw)] lg:-translate-x-1/2"
+      className="fixed inset-x-0 bottom-14 z-40 lg:inset-x-auto lg:bottom-5 lg:left-1/2 lg:w-[min(46rem,96vw)] lg:-translate-x-1/2"
       role="region"
       aria-label="Audio player"
     >
-      {/* Screen-reader announcement of recitation + playback state */}
-      <span role="status" className="sr-only">
-        {announce}
-      </span>
+      {/* Premium glass frame — deep-black glass with a thin emerald→gold border */}
+      <div className="rounded-2xl bg-gradient-to-br from-emerald-400/80 via-gold/60 to-emerald-500/70 p-px shadow-[var(--shadow-lifted)] sm:rounded-2xl">
+        <div className="relative overflow-hidden rounded-[calc(1rem-1px)] bg-[#080c0b]/95 backdrop-blur-xl sm:rounded-[calc(1rem-1px)]">
+          {/* Inner top highlight for the glass feel */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/15" aria-hidden />
+          {/* Inner soft glow so the panel reads as deep glass, not flat black */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-70"
+            aria-hidden
+            style={{
+              background:
+                'radial-gradient(120% 60% at 50% 0%, rgba(29,127,99,0.18), transparent 60%), linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0) 40%)',
+            }}
+          />
+          {/* Subtle animated emerald edge illumination while playing */}
+          {playing && (
+            <div
+              className="pointer-events-none absolute inset-0 rounded-[calc(1rem-1px)]"
+              aria-hidden
+              style={{
+                background:
+                  'linear-gradient(115deg, transparent 0%, rgba(52,211,153,0.35) 25%, transparent 50%, rgba(238,201,140,0.28) 75%, transparent 100%)',
+                backgroundSize: '300% 100%',
+                animation: 'sound-edge 3.5s linear infinite',
+              }}
+            />
+          )}
+          <div className="relative">
+            {/* Screen-reader announcement of recitation + playback state */}
+            <span role="status" className="sr-only">
+              {announce}
+            </span>
 
       {/* Primary row */}
       <div className="flex items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-4">
@@ -365,6 +393,9 @@ export function AudioPlayer() {
           </motion.div>
         )}
       </AnimatePresence>
+          </div>
+        </div>
+      </div>
     </motion.div>
   )
 }
