@@ -345,11 +345,11 @@
 
 ## Phase 17 — README & Docs
 
-- [ ] Logo, description, screenshots, live demo link
-- [ ] Features, tech stack, architecture diagram
-- [ ] Data/audio sources + attribution + licensing
-- [ ] Local dev instructions, env vars, API config
-- [ ] Deployment guide, accessibility notes, roadmap, contribution guide
+- [x] Logo, description, screenshots, live demo link
+- [x] Features, tech stack, architecture diagram
+- [x] Data/audio sources + attribution + licensing
+- [x] Local dev instructions, env vars, API config
+- [x] Deployment guide, accessibility notes, roadmap, contribution guide
 
 ## Phase 18 — Final QA (Gate Before "Complete")
 
