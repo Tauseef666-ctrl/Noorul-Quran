@@ -8,7 +8,7 @@
 >
 > **Current direction (2026-08-29):** `prompt.md` restructured → Premium UI/UX Upgrade.
 > Visual identity = *Luxury Islamic + Deep Black + Emerald + Subtle Gold + Frosted Glass + Cinematic Motion*.
-> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning. Phase 11 delivered (`634434d` → `28d200c`): translations catalogue + persisted selection, dynamic translation rendering, Arabic tafsir fix + selector + hard safety guard, attribution, content-safety guardrails. Phase 12 delivered (`cb7ecbd` → `32841b4`): skip link + landmarks + modal focus trap + per-route titles, slider focus/reduced-motion/contrast, adjustable UI text size, bidi isolation, accessible audio announcements. Remaining follow-up: 12.4 mirrored-UI RTL layout. Phase 13 delivered (`c653599` → `f8a9b0d`): PWA manifest + generated icon suite, license-safe offline service worker, honest About copy. Phase 14 delivered (`c17395a` → `213a7fd` + `14.4`): route-level code splitting, async provider resolution, content-visibility containment, audio streaming hardening, and never-blank error states with retry on every fetch. Next phase: TBD (check plan).
+> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning. Phase 11 delivered (`634434d` → `28d200c`): translations catalogue + persisted selection, dynamic translation rendering, Arabic tafsir fix + selector + hard safety guard, attribution, content-safety guardrails. Phase 12 delivered (`cb7ecbd` → `32841b4`): skip link + landmarks + modal focus trap + per-route titles, slider focus/reduced-motion/contrast, adjustable UI text size, bidi isolation, accessible audio announcements. Remaining follow-up: 12.4 mirrored-UI RTL layout. Phase 13 delivered (`c653599` → `f8a9b0d`): PWA manifest + generated icon suite, license-safe offline service worker, honest About copy. Phase 14 delivered (`c17395a` → `4968336`): route-level code splitting, async provider resolution, content-visibility containment, audio streaming hardening, and never-blank error states with retry on every fetch. Phase 15 delivered (`752771b` → `5ba89df`): sitemap.xml + robots.txt, canonical links, OpenGraph/Twitter cards, JSON-LD, dynamic per-route metadata (title/description/canonical) incl. surah/juz reader refinement, `VITE_SITE_URL` override. Next phase: 16 — Content Safety & Attribution.
 
 ---
 
@@ -334,8 +334,8 @@
 
 ## Phase 15 — SEO
 
-- [ ] Per-page metadata (Home/Surah/Juz/reader/Search/Resources)
-- [ ] OpenGraph + Twitter cards, canonical URLs, sitemap.xml, robots.txt
+- [x] Per-page metadata (Home/Surah/Juz/reader/Search/Resources)
+- [x] OpenGraph + Twitter cards, canonical URLs, sitemap.xml, robots.txt
 
 ## Phase 16 — Content Safety & Attribution
 
@@ -404,3 +404,6 @@
 | 2026-08-31 | **Phase 14.2 delivered** — `.content-visibility-auto` (content-visibility + contain-intrinsic-size 320px + layout/style/paint containment) on per-ayah rows in SurahReader + JuzReader; offscreen rows skip layout/paint, scroll-into-view + framer-motion intact; Mushaf already paginated | `efc19ac` |
 | 2026-08-31 | **Phase 14.3 delivered** — audio efficiency: single HTMLAudioElement `preload="metadata"`, one CDN MP3 at a time, no queue prefetch, cross-origin audio never cached; autoplay `AbortError` treated as paused not error; AudioPlayer “Try again” retry (`retry` action reloads the current item) | `213a7fd` |
 | 2026-08-31 | **Phase 14.4 delivered** — never-blank error states: shared `ErrorState` (icon + message + Retry/back) + `useAsyncData.reload` attempt counter; wired into all 10 fetch pages — SurahReader, JuzReader, Mushaf, Surahs, Listen, Tafsir, Search, JuzPage, DailyAyah, Home (daily ayah + surah list); validation-only states (invalid surah/juz/page) show static guidance; 429 keeps its rate-limit hint | `4968336` |
+| 2026-08-31 | **Phase 14 complete** (`c17395a` → `4968336`). Header + progress-log rows updated | `fd8b014` |
+| 2026-08-31 | **Phase 15.1 delivered** — SEO static layer: `public/robots.txt`, `public/sitemap.xml` (14 routes), canonical + OpenGraph/Twitter base tags and JSON-LD `WebSite` (with SearchAction) in `index.html`, `VITE_SITE_URL` override wired into `config/env.ts` | `752771b` |
+| 2026-08-31 | **Phase 15.2 delivered** — dynamic per-page metadata: `src/lib/documentMeta.ts` `applyPageMeta` (title, description, robots, canonical, og:site_name/title/description/type/url/image/locale/locale:alternate, twitter card/title/description/image); `ROUTE_TITLES` → `ROUTE_META` (title + per-route description across all 15 routes incl. Home/Surah/Juz/Search/Resources); Surah + Juz readers refine title/description once their data loads | `5ba89df` |
