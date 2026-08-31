@@ -68,9 +68,27 @@ function applyToDocument(
   uiSize: UiFontSize,
 ): void {
   const dark = theme === 'dark' || (theme === 'system' && systemPrefersDark())
+  const wasDark = document.documentElement.classList.contains('dark')
+  const changed = wasDark !== dark
+
   document.documentElement.classList.toggle('dark', dark)
   document.documentElement.setAttribute('data-arabic-size', size)
   document.documentElement.setAttribute('data-ui-size', uiSize)
+
+  // Soft crossfade — mask the jarring CSS variable swap with a brief overlay fade
+  if (changed && typeof document !== 'undefined') {
+    const el = document.getElementById('theme-crossfade')
+    if (el) {
+      el.style.background = dark ? '#050807' : '#f6f1e7'
+      // one frame: show at full opacity, then start the fade-out
+      requestAnimationFrame(() => {
+        el.style.opacity = '1'
+        requestAnimationFrame(() => {
+          el.style.opacity = '0'
+        })
+      })
+    }
+  }
 }
 
 export function PreferencesProvider({ children }: { children: ReactNode }) {
