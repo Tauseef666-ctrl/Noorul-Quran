@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Smartphone, Download } from 'lucide-react'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { ArabicSizeSelector } from '../components/ArabicSizeSelector'
 import { UiSizeSelector } from '../components/UiSizeSelector'
@@ -151,6 +152,44 @@ export default function SettingsPage() {
             Clear API Cache
           </button>
         </div>
+      </motion.section>
+
+      <motion.section variants={fadeIn} className="card rounded-2xl p-5 sm:p-6">
+        <div className="flex items-center gap-2">
+          <Smartphone className="h-4 w-4 text-gold" aria-hidden />
+          <h2 className="text-sm font-semibold text-ink">Install on Android (PWA)</h2>
+        </div>
+        <p className="mt-1 text-xs text-ink-muted">
+          NoorulQuran is a progressive web app. Install it on your Android phone or tablet and it
+          runs from your home screen, with offline caching and its own app window.
+        </p>
+        <ol className="mt-4 space-y-2 text-xs text-ink-muted">
+          <li className="flex gap-2">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand/10 text-[10px] font-bold text-brand">
+              1
+            </span>
+            Open NoorulQuran in Chrome (or another Chromium browser) on Android.
+          </li>
+          <li className="flex gap-2">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand/10 text-[10px] font-bold text-brand">
+              2
+            </span>
+            Tap the browser menu (⋮) and choose <strong>“Add to Home screen”</strong>, or confirm
+            the <strong>“Install app”</strong> prompt that appears.
+          </li>
+          <li className="flex gap-2">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand/10 text-[10px] font-bold text-brand">
+              3
+            </span>
+            Launch it from your home screen — it opens full-screen as its own app and stays updated
+            automatically.
+          </li>
+        </ol>
+        <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-ink-faint">
+          <Download className="mt-0.5 h-4 w-4 shrink-0 text-gold" aria-hidden />
+          For a static, offline bundle of this release, download the ZIP from the GitHub Releases
+          page and serve the files from any web server (or open the PWA hosted online).
+        </p>
       </motion.section>
     </motion.div>
   )
