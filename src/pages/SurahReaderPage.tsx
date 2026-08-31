@@ -201,6 +201,11 @@ export default function SurahReaderPage() {
   const [verseInfoAyah, setVerseInfoAyah] = useState<Ayah | null>(null)
   const [noteAyah, setNoteAyah] = useState<Ayah | null>(null)
   const ayahRefs = useRef<Map<string, HTMLLIElement>>(new Map())
+  // Guards observer-driven reading progress against programmatic scrolls (e.g. a
+  // search jump to an exact ayah), which would otherwise register a false "read
+  // to this point". Cleared the moment the user actually scrolls or after the
+  // programmatic scroll settles.
+  const suppressScrollProgress = useRef(false)
   const { currentAyah, playing, isCurrentAyah, mode, playSurah, pause, resume } = useAudio()
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
   const { activeIds, activeEditions } = useTranslations()
@@ -280,12 +285,18 @@ export default function SurahReaderPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [surah, activeIds])
 
-  // Scroll to target ayah
+  // Scroll to target ayah (e.g. coming from Search). The programmatic scroll must
+  // NOT advance reading progress — only genuine user reading should.
   useEffect(() => {
     if (!targetAyah || !surah) return
     const el = ayahRefs.current.get(`${surahNumber}:${targetAyah}`)
     if (el) {
+      suppressScrollProgress.current = true
       el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      const clear = window.setTimeout(() => {
+        suppressScrollProgress.current = false
+      }, 1400)
+      return () => window.clearTimeout(clear)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetAyah, surah])
@@ -301,7 +312,7 @@ export default function SurahReaderPage() {
             if (key) {
               const [s, a] = key.split(':').map(Number)
               const ayah = surah.ayahs.find((ay) => ay.surahNumber === s && ay.ayahNumber === a)
-              if (ayah) {
+              if (ayah && !suppressScrollProgress.current) {
                 updateProgress({
                   surahNumber: s,
                   ayahNumber: a,
@@ -521,6 +532,7 @@ export default function SurahReaderPage() {
           const bookmarkId = `${ayah.surahNumber}:${ayah.ayahNumber}`
           const note = notes.getNote(ayah.surahNumber, ayah.ayahNumber)
           const isActive = isCurrentAyah(ayah.surahNumber, ayah.ayahNumber) && playing
+          const isTarget = targetAyah === String(ayah.ayahNumber)
           return (
             <motion.li
               key={ayah.key}
@@ -532,7 +544,9 @@ export default function SurahReaderPage() {
               className={`content-visibility-auto group relative rounded-2xl p-4 transition-[background-color,box-shadow] sm:p-6 ${
                 isActive
                   ? 'bg-brand/5 shadow-[var(--shadow-glow)] ring-1 ring-brand/25'
-                  : 'hover:bg-surface/60 hover:shadow-[var(--shadow-glow)]'
+                  : isTarget
+                    ? 'bg-gold/10 shadow-[var(--shadow-glow)] ring-1 ring-gold/40 animate-pulse-target'
+                    : 'hover:bg-surface/60 hover:shadow-[var(--shadow-glow)]'
               }`}
             >
               {/* Ayah number badge */}
