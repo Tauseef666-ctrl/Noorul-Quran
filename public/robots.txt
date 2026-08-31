@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# All content is public and crawlable. Canonical URLs live in each page's
+# <link rel="canonical">; the sitemap enumerates the static route tree.
+Sitemap: https://tauseef666-ctrl.github.io/Noorul-Quran/sitemap.xml
