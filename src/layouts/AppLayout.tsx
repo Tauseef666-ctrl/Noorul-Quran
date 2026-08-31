@@ -124,7 +124,15 @@ function RoutedPage() {
     if (match) {
       applyPageMeta({ title: `${match[1]} · NoorulQuran`, description: match[2], path: location.pathname })
     }
-  }, [location.pathname])
+    if (location.hash) {
+      const id = location.hash.replace('#', '')
+      // wait a tick for the routed page to mount, then gently scroll to the anchor
+      requestAnimationFrame(() => {
+        const el = document.getElementById(id)
+        el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    }
+  }, [location.pathname, location.hash])
 
   return (
     <AnimatePresence mode="wait">

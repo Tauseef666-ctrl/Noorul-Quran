@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Code } from 'lucide-react'
 import { GeometricPattern } from './GeometricPattern'
+import { LogoLockup } from './Brand'
 import { fadeUp, staggerContainer } from '../animations'
 
 const LINK_GROUPS: { title: string; links: { label: string; to: string }[] }[] = [
@@ -51,28 +52,34 @@ export function AppFooter() {
       <div className="relative grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {/* Brand */}
         <motion.div variants={fadeUp} className="lg:col-span-2">
-          <p className="arabic-heading text-2xl text-ink" lang="ar" dir="rtl" translate="no">
-            نور القرآن
-          </p>
-          <p className="mt-1 text-base font-semibold text-ink">
-            Noorul<span className="text-gold">Quran</span>
-          </p>
-          <p className="mt-1 text-xs tracking-wide text-ink-muted italic">
+          <LogoLockup />
+          <p className="mt-2 text-xs tracking-wide text-ink-muted italic">
             Read. Listen. Reflect.
+          </p>
+          <p className="mt-1 text-xs text-ink-faint">
+            Created by Tauseef Khan
           </p>
           <p className="mt-4 max-w-sm text-xs leading-relaxed text-ink-faint">
             A mindful Quran reader — transparent as to its sources, faithful to the
             canonical text, and free of fabricated or AI-generated content.
           </p>
-          <a
-            href="https://github.com/Tauseef666-ctrl/Noorul-Quran"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center gap-2 text-xs font-medium text-ink-muted transition-colors hover:text-brand"
-          >
-            <Code className="h-4 w-4" aria-hidden />
-            Source on GitHub
-          </a>
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+            <a
+              href="https://github.com/Tauseef666-ctrl/Noorul-Quran"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-xs font-medium text-ink-muted transition-colors hover:text-brand"
+            >
+              <Code className="h-4 w-4" aria-hidden />
+              Source on GitHub
+            </a>
+            <Link
+              to="/sources#personal-dua"
+              className="text-xs font-medium text-gold/80 transition-colors hover:text-gold"
+            >
+              Personal Dua
+            </Link>
+          </div>
         </motion.div>
 
         {/* Link groups */}
