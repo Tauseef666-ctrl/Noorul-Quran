@@ -8,6 +8,7 @@ import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
 import { fadeUp, staggerContainer } from '../animations'
 import { ErrorState } from '../components/ErrorState'
+import { ReciterAvatar } from '../components/ReciterAvatar'
 
 export default function ListenPage() {
   const { data: surahs, loading, error, reload } = useAsyncData<Surah[]>(
@@ -52,13 +53,7 @@ export default function ListenPage() {
                     : 'border-line hover:border-brand/40 hover:bg-brand/5'
                 }`}
               >
-                <div
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors ${
-                    isActive ? 'bg-brand text-white' : 'bg-brand/10 text-brand'
-                  }`}
-                >
-                  <Play className="h-3.5 w-3.5" aria-hidden />
-                </div>
+                <ReciterAvatar name={reciter.name} selected={isActive} />
                 <div className="min-w-0">
                   <p className="truncate text-xs font-semibold text-ink">{reciter.name}</p>
                   <p className="text-[10px] text-ink-faint">
