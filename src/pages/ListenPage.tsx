@@ -1,8 +1,9 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Play, Pause, Headphones, Mic2 } from 'lucide-react'
+import { Play, Pause, Headphones, Mic2, Loader2, Volume2 } from 'lucide-react'
 import { getActiveProvider } from '../services/quran'
-import { CURATED_RECITERS } from '../services/quran/audioProvider'
+import { CURATED_RECITERS, verseAudioUrl } from '../services/quran/audioProvider'
 import type { Surah } from '../types/quran'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
@@ -17,6 +18,56 @@ export default function ListenPage() {
   )
   const { reciterId, setReciter, playSurah, mode, currentAyah, playing, pause, resume } = useAudio()
 
+  // Bismillah voice test — a short preview of the selected reciter's voice.
+  const [previewId, setPreviewId] = useState<string | null>(null)
+  const [previewPlaying, setPreviewPlaying] = useState(false)
+  const [previewLoading, setPreviewLoading] = useState(false)
+  const previewRef = useRef<HTMLAudioElement | null>(null)
+
+  useEffect(() => {
+    const audio = previewRef.current
+    if (!audio) return
+    const onEnded = () => {
+      setPreviewPlaying(false)
+      setPreviewLoading(false)
+    }
+    const onPlaying = () => {
+      setPreviewPlaying(true)
+      setPreviewLoading(false)
+    }
+    const onWaiting = () => setPreviewLoading(true)
+    audio.addEventListener('ended', onEnded)
+    audio.addEventListener('playing', onPlaying)
+    audio.addEventListener('waiting', onWaiting)
+    audio.addEventListener('error', onEnded)
+    return () => {
+      audio.removeEventListener('ended', onEnded)
+      audio.removeEventListener('playing', onPlaying)
+      audio.removeEventListener('waiting', onWaiting)
+      audio.removeEventListener('error', onEnded)
+    }
+  }, [])
+
+  const previewReciter = (id: string) => {
+    const audio = previewRef.current
+    if (!audio) return
+    if (previewId === id && previewPlaying) {
+      audio.pause()
+      audio.currentTime = 0
+      setPreviewPlaying(false)
+      setPreviewLoading(false)
+      return
+    }
+    setPreviewId(id)
+    setPreviewLoading(true)
+    // Al-Fatihah 1:1 IS the Bismillah — the reciter's authentic voice test.
+    audio.src = verseAudioUrl(id, 1, 1)
+    audio.play().catch(() => {
+      setPreviewLoading(false)
+      setPreviewPlaying(false)
+    })
+  }
+
   return (
     <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="space-y-6">
       <motion.header variants={fadeUp}>
@@ -29,41 +80,61 @@ export default function ListenPage() {
         </p>
       </motion.header>
 
-      {/* Reciter selection */}
+      {/* Reciter selection — cards: 3 across top, 3 across bottom */}
       <motion.section variants={fadeUp} className="card rounded-2xl p-5 sm:p-6">
         <div className="flex items-center gap-2">
           <Mic2 className="h-4 w-4 text-gold" aria-hidden />
-          <h2 className="text-sm font-semibold text-ink">Reciter</h2>
+          <h2 className="text-sm font-semibold text-ink">Reciters</h2>
         </div>
         <p className="mt-1 text-xs text-ink-muted">
-          Choose who you would like to hear. All reciters stream from the islamic.network CDN.
+          Tap a reciter to select them and hear their Bismillah voice test. All stream from the
+          islamic.network CDN.
         </p>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
           {CURATED_RECITERS.map((reciter) => {
             const isActive = reciterId === reciter.id
+            const isPreviewing = previewId === reciter.id && previewPlaying
+            const isPreviewLoading = previewId === reciter.id && previewLoading
             return (
               <button
                 key={reciter.id}
                 type="button"
-                onClick={() => setReciter(reciter.id)}
+                onClick={() => {
+                  setReciter(reciter.id)
+                  previewReciter(reciter.id)
+                }}
                 aria-pressed={isActive}
-                className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${
+                className={`group relative flex flex-col items-center gap-3 rounded-2xl border p-4 text-center transition-all ${
                   isActive
-                    ? 'border-brand bg-brand/5'
+                    ? 'border-brand bg-brand/5 shadow-[var(--shadow-glow)]'
                     : 'border-line hover:border-brand/40 hover:bg-brand/5'
                 }`}
               >
-                <ReciterAvatar name={reciter.name} selected={isActive} />
+                <ReciterAvatar name={reciter.name} size="lg" selected={isActive} />
                 <div className="min-w-0">
-                  <p className="truncate text-xs font-semibold text-ink">{reciter.name}</p>
-                  <p className="text-[10px] text-ink-faint">
-                    {reciter.bitrate} kbps{isActive ? ' · selected' : ''}
+                  <p className="truncate text-sm font-semibold text-ink">{reciter.name}</p>
+                  <p className="mt-0.5 flex items-center justify-center gap-1 text-[10px] text-ink-faint">
+                    {isPreviewing ? (
+                      <span className="inline-flex items-center gap-1 text-brand">
+                        <Volume2 className="h-3 w-3" aria-hidden /> Bismillah playing…
+                      </span>
+                    ) : isPreviewLoading ? (
+                      <span className="inline-flex items-center gap-1 text-brand">
+                        <Loader2 className="h-3 w-3 animate-spin" aria-hidden /> Loading…
+                      </span>
+                    ) : (
+                      <>
+                        <span className="num-ltr">{reciter.bitrate} kbps</span> ·{' '}
+                        {isActive ? 'selected' : 'tap to preview'}
+                      </>
+                    )}
                   </p>
                 </div>
               </button>
             )
           })}
         </div>
+        <audio ref={previewRef} preload="none" className="hidden" aria-hidden />
       </motion.section>
 
       {/* Surah list for quick play */}
