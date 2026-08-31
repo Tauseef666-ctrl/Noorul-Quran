@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ExternalLink, Shield } from 'lucide-react'
+import { ExternalLink, Shield, HeartHandshake } from 'lucide-react'
 import { DATA_SOURCES, INTEGRITY_STATEMENT } from '../data/attribution'
 
 const fadeIn = {
@@ -131,6 +131,40 @@ export default function SourcesPage() {
             This application contains no chatbot and generates no religious answers. Nothing here is
             a fatwa or presented as religious authority — verse text, translations, and commentary all
             come from the published sources listed above.
+          </p>
+        </div>
+      </motion.section>
+
+      {/* Personal dua — clearly labeled as the creator's own words, never Quran */}
+      <motion.section variants={fadeIn}>
+        <h2
+          id="personal-dua"
+          className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink-faint"
+        >
+          <HeartHandshake className="h-3.5 w-3.5 text-gold" aria-hidden />
+          Personal Dua (not Quranic text)
+        </h2>
+        <div className="card rounded-2xl border-gold/25 p-5 sm:p-6">
+          <p className="text-sm leading-relaxed text-ink-muted">
+            These are the maker&apos;s own words of prayer — a personal dua from the
+            creator of this app. They are <span className="font-semibold text-ink">not</span>{' '}
+            ayahs of the Quran and are not part of any scripture.
+          </p>
+          <blockquote
+            lang="ar"
+            dir="rtl"
+            translate="no"
+            className="arabic-heading mt-4 border-r-2 border-gold/40 pr-4 text-right text-base leading-loose text-ink"
+          >
+            اللَّهُمَّ اجْعَلْ هَٰذَا الْعَمَلَ خَالِصًا لِوَجْهِكَ الْكَرِيمِ،
+            وَانْفَعْ بِهِ كُلَّ مَنْ قَرَأَ، وَارْزُقْنَا الْإِخْلَاصَ وَالْقَبُولَ
+          </blockquote>
+          <p className="mt-3 text-xs italic text-ink-faint">
+            (Transliteration: &ldquo;O Allah, make this work purely for Your noble Countenance, benefit
+            through it everyone who reads, and grant us sincerity and acceptance.&rdquo;)
+          </p>
+          <p className="mt-3 text-xs text-ink-faint">
+            Built with love for the sake of Allah · <span className="num-ltr">Created by Tauseef Khan</span>
           </p>
         </div>
       </motion.section>
