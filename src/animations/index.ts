@@ -109,3 +109,63 @@ export const heroItem: Variants = {
     transition: { duration: 0.6, ease: 'easeOut' },
   },
 }
+
+/* ── Phase 19 named variants ──────────────────────────────────────────────── */
+
+/** Glass panels (audio player, settings card) reveal from below with blur */
+export const glassReveal: Variants = {
+  hidden: { opacity: 0, y: 16, filter: 'blur(6px)' },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { type: 'spring', damping: 26, stiffness: 260 },
+  },
+  exit: { opacity: 0, y: 10, transition: { duration: 0.18, ease: 'easeIn' } },
+}
+
+/** Dedicated modal close — crisp, short, confident */
+export const modalClose: Variants = {
+  exit: { opacity: 0, scale: 0.97, y: 6, transition: { duration: 0.16, ease: 'easeIn' } },
+}
+
+/** Audio player active / currently-playing glow shell (interface only, never text) */
+export const audioPlaying: Variants = {
+  animate: {
+    boxShadow: [
+      '0 0 0 0 rgba(29,127,99,0)',
+      '0 0 0 2px rgba(29,127,99,0.18)',
+      '0 0 0 0 rgba(29,127,99,0)',
+    ],
+    transition: { duration: 2.8, repeat: Infinity, ease: 'easeInOut' },
+  },
+}
+
+/** Mushaf page-turn — directional enter/exit with custom direction */
+export const mushafPageChange = {
+  enter: (d: number) => ({
+    x: d * 56,
+    opacity: 0,
+    transition: { duration: 0.26, ease: [0.32, 0.72, 0, 1] as const },
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: { duration: 0.3, ease: [0.32, 0.72, 0, 1] as const },
+  },
+  exit: (d: number) => ({
+    x: d * -56,
+    opacity: 0,
+    transition: { duration: 0.2, ease: 'easeIn' as const },
+  }),
+}
+
+/** Drawer close — slides out left */
+export const drawerClose: Variants = {
+  exit: { x: '-100%', transition: { duration: 0.22, ease: 'easeIn' } },
+}
+
+/** Subtle press feedback for interactive elements (buttons, nav items) */
+export const buttonPress = {
+  whileTap: { scale: 0.965, transition: { duration: 0.08 } },
+}

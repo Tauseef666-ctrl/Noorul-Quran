@@ -25,6 +25,7 @@ import { JumpToDialog } from '../components/JumpToDialog'
 import { ErrorState } from '../components/ErrorState'
 import { MushafPaper } from '../components/MushafPaper'
 import { EqualizerBars } from '../components/EqualizerBars'
+import { mushafPageChange } from '../animations'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 12 },
@@ -33,23 +34,7 @@ const fadeIn = {
 
 /* Phased page-turn: the incoming page slides from the direction of travel,
    the outgoing page slides away the opposite way. x/opacity only. */
-const pageTurn = {
-  enter: (d: number) => ({
-    x: d * 56,
-    opacity: 0,
-    transition: { duration: 0.26, ease: [0.32, 0.72, 0, 1] as const },
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-    transition: { duration: 0.3, ease: [0.32, 0.72, 0, 1] as const },
-  },
-  exit: (d: number) => ({
-    x: d * -56,
-    opacity: 0,
-    transition: { duration: 0.2, ease: 'easeIn' as const },
-  }),
-}
+const pageTurn = mushafPageChange
 
 const focusEnter = {
   hidden: { opacity: 0, scale: 0.985 },
