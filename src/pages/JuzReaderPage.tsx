@@ -21,6 +21,7 @@ import type { JuzDetail, Ayah } from '../types/quran'
 import { useBookmarks } from '../store/bookmarks'
 import { useTranslations } from '../store/translations'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { applyPageMeta } from '../lib/documentMeta'
 import { useAudio } from '../store/audio'
 import { TafsirModal } from '../components/TafsirModal'
 import { VerseInfoPanel } from '../components/VerseInfoPanel'
@@ -59,6 +60,16 @@ export default function JuzReaderPage() {
     async (signal) => (await getActiveProvider()).getJuz(juzNumber, { signal }),
     [juzNumber],
   )
+
+  useEffect(() => {
+    if (!juz) return
+    const first = juz.ayahs[0]
+    const last = juz.ayahs[juz.ayahs.length - 1]
+    applyPageMeta({
+      title: `Juz ${juz.number} · NoorulQuran`,
+      description: `Read Juz ${juz.number} of the Quran — ${juz.ayahs.length} ayahs from ${first?.surahNumber}:${first?.ayahNumber} (Surah ${first?.surahNumber}) through ${last?.surahNumber}:${last?.ayahNumber} (Surah ${last?.surahNumber}).`,
+    })
+  }, [juz])
 
   // Scroll current ayah into view during playback
   useEffect(() => {

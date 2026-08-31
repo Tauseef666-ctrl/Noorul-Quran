@@ -22,6 +22,7 @@ import { useBookmarks } from '../store/bookmarks'
 import { useTranslations } from '../store/translations'
 import { useReadingProgress } from '../hooks/useReadingProgress'
 import { useAsyncData } from '../hooks/useAsyncData'
+import { applyPageMeta } from '../lib/documentMeta'
 import { useAudio } from '../store/audio'
 import { useNotes } from '../store/notes'
 import { TafsirModal } from '../components/TafsirModal'
@@ -217,6 +218,14 @@ export default function SurahReaderPage() {
     async (signal) => (await getActiveProvider()).getSurah(surahNumber, { signal }),
     [surahNumber],
   )
+
+  useEffect(() => {
+    if (!surah) return
+    applyPageMeta({
+      title: `${surah.nameTransliterated} (${surah.number}:${surah.nameTranslation}) · NoorulQuran`,
+      description: `Read Surah ${surah.nameTransliterated} (${surah.nameTranslation}) — ${surah.numberOfAyahs} ayahs, ${surah.revelationType}, beginning in Juz ${surah.ayahs[0]?.navigation.juz ?? 1}.`,
+    })
+  }, [surah])
 
   const [translations, setTranslations] = useState<Record<string, Record<string, string>>>({})
 

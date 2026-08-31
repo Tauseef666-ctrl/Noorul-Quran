@@ -25,6 +25,7 @@ import { AppFooter } from '../components/AppFooter'
 import { AmbientBackground } from '../components/AmbientBackground'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { useAudio } from '../store/audio'
+import { applyPageMeta } from '../lib/documentMeta'
 import {
   pageTransition,
   drawerEnter,
@@ -63,22 +64,23 @@ const MOBILE_BOTTOM: NavItem[] = [
   { to: '/settings', label: 'More', Icon: Menu },
 ]
 
-/** Routes ordered longest-first so prefix matching picks the correct page title. */
-const ROUTE_TITLES: Array<[string, string]> = [
-  ['/daily-ayah', 'Daily Ayah'],
-  ['/bookmarks', 'Bookmarks'],
-  ['/sources', 'Sources & Attribution'],
-  ['/settings', 'Settings'],
-  ['/mushaf', 'Mushaf'],
-  ['/surahs', 'Surahs'],
-  ['/search', 'Search'],
-  ['/listen', 'Recitations'],
-  ['/tafsir', 'Tafsir'],
-  ['/plans', 'Reading Plans'],
-  ['/notes', 'Notes'],
-  ['/juz', 'Juz'],
-  ['/about', 'About'],
-  ['/surah', 'Surah Reader'],
+/** Routes ordered longest-first so prefix matching picks the correct metadata. */
+const ROUTE_META: Array<[string, string, string]> = [
+  ['/daily-ayah', 'Daily Ayah', 'Today’s verse of the Quran with Arabic, translation, and recitation at your fingertips.'],
+  ['/bookmarks', 'Bookmarks', 'Your saved Quran verses, gathered in one place for quick reference.'],
+  ['/sources', 'Sources & Attribution', 'Every Quran text, translation, tafsir, recitation, font, and API behind NoorulQuran — credited and licensed.'],
+  ['/settings', 'Settings', 'Customize NoorulQuran — theme, reciter, translations, tafsir, and interface size.'],
+  ['/mushaf', 'Mushaf', 'Read the Quran page by page in a serene digital Mushaf with swipes and jump-to-page navigation.'],
+  ['/surahs', 'Surahs', 'Browse all 114 surahs of the Quran, each with its ayat and recitation.'],
+  ['/search', 'Search', 'Search the Quran — Arabic verses, translations, surah names, and references.'],
+  ['/listen', 'Recitations', 'Stream beautiful Quran recitations, surah by surah, from vetted reciters.'],
+  ['/tafsir', 'Tafsir', 'Verse-by-verse Quran commentary (tafsir) from published classical and modern scholars.'],
+  ['/plans', 'Reading Plans', 'Guided Quran reading plans — 30-day, 60-day, or your own custom pace, with daily tracking.'],
+  ['/notes', 'Notes', 'Your personal notes on the Quran, attached ayah by ayah.'],
+  ['/juz', 'Juz', 'Explore the Quran by juz — all 30 parts with clean section reading.'],
+  ['/about', 'About', 'The story, principles, and technology behind NoorulQuran.'],
+  ['/surah', 'Surah Reader', 'Read a full surah with Arabic, translations, and recitation — ayah by ayah.'],
+  ['/', 'Read. Listen. Reflect.', 'NoorulQuran — a peaceful digital Mushaf and modern Quran study companion. Read, listen, and reflect.'],
 ]
 
 function SidebarLink({
@@ -112,8 +114,12 @@ function RoutedPage() {
   const location = useLocation()
 
   useEffect(() => {
-    const match = ROUTE_TITLES.find(([prefix]) => location.pathname.startsWith(prefix))
-    document.title = match ? `${match[1]} · NoorulQuran` : 'NoorulQuran'
+    const match = ROUTE_META.find(([prefix]) =>
+      prefix === '/' ? location.pathname === '/' : location.pathname.startsWith(prefix),
+    )
+    if (match) {
+      applyPageMeta({ title: `${match[1]} · NoorulQuran`, description: match[2], path: location.pathname })
+    }
   }, [location.pathname])
 
   return (
