@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronLeft,
@@ -15,7 +15,6 @@ import { getActiveProvider } from '../services/quran'
 import { MUSHAF_PAGE_COUNT } from '../data/ayahCounts'
 import type {
   MushafPage as MushafPageType,
-  Ayah,
   MushafLayout,
 } from '../types/quran'
 import type { QuranProvider } from '../services/quran/quranProvider'
@@ -24,6 +23,7 @@ import { useReadingProgress } from '../hooks/useReadingProgress'
 import { useAudio } from '../store/audio'
 import { JumpToDialog } from '../components/JumpToDialog'
 import { ErrorState } from '../components/ErrorState'
+import { MushafPaper } from '../components/MushafPaper'
 import { EqualizerBars } from '../components/EqualizerBars'
 
 const fadeIn = {
@@ -89,30 +89,6 @@ function readLayout(): MushafLayout {
   return 'uthmani'
 }
 
-function AyahList({ ayahs }: { ayahs: Ayah[] }) {
-  return (
-    <ol className="space-y-4">
-      {ayahs.map((ayah) => (
-        <li key={ayah.key} className="flex items-baseline justify-between gap-4">
-          <Link
-            to={`/surah/${ayah.surahNumber}?ayah=${ayah.ayahNumber}`}
-            className="quran-text text-right transition-opacity hover:opacity-80"
-            lang="ar"
-            dir="rtl"
-            translate="no"
-          >
-            {ayah.arabic}
-          </Link>
-          <span className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[10px] font-semibold text-ink-faint">
-            {ayah.surahNumber}:{ayah.ayahNumber}
-          </span>
-        </li>
-      ))}
-    </ol>
-  )
-}
-
-/* Compact audio pill so Focus Reading mode keeps playback controls reachable. */
 function AudioFocusPill() {
   const { currentAyah, playing, loading, pause, resume } = useAudio()
   if (!currentAyah) return null
@@ -379,7 +355,7 @@ export default function MushafPageReader() {
                       animate="center"
                       exit="exit"
                     >
-                      <AyahList ayahs={shownPage.ayahs} />
+                      <MushafPaper ayahs={shownPage.ayahs} pageNumber={shownPage.pageNumber} />
                     </motion.div>
                   </AnimatePresence>
                 ) : loading ? (
@@ -523,11 +499,11 @@ export default function MushafPageReader() {
             initial="enter"
             animate="center"
             exit="exit"
-            className="card rounded-2xl p-6 sm:p-10"
+            className="mx-auto max-w-3xl"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
-            <AyahList ayahs={shownPage.ayahs} />
+            <MushafPaper ayahs={shownPage.ayahs} pageNumber={shownPage.pageNumber} />
           </motion.div>
         </AnimatePresence>
       ) : loading ? (

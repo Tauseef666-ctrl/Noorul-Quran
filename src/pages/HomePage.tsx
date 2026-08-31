@@ -23,6 +23,8 @@ import { useAudio } from '../store/audio'
 import { GeometricPattern } from '../components/GeometricPattern'
 import { EqualizerBars } from '../components/EqualizerBars'
 import { ErrorState } from '../components/ErrorState'
+import { LogoMark } from '../components/Brand'
+import { HeroVisual } from '../components/HeroVisual'
 import { langDir } from '../services/quran/translationProvider'
 import {
   heroStagger,
@@ -146,88 +148,94 @@ export default function HomePage() {
 
   return (
     <motion.div variants={pageTransition} initial="initial" animate="animate" className="space-y-10">
-      {/* ── Cinematic hero — staged reveal ─────────────────────────────────── */}
+      {/* ── Cinematic editorial hero — staged reveal ──────────────────────── */}
       <motion.section
         initial="hidden"
         animate="visible"
-        className="relative overflow-hidden rounded-[2rem] border border-gold/15 bg-gradient-to-b from-emerald-900/5 via-transparent to-transparent px-6 py-14 text-center sm:py-20"
+        variants={heroStagger}
+        className="relative overflow-hidden rounded-[2rem] border border-gold/15 bg-gradient-to-b from-emerald-900/5 via-transparent to-transparent"
       >
-        {/* ambient glow behind content */}
+        {/* Ambient glow behind everything (staged step 1) */}
+        <motion.div aria-hidden className="pointer-events-none absolute -top-24 left-1/4 h-80 w-80 rounded-full bg-brand/10 blur-3xl" />
         <motion.div
-          variants={heroStagger}
-          className="pointer-events-none absolute inset-0"
-        >
-          <motion.div
-            variants={heroItem}
-            aria-hidden
-            className="absolute inset-0"
-          >
-            <GeometricPattern
-              variant="gold"
-              className="absolute inset-x-0 top-0 h-full w-full object-cover"
-              opacity={0.16}
-            />
-          </motion.div>
-        </motion.div>
-        <motion.div
+          variants={heroItem}
           aria-hidden
-          className="pointer-events-none absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-brand/10 blur-3xl"
-        />
-        <motion.div aria-hidden className="pointer-events-none absolute inset-0">
-          <motion.div
-            variants={heroStagger}
-            initial="hidden"
-            animate="visible"
-            className="absolute top-1/3 left-1/2 h-56 w-[36rem] max-w-full -translate-x-1/2 rounded-full bg-gold/[0.05] blur-3xl"
+          className="pointer-events-none absolute inset-0 opacity-60"
+        >
+          <GeometricPattern
+            variant="gold"
+            className="absolute inset-x-0 top-0 h-full w-full object-cover"
+            opacity={0.12}
           />
         </motion.div>
 
-        <motion.div
-          variants={heroStagger}
-          initial="hidden"
-          animate="visible"
-          className="relative"
-        >
-          {/* logo */}
-          <motion.div variants={heroItem} className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-brand/10 text-brand shadow-[var(--shadow-glow)]">
-            <BookOpen className="h-10 w-10" aria-hidden />
-          </motion.div>
-          {/* wordmark */}
-          <motion.h1
-            variants={heroItem}
-            className="arabic-heading text-5xl text-ink sm:text-6xl"
-            lang="ar"
-            dir="rtl"
-            translate="no"
-          >
-            نور القرآن
-          </motion.h1>
-          <motion.p variants={heroItem} className="mt-3 text-xl font-semibold text-ink">
-            Noorul<span className="text-gold">Quran</span>
-          </motion.p>
-          <motion.p variants={heroItem} className="mt-2 text-sm tracking-wide text-ink-muted italic">
-            Read. Listen. Reflect.
-          </motion.p>
-          <motion.div variants={heroItem} className="gold-divider mx-auto mt-6 w-32" />
-          {/* CTAs */}
-          <motion.div variants={heroItem} className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/surahs"
-              className="group inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-brand-deep hover:shadow-[var(--shadow-lifted)]"
+        {/* Editorial split: left = branding + copy + actions, right = visual */}
+        <div className="grid items-center gap-10 px-6 py-14 sm:px-10 sm:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-12 lg:py-20">
+          {/* ── Left: branding + text + actions ─────────────────────────── */}
+          <div className="relative order-2 text-center lg:order-1 lg:text-left">
+            <motion.div variants={heroItem} className="flex justify-center lg:justify-start">
+              <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-black/30 ring-1 ring-white/10 shadow-lg">
+                <LogoMark className="h-10 w-10" />
+              </span>
+            </motion.div>
+
+            <motion.h1
+              variants={heroItem}
+              className="mt-6 text-4xl font-extrabold leading-tight text-ink sm:text-5xl lg:text-6xl"
             >
-              <BookOpen className="h-4 w-4" aria-hidden />
-              Read Quran
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
-            </Link>
-            <Link
-              to="/listen"
-              className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-surface/70 px-6 py-3 text-sm font-semibold text-ink backdrop-blur-md transition-all hover:-translate-y-0.5 hover:border-gold hover:bg-surface-strong"
+              Noorul<span className="text-gold">Quran</span>
+            </motion.h1>
+
+            <motion.p
+              variants={heroItem}
+              className="arabic-heading mt-3 text-2xl text-brand sm:text-3xl"
+              lang="ar"
+              dir="rtl"
+              translate="no"
             >
-              <Headphones className="h-4 w-4 text-gold" aria-hidden />
-              Listen to Quran
-            </Link>
+              نور القرآن
+            </motion.p>
+
+            <motion.p
+              variants={heroItem}
+              className="mt-3 text-base font-medium tracking-wide text-ink-muted"
+            >
+              Read. Listen. Reflect.
+            </motion.p>
+
+            <motion.p variants={heroItem} className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-ink-faint lg:mx-0">
+              Explore the complete Quran with faithful Arabic text, curated
+              translations, tafsir, and recitation — all in a calm, refined space.
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div
+              variants={heroItem}
+              className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
+            >
+              <Link
+                to="/surahs"
+                className="group inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-brand-deep hover:shadow-[var(--shadow-lifted)]"
+              >
+                <BookOpen className="h-4 w-4" aria-hidden />
+                Read Quran
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+              </Link>
+              <Link
+                to="/listen"
+                className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-surface/70 px-6 py-3 text-sm font-semibold text-ink backdrop-blur-md transition-all hover:-translate-y-0.5 hover:border-gold hover:bg-surface-strong"
+              >
+                <Headphones className="h-4 w-4 text-gold" aria-hidden />
+                Listen
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* ── Right: cinematic hero visual ─────────────────────────────── */}
+          <motion.div variants={heroItem} className="relative order-1 lg:order-2">
+            <HeroVisual className="aspect-[5/4] sm:aspect-[4/3] lg:aspect-square" />
           </motion.div>
-        </motion.div>
+        </div>
       </motion.section>
 
       {/* ── Continue Reading ────────────────────────────────────────────────── */}
