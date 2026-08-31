@@ -361,62 +361,67 @@
 - [x] README complete; production build succeeds
 - [x] `npm run validate:quran` passes clean
 
-## Phase 19 — Visual, Mushaf, Branding & UX Refinement (WORK IN PROGRESS)
+## Phase 19 — Visual, Mushaf, Branding & UX Refinement (COMPLETE)
 
 > Preserves all existing functionality. Only refines visual accuracy, Mushaf
 > presentation, branding, navigation wording, reciters, loading, audio player,
 > homepage, and personal attribution. Standing rule: never animate/distort the
 > Quran text itself — surround the interface only.
 
-- [ ] **19.1 New logo + brand system** — `src/components/Brand.tsx` created:
+- [x] **19.1 New logo + brand system** — `src/components/Brand.tsx` created:
   balanced "Guiding Light" mark (emerald hex medallion + gold crescent-orb + open
   Qur'an page + light mote); `LogoMark`/`LogoIcon`/`LogoLockup` components;
-  `BRAND` constants. **DONE — uncommitted.**
-- [ ] **19.2 Icon suite regenerated** — `scripts/generate-pwa-icons.mjs` rewritten
+  `BRAND` constants. Done (`0150ec7`).
+- [x] **19.2 Icon suite regenerated** — `scripts/generate-pwa-icons.mjs` rewritten
   to rasterize the new medallion mark; `npm run generate:icons` produced
-  favicon-32 / pwa-192 / pwa-512 / maskable-512 / apple-touch-icon. **DONE —
-  uncommitted.** (Visual inspect pending — model cannot read images; verify by eye.)
-- [ ] **19.3 Dedicated minimal app splash** — replace `LoadingScreen` contents:
-  ONLY NoorulQuran logo + "Created by Tauseef Khan" on black+emerald+gold, subtle
-  breathing/light animation, disappears fast. Not started.
-- [ ] **19.4 Navigation refactor** — `AppLayout` `DESKTOP_NAV`: simple English
-  labels (Home, Quran, Surahs, Read, Listen, Juz, Search; secondary: Bookmarks,
-  Daily Ayah, Reading Plan, Settings). Compact, icons + visible text, no confusing
-  decorative terms. Not started.
-- [ ] **19.5 Homepage hero** — editorial split layout: left = logo + wordmark +
+  favicon-32 / pwa-192 / pwa-512 / maskable-512 / apple-touch-icon. Done (`0150ec7`).
+  (Visual inspect pending by eye — model cannot read images.)
+- [x] **19.3 Dedicated minimal app splash** — static premium splash embedded in
+  `index.html` `#root` (logo + "Created by Tauseef Khan" on black+emerald+gold);
+  React replaces on mount. Done (`0150ec7`).
+- [x] **19.4 Navigation refactor** — `AppLayout` `DESKTOP_NAV`: simple English
+  labels (Home, Quran, Read, Listen, Juz, Search; secondary "Library": Bookmarks,
+  Daily Ayah, Reading Plan, Notes, Tafsir, Resources, About, Settings). Compact,
+  icons + visible text, no confusing decorative terms. Done (`0150ec7`).
+- [x] **19.5 Homepage hero** — editorial split layout: left = logo + wordmark +
   tagline + description + primary/secondary CTAs; right = cinematic hero visual;
   mobile stacks. Staged cinematic reveal (bg → ambient → visual → logo → heading →
-  description → actions → decorative). Not started.
-- [ ] **19.6 Homepage hero image** — in-app generated visual (SVG open Mushaf /
-  mosque silhouette / crescent on dark-emerald gradient, gold accent, dark overlay
-  for text) — NOT stock photo; verifiable & license-safe. Not started.
-- [ ] **19.7 Mushaf surface** — warm ivory/paper page (not dark neon), ornamental
-  border, refined glass environment frame, subtle shadow, correct page number,
-  traditional hierarchy; keep real provider data (no fake pages); keep per-ayah
-  playback + subtle active-ayah highlight (no Quran distortion). Not started.
-- [ ] **19.8 Audio player border** — premium floating glass: deep-black glass,
-  emerald edge illumination, subtle gold accent, thin translucent border, soft
-  outer shadow + inner highlight, rounded; subtle animated edge/wave while
-  playing; NOT gaming/cyberpunk/neon. Not started.
-- [ ] **19.9 Reciter presentation** — replace generic icon with elegant neutral
-  Islamic avatar (no invented photos; no mislabeling); keep verified names +
-  attribution. Not started.
-- [ ] **19.10 About page** — polished About NoorulQuran: created by Tauseef Khan,
-  purpose, technology, Quran data, audio, translations, open source. Not started.
-- [ ] **19.11 Personal attribution** — Resources/About: "About This Project"
-  (created by Tauseef Khan) + clearly separated "Personal Dua" for parents & halal
-  livelihood, labeled Personal Dua (not Quran), visually understated. Not started.
-- [ ] **19.12 Footer redesign** — NoorulQuran + Read. Listen. Reflect.; simple link
-  groups (Quran, Read, Listen, Juz, Bookmarks, Resources, About, Settings); Data &
-  Sources + GitHub; "Created by Tauseef Khan"; subtle "Personal Dua" link (opens
-  full dua). Not started.
-- [ ] **19.13 Theme-switch soft crossfade** — avoid harsh flash on dark⇄light. Not
-  started.
-- [ ] **19.14 Global animation variants** — add named variants (glassReveal,
-  modalClose, audioPlaying, mushafPageChange, drawerClose, buttonPress, etc.);
-  page-specific motion consistency. Not started.
-- [ ] **19.15 QA gate** — tsc -b clean, lint baseline only (5 warnings/0 errors),
-  `npm run build` green; commit + push each sub-batch.
+  description → actions → decorative). Done (`6bb3650`).
+- [x] **19.6 Homepage hero image** — `HeroVisual.tsx` in-app generated cinematic
+  SVG (open Qur'an page + reading lamp + crescent + drifting motes on dark-emerald
+  gradient, gold accent, dark overlay for text) — NOT stock photo; license-safe.
+  Done (`6bb3650`).
+- [x] **19.7 Mushaf surface** — `MushafPaper.tsx`: warm ivory/paper page (not dark
+  neon), ornamental gold inner border, refined glass environment frame, subtle
+  shadow, page number + ayah count, traditional hierarchy; keeps real provider
+  data (no fake pages); per-ayah playback + subtle active-ayah highlight (no Quran
+  distortion). Done (`6bb3650`).
+- [x] **19.8 Audio player border** — premium floating glass: deep-black glass,
+  emerald→gold thin gradient border, inner top highlight + glass glow, soft outer
+  shadow; restrained animated edge shimmer while playing; NOT gaming/cyberpunk/
+  neon. Done (`659eefd`).
+- [x] **19.9 Reciter presentation** — `ReciterAvatar.tsx` elegant neutral Islamic
+  medallion initial-monogram avatar (no invented photos; no mislabeling); verified
+  names + attribution kept. Done (`4974d51`).
+- [x] **19.10 About page** — polished About NoorulQuran: uses new LogoMark brand,
+  purpose, technology, Quran data, audio, translations, open source; "Created by
+  Tauseef Khan". Done (`7eb4f0d`).
+- [x] **19.11 Personal attribution** — Sources "About This Project" + clearly
+  labeled "Personal Dua (not Quranic text)" section (creator's own dua, labeled as
+  not scripture, visually understated). Done (`d63b8f7`).
+- [x] **19.12 Footer redesign** — NoorulQuran (LogoLockup) + Read. Listen.
+  Reflect.; simple link groups; Data & Sources + GitHub; "Created by Tauseef
+  Khan"; subtle "Personal Dua" link scrolling to the dua section (hash-anchor
+  routing support added in AppLayout). Done (`05e296a`).
+- [x] **19.13 Theme-switch soft crossfade** — brief full-screen overlay fades out
+  over 350ms on dark⇄light change, masking the jarring CSS variable swap. Done
+  (`63828b8`).
+- [x] **19.14 Global animation variants** — added named variants (glassReveal,
+  modalClose, audioPlaying, mushafPageChange [extracted from MushafPage into the
+  shared library], drawerClose, buttonPress). Done (`1cfd8b3`).
+- [x] **19.15 QA gate** — tsc -b clean, lint baseline only (5 warnings/0 errors),
+  `npm run build` green, `validate:quran` 28/28, secret sweep clean; committed +
+  pushed as a sub-batch per item. Done (this batch).
 
 ---
 
@@ -467,4 +472,4 @@
 | 2026-08-31 | **Phase 16 delivered** — content safety & attribution: `brand-assets` entry added to the sources registry; `/sources` gains a "What is what" boundaries section (Quran vs translations vs tafsir vs notes vs plans) with an explicit no-chatbot/no-fatwa/no-AI-authority statement | `64d899f` |
 | 2026-08-31 | **Phase 17 delivered** — README & docs: full rewrite (logo/description, live demo link, screenshots section, features, tech-stack table, ASCII architecture diagram, data sources & licensing table, dev instructions, env vars, utilities, Vercel/static deployment guide, accessibility notes, roadmap, contribution guide) + `.env.example` created (providers, API key, site URL) | `3080d1f` |
 | 2026-08-31 | **Phase 18 — Final QA gate passed:** `npm run validate:quran` 28/28 (114 surahs, 6236 verses, numbering, Arabic glyphs, page/juz/hizb/sajdah mappings, audio URLs); production build green (main 315 kB / gzip 92 kB; canonical dataset its own lazy 1.78 MB chunk); typecheck + lint clean (baseline only); secret sweep clean — no PAT/token or hard-coded key in the tree; README's client-bundle claim corrected (VITE_* vars are public by definition); attribution visible across footer/readers/sources | `a2d6a56` + QA commit |
-| 2026-08-31 | **Phase 19 — WIP checkpoint (pause for break)**: new logo + brand system created (`src/components/Brand.tsx`: LogoMark/LogoIcon/LogoLockup + BRAND constants); icon generation rewritten + icons regenerated (`npm run generate:icons`). **Uncommitted.** Next: minimal app splash, nav refactor, hero editorial split + in-app hero visual, Mushaf ivory surface, audio-player premium border, reciter avatar, About/Personal Dua, footer, theme crossfade, animation variants, QA commit/push. Full todo mirrored in Phase 19 section header (lines ~365+). | *(pending cluster commit)* |
+| 2026-08-31 | **Phase 19 complete** (`0150ec7` → `1cfd8b3`, pushed per item). Delivered: new Guiding Light brand system (`Brand.tsx` LogoMark/LogoIcon/LogoLockup); regenerated PWA/favicon icon suite; static premium app splash (logo + Created by Tauseef Khan); nav refactor to simple English labels (`DESKTOP_NAV` primary + `SECONDARY_NAV` Library group); editorial-split homepage hero + in-app generated `HeroVisual.tsx` (open Qur'an/lamp/crescent SVG — no stock photos); genuine ivory Mushaf paper surface `MushafPaper.tsx` (ornamental gold border, per-ayah playback + active-ayah highlight); premium deep-black glass audio-player border with restrained animated emerald edge while playing; neutral Islamic `ReciterAvatar` monograms; About page polish + "Created by Tauseef Khan"; clearly-labeled "Personal Dua (not Quranic text)" section on Sources; footer redesign (LogoLockup + Personal Dua link + hash-anchor routing); theme-switch soft crossfade; expanded global animation variants (glassReveal, modalClose, audioPlaying, mushafPageChange, drawerClose, buttonPress). QA gate green: tsc -b clean, lint baseline only (5W/0E), build green, `validate:quran` 28/28, secret sweep clean. Quran-text-never-animated rule preserved throughout. | `1cfd8b3` + per-item commits |
