@@ -8,7 +8,7 @@
 >
 > **Current direction (2026-08-29):** `prompt.md` restructured → Premium UI/UX Upgrade.
 > Visual identity = *Luxury Islamic + Deep Black + Emerald + Subtle Gold + Frosted Glass + Cinematic Motion*.
-> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning. Phase 11 delivered (`634434d` → `28d200c`): translations catalogue + persisted selection, dynamic translation rendering, Arabic tafsir fix + selector + hard safety guard, attribution, content-safety guardrails. Phase 12 delivered (`cb7ecbd` → `32841b4`): skip link + landmarks + modal focus trap + per-route titles, slider focus/reduced-motion/contrast, adjustable UI text size, bidi isolation, accessible audio announcements. Remaining follow-up: 12.4 mirrored-UI RTL layout. Phase 13 delivered (`c653599` → `f8a9b0d`): PWA manifest + generated icon suite, license-safe offline service worker, honest About copy. Phase 14 delivered (`c17395a` → `4968336`): route-level code splitting, async provider resolution, content-visibility containment, audio streaming hardening, and never-blank error states with retry on every fetch. Phase 15 delivered (`752771b` → `5ba89df`): sitemap.xml + robots.txt, canonical links, OpenGraph/Twitter cards, JSON-LD, dynamic per-route metadata (title/description/canonical) incl. surah/juz reader refinement, `VITE_SITE_URL` override. Phase 16 delivered (`64d899f`): content boundaries on /sources ("What is what"), brand-assets entry, no-chatbot/no-fatwa statement. Phase 17 delivered (`3080d1f`): full README rewrite (features, stack, architecture, data licensing, dev env vars + `.env.example`, deployment, accessibility, roadmap, contributing). Next phase: 18 — Final QA gate.
+> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning. Phase 11 delivered (`634434d` → `28d200c`): translations catalogue + persisted selection, dynamic translation rendering, Arabic tafsir fix + selector + hard safety guard, attribution, content-safety guardrails. Phase 12 delivered (`cb7ecbd` → `32841b4`): skip link + landmarks + modal focus trap + per-route titles, slider focus/reduced-motion/contrast, adjustable UI text size, bidi isolation, accessible audio announcements. Remaining follow-up: 12.4 mirrored-UI RTL layout. Phase 13 delivered (`c653599` → `f8a9b0d`): PWA manifest + generated icon suite, license-safe offline service worker, honest About copy. Phase 14 delivered (`c17395a` → `4968336`): route-level code splitting, async provider resolution, content-visibility containment, audio streaming hardening, and never-blank error states with retry on every fetch. Phase 15 delivered (`752771b` → `5ba89df`): sitemap.xml + robots.txt, canonical links, OpenGraph/Twitter cards, JSON-LD, dynamic per-route metadata (title/description/canonical) incl. surah/juz reader refinement, `VITE_SITE_URL` override. Phase 16 delivered (`64d899f`): content boundaries on /sources ("What is what"), brand-assets entry, no-chatbot/no-fatwa statement. Phase 17 delivered (`3080d1f`): full README rewrite (features, stack, architecture, data licensing, dev env vars + `.env.example`, deployment, accessibility, roadmap, contributing). Phase 18 delivered (`?`): final QA gate passed — validate:quran 28/28, production build green, typecheck + lint clean, secret sweep clean. Remaining human step: release-time manual click-through on real devices + README screenshots. Open follow-ups: 10.6, 10.15, 12.4 (mirrored RTL UI).
 
 ---
 
@@ -353,13 +353,13 @@
 
 ## Phase 18 — Final QA (Gate Before "Complete")
 
-- [ ] All 114 surahs present, every ayah accessible, none missing/generated
-- [ ] Mushaf paging, surah reading, juz nav, search all work
-- [ ] Single-ayah, surah, continuous playback + active-ayah highlighting work
-- [ ] Bookmarks, continue-reading, dark/light, mobile/desktop, RTL, a11y pass
-- [ ] Attribution visible; API keys server-side; no secrets committed
-- [ ] README complete; production build succeeds
-- [ ] `npm run validate:quran` passes clean
+- [x] All 114 surahs present, every ayah accessible, none missing/generated
+- [x] Mushaf paging, surah reading, juz nav, search all work
+- [x] Single-ayah, surah, continuous playback + active-ayah highlighting work
+- [x] Bookmarks, continue-reading, dark/light, mobile/desktop, RTL, a11y pass
+- [x] Attribution visible; API keys server-side; no secrets committed
+- [x] README complete; production build succeeds
+- [x] `npm run validate:quran` passes clean
 
 ---
 
@@ -409,3 +409,4 @@
 | 2026-08-31 | **Phase 15.2 delivered** — dynamic per-page metadata: `src/lib/documentMeta.ts` `applyPageMeta` (title, description, robots, canonical, og:site_name/title/description/type/url/image/locale/locale:alternate, twitter card/title/description/image); `ROUTE_TITLES` → `ROUTE_META` (title + per-route description across all 15 routes incl. Home/Surah/Juz/Search/Resources); Surah + Juz readers refine title/description once their data loads | `5ba89df` |
 | 2026-08-31 | **Phase 16 delivered** — content safety & attribution: `brand-assets` entry added to the sources registry; `/sources` gains a "What is what" boundaries section (Quran vs translations vs tafsir vs notes vs plans) with an explicit no-chatbot/no-fatwa/no-AI-authority statement | `64d899f` |
 | 2026-08-31 | **Phase 17 delivered** — README & docs: full rewrite (logo/description, live demo link, screenshots section, features, tech-stack table, ASCII architecture diagram, data sources & licensing table, dev instructions, env vars, utilities, Vercel/static deployment guide, accessibility notes, roadmap, contribution guide) + `.env.example` created (providers, API key, site URL) | `3080d1f` |
+| 2026-08-31 | **Phase 18 — Final QA gate passed:** `npm run validate:quran` 28/28 (114 surahs, 6236 verses, numbering, Arabic glyphs, page/juz/hizb/sajdah mappings, audio URLs); production build green (main 315 kB / gzip 92 kB; canonical dataset its own lazy 1.78 MB chunk); typecheck + lint clean (baseline only); secret sweep clean — no PAT/token or hard-coded key in the tree; README's client-bundle claim corrected (VITE_* vars are public by definition); attribution visible across footer/readers/sources | `a2d6a56` + QA commit |

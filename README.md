@@ -114,7 +114,10 @@ npm run typecheck && npm run lint && npm run build
 | `VITE_QURAN_FOUNDATION_API_KEY` | Optional Quran.com API v4 auth token (higher rate limits) | none |
 | `VITE_SITE_URL` | Canonical production origin for SEO metadata | GitHub Pages URL (see `.env.example`) |
 
-No secret is ever bundled into the client bundle or committed.
+No `VITE_*` variable is a true secret — Vite embeds `VITE_`-prefixed vars into the client
+bundle, so `VITE_QURAN_FOUNDATION_API_KEY` is only a public rate-limit token and must be
+treated as non-secret. Server-only secrets have no home in this client-only app and are
+never committed.
 
 ### Utilities
 
