@@ -28,6 +28,7 @@ import { TafsirModal } from '../components/TafsirModal'
 import { VerseInfoPanel } from '../components/VerseInfoPanel'
 import { NoteModal } from '../components/NoteModal'
 import { LoadingScreen } from '../components/LoadingScreen'
+import { ErrorState } from '../components/ErrorState'
 import { EqualizerBars } from '../components/EqualizerBars'
 import { AyahTranslations } from '../components/AyahTranslations'
 
@@ -212,7 +213,7 @@ export default function SurahReaderPage() {
     [surahId, surahNumber],
   )
 
-  const { data: surah, loading, error: dataError } = useAsyncData<SurahDetail>(
+  const { data: surah, loading, error: dataError, reload } = useAsyncData<SurahDetail>(
     async (signal) => (await getActiveProvider()).getSurah(surahNumber, { signal }),
     [surahNumber],
   )
@@ -336,21 +337,33 @@ export default function SurahReaderPage() {
     }
   }, [surah, isBookmarked, addBookmark, removeBookmark])
 
-  const error = !isValid ? 'Invalid surah number.' : dataError
-
   if (loading) {
     return <LoadingScreen />
   }
 
-  if (error || !surah) {
+  if (!isValid) {
     return (
       <div className="py-12 text-center">
-        <div className="card rounded-2xl p-8" role="alert">
-          <p className="text-sm text-red-700 dark:text-red-300">{error || 'Surah not found.'}</p>
-          <Link to="/surahs" className="mt-4 inline-block text-sm font-semibold text-brand hover:underline">
-            ← Back to Surahs
-          </Link>
-        </div>
+        <ErrorState
+          title="Invalid surah"
+          message="The surah number isn't valid (1–114)."
+          backTo="/surahs"
+          backLabel="Back to Surahs"
+        />
+      </div>
+    )
+  }
+
+  if (dataError || !surah) {
+    return (
+      <div className="py-12 text-center">
+        <ErrorState
+          title="Couldn't load this surah"
+          message={dataError || 'Surah not found.'}
+          onRetry={reload}
+          backTo="/surahs"
+          backLabel="Back to Surahs"
+        />
       </div>
     )
   }

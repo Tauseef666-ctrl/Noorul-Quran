@@ -6,6 +6,7 @@ import { getActiveProvider } from '../services/quran'
 import type { Surah } from '../types/quran'
 import { AYAH_COUNTS } from '../data/ayahCounts'
 import { fadeUp, staggerContainer } from '../animations'
+import { ErrorState } from '../components/ErrorState'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 12 },
@@ -83,6 +84,8 @@ export default function JuzPage() {
   const [juzInfos, setJuzInfos] = useState<JuzInfo[]>([])
   const [surahMap, setSurahMap] = useState<Map<number, Surah>>(new Map())
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [attempt, setAttempt] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -95,10 +98,14 @@ export default function JuzPage() {
         setJuzInfos(computeJuzInfos(list))
         setLoading(false)
       }),
-    )
+    ).catch((err) => {
+      if (cancelled) return
+      setLoading(false)
+      setError(err instanceof Error ? err.message : 'Failed to load the juz list.')
+    })
 
     return () => { cancelled = true }
-  }, [])
+  }, [attempt])
 
   const getSurahName = (num: number) => surahMap.get(num)?.nameTransliterated ?? `Surah ${num}`
 
@@ -119,6 +126,16 @@ export default function JuzPage() {
             </div>
           ))}
         </div>
+      ) : error ? (
+        <ErrorState
+          title="Couldn't load the juz list"
+          message={error}
+          onRetry={() => {
+            setError(null)
+            setLoading(true)
+            setAttempt((a) => a + 1)
+          }}
+        />
       ) : (
         <motion.div variants={staggerContainer} className="grid gap-3 sm:grid-cols-2">
           {juzInfos.map((juz) => (

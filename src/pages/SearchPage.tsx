@@ -16,6 +16,7 @@ import type { Surah } from '../types/quran'
 import { useAudio } from '../store/audio'
 import { GeometricPattern } from '../components/GeometricPattern'
 import { EqualizerBars } from '../components/EqualizerBars'
+import { ErrorState } from '../components/ErrorState'
 import { fadeUp, staggerContainer } from '../animations'
 
 const fadeIn = {
@@ -200,9 +201,11 @@ export default function SearchPage() {
       )}
 
       {error && (
-        <div className="card rounded-2xl p-5 text-sm text-red-700 dark:text-red-300" role="alert">
-          {error}
-        </div>
+        <ErrorState
+          title="Search failed"
+          message={error}
+          onRetry={() => doSearch(query)}
+        />
       )}
 
       {!loading && searched && query.trim() && !hasResults && !error && (

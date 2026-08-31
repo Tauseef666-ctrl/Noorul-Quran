@@ -8,7 +8,7 @@
 >
 > **Current direction (2026-08-29):** `prompt.md` restructured → Premium UI/UX Upgrade.
 > Visual identity = *Luxury Islamic + Deep Black + Emerald + Subtle Gold + Frosted Glass + Cinematic Motion*.
-> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning. Phase 11 delivered (`634434d` → `28d200c`): translations catalogue + persisted selection, dynamic translation rendering, Arabic tafsir fix + selector + hard safety guard, attribution, content-safety guardrails. Phase 12 delivered (`cb7ecbd` → `32841b4`): skip link + landmarks + modal focus trap + per-route titles, slider focus/reduced-motion/contrast, adjustable UI text size, bidi isolation, accessible audio announcements. Remaining follow-up: 12.4 mirrored-UI RTL layout. Phase 13 delivered (`c653599` → `f8a9b0d`): PWA manifest + generated icon suite, license-safe offline service worker, honest About copy. Now working on **Phase 14 — Performance & Error States**.
+> Never cyberpunk / hacker / neon / gaming HUD. Priority: Quran → readability → accessibility → performance → aesthetics → animation. Phase 10 delivered (`17f2ab6` → `4e16f2b`); remaining: 10.11 nav toggle, 10.6 mobile touch states, 10.15 reduced-motion & low-end tuning. Phase 11 delivered (`634434d` → `28d200c`): translations catalogue + persisted selection, dynamic translation rendering, Arabic tafsir fix + selector + hard safety guard, attribution, content-safety guardrails. Phase 12 delivered (`cb7ecbd` → `32841b4`): skip link + landmarks + modal focus trap + per-route titles, slider focus/reduced-motion/contrast, adjustable UI text size, bidi isolation, accessible audio announcements. Remaining follow-up: 12.4 mirrored-UI RTL layout. Phase 13 delivered (`c653599` → `f8a9b0d`): PWA manifest + generated icon suite, license-safe offline service worker, honest About copy. Phase 14 delivered (`c17395a` → `213a7fd` + `14.4`): route-level code splitting, async provider resolution, content-visibility containment, audio streaming hardening, and never-blank error states with retry on every fetch. Next phase: TBD (check plan).
 
 ---
 
@@ -306,9 +306,9 @@
 
 ## Phase 14 — Performance & Error States
 
-- [ ] Lazy loading, virtualized long lists, code splitting, API caching, image optimization
-- [ ] Efficient audio loading (never bulk-download entire library)
-- [ ] Handle every failure: API down, audio unavailable, missing translation, invalid surah/ayah/page, network fail, rate limit, loading skeletons, empty search — always retry options, never blank screens
+- [x] Lazy loading, virtualized long lists, code splitting, API caching, image optimization
+- [x] Efficient audio loading (never bulk-download entire library)
+- [x] Handle every failure: API down, audio unavailable, missing translation, invalid surah/ayah/page, network fail, rate limit, loading skeletons, empty search — always retry options, never blank screens
 
 ### 14.1 Code splitting & lazy loading
 - [x] Route-level `React.lazy` + `Suspense` (fallback `LoadingScreen`) for the heavy routes: SurahReader, Mushaf (default + index), JuzReader, Search, Tafsir, Listen
@@ -327,10 +327,10 @@
 - [x] AudioPlayer error surface gained a “Try again” retry that reloads the current item
 
 ### 14.4 Error states — never blank, always retry
-- [ ] Shared `ErrorState` component (icon + message + Retry) and `useAsyncData.reload` (attempt counter) for every data fetch
-- [ ] All fetch pages wired: SurahReader, JuzReader, Mushaf, Surahs, Listen, Tafsir, Search, JuzPage, DailyAyah, Home (daily ayah + surah list)
-- [ ] Validation-only states (invalid surah/juz/page) render static guidance without a retry; rate-limit (429) keeps its dedicated hint
-- [ ] Audio error in player shows “Try again” (network) instead of a dead button
+- [x] Shared `ErrorState` component (icon + message + Retry) and `useAsyncData.reload` (attempt counter) for every data fetch
+- [x] All fetch pages wired: SurahReader, JuzReader, Mushaf, Surahs, Listen, Tafsir, Search, JuzPage, DailyAyah, Home (daily ayah + surah list)
+- [x] Validation-only states (invalid surah/juz/page) render static guidance without a retry; rate-limit (429) keeps its dedicated hint
+- [x] Audio error in player shows “Try again” (network) instead of a dead button
 
 ## Phase 15 — SEO
 

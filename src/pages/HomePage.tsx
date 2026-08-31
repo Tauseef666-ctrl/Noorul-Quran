@@ -22,6 +22,7 @@ import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
 import { GeometricPattern } from '../components/GeometricPattern'
 import { EqualizerBars } from '../components/EqualizerBars'
+import { ErrorState } from '../components/ErrorState'
 import { langDir } from '../services/quran/translationProvider'
 import {
   heroStagger,
@@ -59,12 +60,14 @@ const daily = getDailyAyah()
 const viewportOnce = { once: true, margin: '-60px' } as const
 
 export default function HomePage() {
-  const { data: surahs } = useAsyncData<Surah[]>(
+  const { data: surahs, error: surahsError, reload: reloadSurahs } = useAsyncData<Surah[]>(
     async (signal) => (await getActiveProvider()).getSurahList({ signal }),
     [],
   )
 
   const [dailyAyah, setDailyAyah] = useState<Ayah | null>(null)
+  const [dailyError, setDailyError] = useState<string | null>(null)
+  const [attempt, setAttempt] = useState(0)
   const [dailyTranslations, setDailyTranslations] = useState<Record<string, string>>({})
   const { activeIds, primaryEdition } = useTranslations()
 
@@ -77,10 +80,14 @@ export default function HomePage() {
         .then((ayah) => {
           if (!controller.signal.aborted) setDailyAyah(ayah)
         }),
-    )
+    ).catch((err) => {
+      if (!controller.signal.aborted) {
+        setDailyError(err instanceof Error ? err.message : "Couldn't load today's ayah.")
+      }
+    })
 
     return () => controller.abort()
-  }, [])
+  }, [attempt])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -91,6 +98,8 @@ export default function HomePage() {
           if (!controller.signal.aborted) setDailyTranslations(trans)
         },
       )
+    }).catch(() => {
+      // Translation unavailable — the daily card simply omits translation text
     })
 
     return () => controller.abort()
@@ -260,7 +269,24 @@ export default function HomePage() {
       )}
 
       {/* ── Daily Ayah — signature component ────────────────────────────────── */}
-      {dailyAyah && (
+      {dailyError ? (
+        <motion.section
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+        >
+          <ErrorState
+            title="Couldn't load today's ayah"
+            message={dailyError}
+            onRetry={() => {
+              setDailyError(null)
+              setAttempt((a) => a + 1)
+            }}
+          />
+        </motion.section>
+      ) : (
+      dailyAyah && (
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewportOnce}>
           <div className="glass relative overflow-hidden rounded-3xl border-gold/25 bg-gradient-to-br from-emerald-900/[0.08] via-transparent to-gold/[0.06] p-6 sm:p-10">
             <GeometricPattern
@@ -338,6 +364,7 @@ export default function HomePage() {
             </motion.div>
           </div>
         </motion.section>
+      )
       )}
 
       {/* ── Quick Explorers ─────────────────────────────────────────────────── */}
@@ -366,7 +393,16 @@ export default function HomePage() {
       </motion.section>
 
       {/* ── Surah Explorer Preview ──────────────────────────────────────────── */}
-      {featuredSurahs.length > 0 && (
+      {surahsError ? (
+        <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewportOnce}>
+          <ErrorState
+            title="Couldn't load the surah list"
+            message={surahsError}
+            onRetry={reloadSurahs}
+          />
+        </motion.section>
+      ) : (
+      featuredSurahs.length > 0 && (
         <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewportOnce}>
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-ink">Browse Surahs</h2>
@@ -402,6 +438,7 @@ export default function HomePage() {
             ))}
           </div>
         </motion.section>
+      )
       )}
 
       {/* ── Featured Recitations ────────────────────────────────────────────── */}

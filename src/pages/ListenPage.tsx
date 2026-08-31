@@ -7,9 +7,10 @@ import type { Surah } from '../types/quran'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
 import { fadeUp, staggerContainer } from '../animations'
+import { ErrorState } from '../components/ErrorState'
 
 export default function ListenPage() {
-  const { data: surahs, loading } = useAsyncData<Surah[]>(
+  const { data: surahs, loading, error, reload } = useAsyncData<Surah[]>(
     async (signal) => (await getActiveProvider()).getSurahList({ signal }),
     [],
   )
@@ -87,6 +88,12 @@ export default function ListenPage() {
               </div>
             ))}
           </div>
+        ) : error ? (
+          <ErrorState
+            title="Couldn't load the surah list"
+            message={error}
+            onRetry={reload}
+          />
         ) : surahs && (
           <motion.div variants={staggerContainer} className="space-y-1.5">
             {surahs.map((surah) => {

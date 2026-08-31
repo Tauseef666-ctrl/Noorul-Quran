@@ -7,6 +7,7 @@ import type { Surah } from '../types/quran'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { useAudio } from '../store/audio'
 import { fadeUp, staggerContainer } from '../animations'
+import { ErrorState } from '../components/ErrorState'
 
 type SortKey = 'number' | 'name' | 'ayahs' | 'revelation'
 type SortDir = 'asc' | 'desc'
@@ -20,7 +21,7 @@ export default function SurahsPage() {
 
   const { playSurah, mode, currentAyah, playing, pause, resume } = useAudio()
 
-  const { data: surahs, loading, error } = useAsyncData<Surah[]>(
+  const { data: surahs, loading, error, reload } = useAsyncData<Surah[]>(
     async (signal) => (await getActiveProvider()).getSurahList({ signal }),
     [],
   )
@@ -142,9 +143,11 @@ export default function SurahsPage() {
       )}
 
       {error && (
-        <div className="card rounded-2xl p-5 text-sm text-red-700 dark:text-red-300" role="alert">
-          {error}
-        </div>
+        <ErrorState
+          title="Couldn't load the surah list"
+          message={error}
+          onRetry={reload}
+        />
       )}
 
       {!loading && !error && filtered.length === 0 && (

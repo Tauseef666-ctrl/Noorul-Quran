@@ -10,6 +10,7 @@ import { useAudio } from '../store/audio'
 import { AYAH_COUNTS } from '../data/ayahCounts'
 import { useAsyncData } from '../hooks/useAsyncData'
 import { AyahTranslations } from '../components/AyahTranslations'
+import { ErrorState } from '../components/ErrorState'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 16 },
@@ -42,7 +43,7 @@ export default function DailyAyahPage() {
 
   const bookmarkId = `${daily.surahNumber}:${daily.ayahNumber}`
 
-  const { data: ayah, loading } = useAsyncData<Ayah>(
+  const { data: ayah, loading, error, reload } = useAsyncData<Ayah>(
     async (signal) => (await getActiveProvider()).getAyah(daily.surahNumber, daily.ayahNumber, { signal }),
     [],
   )
@@ -61,6 +62,8 @@ export default function DailyAyahPage() {
       ).then((trans) => {
         if (!controller.signal.aborted) setTranslations(trans)
       })
+    }).catch(() => {
+      // Translation unavailable — AyahTranslations falls back to its hint state
     })
 
     return () => controller.abort()
@@ -82,6 +85,12 @@ export default function DailyAyahPage() {
           <div className="mx-auto mt-6 h-4 w-3/4 rounded bg-line" />
           <div className="mx-auto mt-2 h-4 w-1/2 rounded bg-line" />
         </div>
+      ) : error ? (
+        <ErrorState
+          title="Couldn't load today's ayah"
+          message={error}
+          onRetry={reload}
+        />
       ) : ayah && (
         <motion.div variants={fadeIn} className="card rounded-2xl p-6 sm:p-10">
           <div className="text-center">

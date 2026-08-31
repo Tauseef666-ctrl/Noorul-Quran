@@ -23,6 +23,7 @@ import { useAsyncData } from '../hooks/useAsyncData'
 import { useReadingProgress } from '../hooks/useReadingProgress'
 import { useAudio } from '../store/audio'
 import { JumpToDialog } from '../components/JumpToDialog'
+import { ErrorState } from '../components/ErrorState'
 import { EqualizerBars } from '../components/EqualizerBars'
 
 const fadeIn = {
@@ -171,7 +172,7 @@ export default function MushafPageReader() {
     ? rawPage
     : 1
 
-  const { data: mushafPage, loading, error } = useAsyncData<MushafPageType>(
+  const { data: mushafPage, loading, error, reload } = useAsyncData<MushafPageType>(
     (signal) => {
       if (!provider) return Promise.reject(new Error('Loading source…'))
       return provider.getPage(pageNumber, { signal, mushaf: layout })
@@ -538,12 +539,13 @@ export default function MushafPageReader() {
           </div>
         </div>
       ) : error ? (
-        <div className="card rounded-2xl p-8 text-center" role="alert">
-          <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
-          <Link to="/mushaf/1" className="mt-3 inline-block text-xs font-semibold text-brand hover:underline">
-            Go to Page 1
-          </Link>
-        </div>
+        <ErrorState
+          title="Couldn't load this page"
+          message={error}
+          onRetry={reload}
+          backTo="/mushaf/1"
+          backLabel="Go to Page 1"
+        />
       ) : null}
 
       {/* Bottom nav */}

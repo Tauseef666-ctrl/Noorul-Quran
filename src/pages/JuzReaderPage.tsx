@@ -27,6 +27,7 @@ import { VerseInfoPanel } from '../components/VerseInfoPanel'
 import { NoteModal } from '../components/NoteModal'
 import { useNotes } from '../store/notes'
 import { LoadingScreen } from '../components/LoadingScreen'
+import { ErrorState } from '../components/ErrorState'
 import { EqualizerBars } from '../components/EqualizerBars'
 import { AyahTranslations } from '../components/AyahTranslations'
 
@@ -54,10 +55,17 @@ export default function JuzReaderPage() {
     [juzId, juzNumber],
   )
 
-  const { data: juz, loading, error: dataError } = useAsyncData<JuzDetail>(
+  const { data: juz, loading, error: dataError, reload } = useAsyncData<JuzDetail>(
     async (signal) => (await getActiveProvider()).getJuz(juzNumber, { signal }),
     [juzNumber],
   )
+
+  // Scroll current ayah into view during playback
+  useEffect(() => {
+    if (!currentAyah || !playing) return
+    const el = ayahRefs.current.get(`${currentAyah.surahNumber}:${currentAyah.ayahNumber}`)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [currentAyah, playing])
 
   // Fetch translations in batches once juz data loads
   useEffect(() => {
@@ -101,28 +109,33 @@ export default function JuzReaderPage() {
     return () => controller.abort()
   }, [juz, activeIds])
 
-  const error = !isValid ? 'Invalid juz number.' : dataError
-
-  // Scroll current ayah into view during playback
-  useEffect(() => {
-    if (!currentAyah || !playing) return
-    const el = ayahRefs.current.get(`${currentAyah.surahNumber}:${currentAyah.ayahNumber}`)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }, [currentAyah, playing])
-
   if (loading) {
     return <LoadingScreen label="Loading juz…" />
   }
 
-  if (error || !juz) {
+  if (!isValid) {
     return (
       <div className="py-12 text-center">
-        <div className="card rounded-2xl p-8" role="alert">
-          <p className="text-sm text-red-700 dark:text-red-300">{error || 'Juz not found.'}</p>
-          <Link to="/juz" className="mt-4 inline-block text-sm font-semibold text-brand hover:underline">
-            ← Back to Juz
-          </Link>
-        </div>
+        <ErrorState
+          title="Invalid juz"
+          message="The juz number isn't valid (1–30)."
+          backTo="/juz"
+          backLabel="Back to Juz"
+        />
+      </div>
+    )
+  }
+
+  if (dataError || !juz) {
+    return (
+      <div className="py-12 text-center">
+        <ErrorState
+          title="Couldn't load this juz"
+          message={dataError || 'Juz not found.'}
+          onRetry={reload}
+          backTo="/juz"
+          backLabel="Back to Juz"
+        />
       </div>
     )
   }

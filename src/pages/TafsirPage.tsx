@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { BookMarked, Loader2 } from 'lucide-react'
 import { tafsirProvider, readTafsirId, persistTafsirId, TAFSIR_CATALOG } from '../services/quran/tafsirProvider'
 import { langDir } from '../services/quran/translationProvider'
+import { ErrorState } from '../components/ErrorState'
 import type { TafsirContent, TafsirEdition } from '../types/quran'
 
 const fadeIn = {
@@ -133,9 +134,11 @@ export default function TafsirPage() {
       )}
 
       {error && (
-        <div className="card rounded-2xl p-5 text-sm text-red-700 dark:text-red-300" role="alert">
-          {error}
-        </div>
+        <ErrorState
+          title="Couldn't load the tafsir"
+          message={error}
+          onRetry={() => void handleSearch()}
+        />
       )}
 
       {tafsir && (

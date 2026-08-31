@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 
 interface State<T> {
   data: T | null
@@ -22,16 +22,22 @@ function reducer<T>(_state: State<T>, action: Action<T>): State<T> {
   }
 }
 
+/**
+ * Runs `fetcher` on mount whenever `deps`/`enabled` change. A failed fetch
+ * surfaces as `error` (with the previous data cleared) and `reload()` re-runs
+ * the same fetcher — the canonical "never blank, always retry" contract.
+ */
 export function useAsyncData<T>(
   fetcher: (signal: AbortSignal) => Promise<T>,
   deps: unknown[],
   enabled = true,
-): State<T> {
+): State<T> & { reload: () => void } {
   const [state, dispatch] = useReducer(reducer<T>, undefined, (): State<T> => ({
     data: null,
     loading: enabled,
     error: null,
   }))
+  const [attempt, setAttempt] = useState(0)
 
   useEffect(() => {
     if (!enabled) return
@@ -55,7 +61,7 @@ export function useAsyncData<T>(
 
     return () => controller.abort()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...deps, enabled])
+  }, [...deps, enabled, attempt])
 
-  return state
+  return { ...state, reload: () => setAttempt((a) => a + 1) }
 }
