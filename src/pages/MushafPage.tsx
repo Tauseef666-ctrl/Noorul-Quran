@@ -23,18 +23,25 @@ import { useReadingProgress } from '../hooks/useReadingProgress'
 import { useAudio } from '../store/audio'
 import { JumpToDialog } from '../components/JumpToDialog'
 import { ErrorState } from '../components/ErrorState'
-import { MushafPaper } from '../components/MushafPaper'
+import { MushafBook } from '../components/MushafBook'
 import { EqualizerBars } from '../components/EqualizerBars'
-import { mushafPageChange } from '../animations'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 12 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
 }
 
-/* Phased page-turn: the incoming page slides from the direction of travel,
-   the outgoing page slides away the opposite way. x/opacity only. */
-const pageTurn = mushafPageChange
+/* Spread page-turn: a gentle opacity crossfade that drives the exiting spread
+   while MushafBook performs the 3D leaf-flip on the incoming one. Opacity only
+   so it never fights or distorts the quranic text. */
+const spreadTurn = {
+  enter: { opacity: 0, transition: { duration: 0.18 } },
+  center: {
+    opacity: 1,
+    transition: { duration: 0.4, ease: 'easeOut' as const },
+  },
+  exit: { opacity: 0, transition: { duration: 0.22, ease: 'easeIn' as const } },
+}
 
 const focusEnter = {
   hidden: { opacity: 0, scale: 0.985 },
@@ -110,7 +117,10 @@ export default function MushafPageReader() {
   const [swipe, setSwipe] = useState<{ x: number; y: number } | null>(null)
   const [pageDir, setPageDir] = useState<1 | -1>(1)
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const [cachedPage, setCachedPage] = useState<MushafPageType | null>(null)
+  const [cachedPage, setCachedPage] = useState<{
+    right: MushafPageType
+    left: MushafPageType
+  } | null>(null)
   const { updateProgress } = useReadingProgress()
 
   const [provider, setProvider] = useState<QuranProvider | null>(null)
@@ -133,23 +143,34 @@ export default function MushafPageReader() {
     ? rawPage
     : 1
 
-  const { data: mushafPage, loading, error, reload } = useAsyncData<MushafPageType>(
+  // Opened-book spread: the right (odd) page is the canonical/URL page; the
+  // left (even) page is its facing partner.
+  const spreadRight = Math.floor((pageNumber - 1) / 2) * 2 + 1
+  const spreadLeft = Math.min(spreadRight + 1, MUSHAF_PAGE_COUNT)
+
+  const { data: spread, loading, error, reload } = useAsyncData<{
+    right: MushafPageType
+    left: MushafPageType
+  }>(
     (signal) => {
       if (!provider) return Promise.reject(new Error('Loading source…'))
-      return provider.getPage(pageNumber, { signal, mushaf: layout })
+      return Promise.all([
+        provider.getPage(spreadRight, { signal, mushaf: layout }),
+        provider.getPage(spreadLeft, { signal, mushaf: layout }),
+      ]).then(([r, l]) => ({ right: r, left: l }))
     },
-    [pageNumber, provider, layout],
+    [spreadRight, spreadLeft, provider, layout],
     Boolean(provider),
   )
 
-  // Keep the last complete page in state so the page-turn can animate out of it
-  // while the next page is still loading.
+  // Keep the last complete spread in state so the page-turn can animate out of
+  // it while the next spread is still loading.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional data mirror for the exit animation
-    if (mushafPage) setCachedPage(mushafPage)
-  }, [mushafPage])
+    if (spread) setCachedPage(spread)
+  }, [spread])
 
-  const shownPage = mushafPage ?? (loading ? cachedPage : null)
+  const shownSpread = spread ?? (loading ? cachedPage : null)
 
   // Redirect /mushaf → last-saved page
   useEffect(() => {
@@ -176,22 +197,25 @@ export default function MushafPageReader() {
     }
   }, [layout])
 
-  // Track reading progress from the first ayah on the page
+  // Track reading progress from the first ayah on the (right/odd) page
   useEffect(() => {
-    const first = mushafPage?.ayahs[0]
+    const first = spread?.right.ayahs[0]
     if (!first) return
     updateProgress({
       surahNumber: first.surahNumber,
       ayahNumber: first.ayahNumber,
-      page: pageNumber,
+      page: spreadRight,
       juz: first.navigation.juz,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mushafPage, pageNumber])
+  }, [spread, spreadRight])
 
   const goPage = useCallback(
     (n: number) => {
-      const clamped = Math.min(Math.max(n, 1), MUSHAF_PAGE_COUNT)
+      // A page-turn flips a whole leaf — step the spread by one pair, always
+      // landing the requested page as the right (odd) page.
+      const odd = Math.floor((n - 1) / 2) * 2 + 1
+      const clamped = Math.min(Math.max(odd, 1), MUSHAF_PAGE_COUNT)
       if (clamped !== pageNumber) setPageDir(clamped > pageNumber ? 1 : -1)
       navigate(`/mushaf/${clamped}`)
     },
@@ -327,20 +351,26 @@ export default function MushafPageReader() {
               </div>
             </div>
 
-            {/* The page — the single brightest element */}
+            {/* The opened book — the single brightest element */}
             <div className="flex-1 overflow-y-auto px-4 py-8 sm:px-10">
-              <div className="mx-auto max-w-3xl">
-                {shownPage ? (
+              <div className="mx-auto max-w-5xl">
+                {shownSpread ? (
                   <AnimatePresence custom={pageDir} initial={false} mode="popLayout">
                     <motion.div
-                      key={shownPage.pageNumber}
+                      key={shownSpread.right.pageNumber}
                       custom={pageDir}
-                      variants={pageTurn}
+                      variants={spreadTurn}
                       initial="enter"
                       animate="center"
                       exit="exit"
                     >
-                      <MushafPaper ayahs={shownPage.ayahs} pageNumber={shownPage.pageNumber} />
+                      <MushafBook
+                        right={shownSpread.right.ayahs}
+                        left={shownSpread.left.ayahs}
+                        pageNumberRight={shownSpread.right.pageNumber}
+                        pageNumberLeft={shownSpread.left.pageNumber}
+                        direction={pageDir}
+                      />
                     </motion.div>
                   </AnimatePresence>
                 ) : loading ? (
@@ -388,7 +418,9 @@ export default function MushafPageReader() {
       <motion.div variants={fadeIn} className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-bold text-ink">Mushaf</h1>
-          <p className="text-xs text-ink-muted">Page {pageNumber} of {MUSHAF_PAGE_COUNT}</p>
+          <p className="text-xs text-ink-muted">
+            Pages {spreadRight}–{spreadLeft} of {MUSHAF_PAGE_COUNT}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -474,21 +506,26 @@ export default function MushafPageReader() {
         </div>
       </motion.div>
 
-      {/* Page content — directional page-turn */}
-      {shownPage ? (
+      {/* Opened book page-turn */}
+      {shownSpread ? (
         <AnimatePresence custom={pageDir} initial={false} mode="popLayout">
           <motion.div
-            key={shownPage.pageNumber}
+            key={shownSpread.right.pageNumber}
             custom={pageDir}
-            variants={pageTurn}
+            variants={spreadTurn}
             initial="enter"
             animate="center"
             exit="exit"
-            className="mx-auto max-w-3xl"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
-            <MushafPaper ayahs={shownPage.ayahs} pageNumber={shownPage.pageNumber} />
+            <MushafBook
+              right={shownSpread.right.ayahs}
+              left={shownSpread.left.ayahs}
+              pageNumberRight={shownSpread.right.pageNumber}
+              pageNumberLeft={shownSpread.left.pageNumber}
+              direction={pageDir}
+            />
           </motion.div>
         </AnimatePresence>
       ) : loading ? (
