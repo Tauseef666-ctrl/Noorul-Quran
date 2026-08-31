@@ -99,6 +99,41 @@ export default function SourcesPage() {
           </ul>
         </div>
       </motion.section>
+
+      {/* Content boundaries — what is Quran vs. everything else */}
+      <motion.section variants={fadeIn}>
+        <h2 className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink-faint">
+          What is what
+        </h2>
+        <div className="card rounded-2xl p-4">
+          <ul className="space-y-2 text-sm text-ink-muted">
+            <li>
+              <span className="font-semibold text-ink">Quran</span> — the bundled Uthmani text,
+              served verbatim from the checksummed canonical dataset and never paraphrased, edited, or translated in place.
+            </li>
+            <li>
+              <span className="font-semibold text-ink">Translations</span> — published editions by named translators,
+              always presented alongside (never instead of, never merged with) the Arabic, and captioned with each translator's name.
+            </li>
+            <li>
+              <span className="font-semibold text-ink">Tafsir</span> — scholarly commentary by named, published authors,
+              opened in its own view and visibly set apart from both the Quranic text and its translations.
+            </li>
+            <li>
+              <span className="font-semibold text-ink">Notes</span> — your own personal entries, stored locally on this device.
+            </li>
+            <li>
+              <span className="font-semibold text-ink">Reading plans & educational content</span> — app features and explanatory copy,
+              not religious rulings.
+            </li>
+          </ul>
+          <p className="mt-3 border-t border-line/60 pt-3 text-xs italic text-ink-faint">
+            This application contains no chatbot and generates no religious answers. Nothing here is
+            a fatwa or presented as religious authority — verse text, translations, and commentary all
+            come from the published sources listed above.
+          </p>
+        </div>
+      </motion.section>
     </motion.div>
   )
 }

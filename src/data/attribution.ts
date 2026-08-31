@@ -68,6 +68,14 @@ export const DATA_SOURCES: readonly DataSourceInfo[] = [
     license: 'Recitations served free by Islamic Network. Reciter-specific terms apply; see /sources.',
     notes: 'Per-verse and per-surah MP3s streamed on demand — never bulk-downloaded.',
   },
+  {
+    id: 'brand-assets',
+    kind: 'tooling',
+    name: 'App icons & branding mark — original work',
+    url: '/',
+    license: 'Created by this project (scripts/generate-pwa-icons.mjs); no external imagery is served.',
+    notes: 'Icon suite rasterized from the project’s own emerald/gold mark (crescent + sparkles).',
+  },
 ] as const
 
 export const INTEGRITY_STATEMENT =
