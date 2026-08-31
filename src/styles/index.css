@@ -506,22 +506,23 @@ html {
   animation: noor-eq 900ms ease-in-out infinite;
 }
 
-/* ── Subtle emerald→gold shimmer along the audio player's edge while playing ──
-   A restrained light sweep across the border — interface chrome only, never the
-   quranic text itself. GPU friendly (background-position only). */
-@keyframes sound-edge {
-  0% {
-    background-position: 0% 0%;
-  }
+/* ── Gentle blinking border on the audio player while playing ────────────────
+   A soft, restrained border pulse — interface chrome only, never the quranic
+   text itself. Opacity-only, GPU friendly. */
+@keyframes blink-border {
+  0%,
   100% {
-    background-position: 300% 0%;
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.85;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  @keyframes sound-edge {
+  @keyframes blink-border {
     from,
     to {
-      background-position: 0% 0%;
+      opacity: 0.5;
     }
   }
 }

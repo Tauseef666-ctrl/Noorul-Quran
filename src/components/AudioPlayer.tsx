@@ -136,16 +136,14 @@ export function AudioPlayer() {
                 'radial-gradient(120% 60% at 50% 0%, rgba(29,127,99,0.18), transparent 60%), linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0) 40%)',
             }}
           />
-          {/* Subtle animated emerald edge illumination while playing */}
+          {/* Light blinking border while playing — a gentle pulse, not a shine */}
           {playing && (
             <div
               className="pointer-events-none absolute inset-0 rounded-[calc(1rem-1px)]"
               aria-hidden
               style={{
-                background:
-                  'linear-gradient(115deg, transparent 0%, rgba(52,211,153,0.35) 25%, transparent 50%, rgba(238,201,140,0.28) 75%, transparent 100%)',
-                backgroundSize: '300% 100%',
-                animation: 'sound-edge 3.5s linear infinite',
+                border: '1px solid rgba(52,211,153,0.6)',
+                animation: 'blink-border 2.6s ease-in-out infinite',
               }}
             />
           )}
