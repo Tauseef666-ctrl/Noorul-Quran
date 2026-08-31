@@ -1,6 +1,8 @@
-// Generates PWA icons (pure Node, no deps): PNG-encodes the brand mark —
-// a deep-emerald gradient tile with a luminous gold crescent + sparkle motes.
-// Writes to public/icons/. Run: npm run generate:icons
+// Generates PWA icons (pure Node, no deps): PNG-encodes the NoorulQuran brand
+// mark — a deep emerald hexagonal medallion with a luminous gold crescent-orb,
+// a guiding light mote, and an open Qur'an page — on a dark emerald tile.
+// Matches the SVG in src/components/Brand.tsx. Writes to public/icons/.
+// Run: npm run generate:icons
 import { deflateSync } from 'node:zlib'
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -42,7 +44,7 @@ function encodePng(width, height, rgba) {
   }
   const ihdr = Buffer.alloc(13)
   ihdr.writeUInt32BE(width, 0)
-  ihdr.writeUInt32BE(height, 4)
+  ihdr.writeUInt32BE(width, 4)
   ihdr[8] = 8 // bit depth
   ihdr[9] = 6 // colour type RGBA
   ihdr[10] = 0
@@ -70,76 +72,160 @@ const alphaOver = (dst, src, a) => {
   ]
 }
 
-const GREEN_TOP = [20, 122, 99] // #147A63
-const GREEN_BOTTOM = [6, 33, 27] // #06211B
-const GOLD_TOP = [238, 210, 140] // #EED28C
-const GOLD_BOTTOM = [199, 162, 58] // #C7A23A
-const SPARKLE = [247, 227, 166] // #F7E3A6
+const DEEP_BLACK = [5, 8, 7] // #050807
+const GREEN_TOP = [15, 107, 82] // #0f6b52
+const GREEN_BOTTOM = [6, 33, 27] // #06211b
+const GOLD_TOP = [238, 201, 140] // #eec98c
+const GOLD_BOTTOM = [199, 162, 58] // #c7a23a
+const GOLD_DIM = [199, 162, 58]
 
 // Signed-distance helpers (px). Positive = inside.
 function sdCircle(x, y, cx, cy, r) {
   return r - Math.hypot(x - cx, y - cy)
 }
-
+function sdLine(x, y, ax, ay, bx, by) {
+  const ux = bx - ax
+  const uy = by - ay
+  const len = Math.hypot(ux, uy)
+  const t = clamp01(((x - ax) * ux + (y - ay) * uy) / (len * len))
+  const px = ax + ux * t
+  const py = ay + uy * t
+  return Math.hypot(x - px, y - py)
+}
 function coverage(d, aa = 1) {
   return clamp01(0.5 - d / aa)
 }
 
+// Is point inside the hexagon centred at (32,32) with apothem `ap`? (radius from center to side)
+function hexDist(x, y, cx, cy, radius) {
+  const dx = Math.abs(x - cx)
+  const dy = Math.abs(y - cy)
+  // hexagon with "pointy" top: apothem = radius*cos(30deg)
+  if (dy * 1.7320508 > radius) return dy * 1.7320508 - radius
+  return Math.max(dx * 2.0 / radius * (radius / 2), dx, dy) - radius * Math.cos(Math.PI / 6)
+}
+// simpler: rounded hex via polygon SDF
+function sdPolygon(px, py, verts) {
+  let d = Infinity
+  for (let i = 0; i < verts.length; i++) {
+    const a = verts[i]
+    const b = verts[(i + 1) % verts.length]
+    const s = sdLine(px, py, a[0], a[1], b[0], b[1])
+    if (s < d) d = s
+  }
+  return d
+}
+
 function drawIcon(size, { maskable = false } = {}) {
   const pixels = Buffer.alloc(size * size * 4)
-  const radius = size * 0.22
-  const inset = maskable ? size * 0.12 : 0
-  const center = size / 2
-  const crescentCx = center + size * 0.01
-  const crescentCy = center - size * 0.04
-  const outerR = size * 0.275
-  const innerOx = crescentCx + outerR * 0.52
-  const innerOy = crescentCy + outerR * 0.18
-  const innerR = outerR * 0.92
+  const s = size / 64 // scale factor from the 64-unit design
+  const C = size / 2
 
-  const motes = [
-    { px: center - size * 0.27, py: center - size * 0.16, a: size * 0.075, b: size * 0.105 },
-    { px: center + size * 0.27, py: center + size * 0.2, a: size * 0.055, b: size * 0.078 },
-    { px: center + size * 0.16, py: center + size * 0.34, a: size * 0.035, b: size * 0.05 },
-  ]
+  const hexVerts = (apothem) => {
+    const verts = []
+    // Pointy-top hexagon: vertices at angles 0,60,...,300
+    const radius = apothem / Math.cos(Math.PI / 6)
+    for (let i = 0; i < 6; i++) {
+      const ang = (i * 60 - 30) * (Math.PI / 180)
+      verts.push([C + radius * Math.cos(ang), C + radius * Math.sin(ang)])
+    }
+    return verts
+  }
+
+  // Geometry (in 64-unit space)
+  const outerApo = 30 // outer hexagon apothem (tile edge for non-maskable)
+  const outerHex = hexVerts(outerApo)
+  const innerApo = 25.5
+  const innerHex = hexVerts(innerApo)
+
+  // Crescent-orb
+  const orbCx = 37
+  const orbCy = 21
+  const orbR = 9.4
+  const cutCx = orbCx + orbR * 0.55
+  const cutCy = orbCy + orbR * 0.28
+  const cutR = orbR * 0.78
+  const mote = [37.2, 35.5]
+  const moteR = 2.1
 
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const px = x + 0.5
       const py = y + 0.5
 
-      // Background: rounded-rect (or full-bleed for maskable) with gradient
-      const dxr = Math.max(px - size + inset + radius, inset - px, 0)
-      const dyr = Math.max(py - size + inset + radius, inset - py, 0)
-      const rectDist = radius - Math.hypot(dxr, dyr) // positive inside rounded rect
-      let out = maskable ? [0, 0, 0, 255] : [0, 0, 0, rectDist <= 0 ? 0 : 255]
+      // Background tile
       const bg = mix(GREEN_TOP, GREEN_BOTTOM, py / size)
+      let out = [0, 0, 0, 255]
       out = alphaOver(out, bg, 1)
 
-      // Soft glow behind the crescent
-      const glow = sdCircle(px, py, crescentCx + size * 0.05, crescentCy + size * 0.05, outerR * 1.9)
-      const glowCov = coverage(glow, size * 0.24)
-      if (glowCov > 0) {
-        const glowCol = mix([0.09 * 255, 0.55 * 255, 0.42 * 255], [0, 0, 0], 0.35)
-        out = alphaOver(out, glowCol, glowCov * 0.5)
+      if (maskable) {
+        // full-bleed medallion content stays inside safe zone (radius ~36/64)
+        const safe = Math.min(px, py, size - px, size - py)
+        out = alphaOver(out, DEEP_BLACK, safe < size * 0.14 ? 0 : 0)
       }
 
-      // Gold crescent
+      // Outer hexagon fill (darkens the edge for a medallion look)
+      const outsideOuter = sdPolygon(px, py, outerHex)
+      if (outsideOuter > 0) {
+        out = alphaOver(out, DEEP_BLACK, coverage(outsideOuter, 1) * 0.86)
+      }
+      // Outer gold rim
+      const rimDist = Math.abs(sdPolygon(px, py, outerHex))
+      if (rimDist < 1.6) {
+        const gold = mix(GOLD_TOP, GOLD_BOTTOM, py / size)
+        out = alphaOver(out, gold, coverage(rimDist, 1.6))
+      }
+      // Inner gold hairline
+      const innerDist = Math.abs(sdPolygon(px, py, innerHex))
+      if (innerDist < 1.0) {
+        out = alphaOver(out, GOLD_DIM, coverage(innerDist, 1.2) * 0.7)
+      }
+
+      // Soft glow behind crescent
+      const glow = sdCircle(px, py, orbCx * s, orbCy * s, orbR * 2.6)
+      const glowCov = coverage(glow, size * 0.2)
+      if (glowCov > 0) {
+        const glowCol = [0.09 * 255, 0.5 * 255, 0.4 * 255]
+        out = alphaOver(out, glowCol, glowCov * 0.4)
+      }
+
+      // Gold crescent (orb minus inner cut)
       const crescent =
-        Math.max(sdCircle(px, py, crescentCx, crescentCy, outerR), -sdCircle(px, py, innerOx, innerOy, innerR))
-      const crescentCov = coverage(crescent, 1.1) * coverage(rectDist, 1.1)
+        Math.max(
+          sdCircle(px, py, orbCx * s, orbCy * s, orbR * s),
+          -sdCircle(px, py, cutCx * s, cutCy * s, cutR * s),
+        )
+      const crescentCov = coverage(crescent, 1.1)
       if (crescentCov > 0) {
         const gold = mix(GOLD_TOP, GOLD_BOTTOM, py / size)
         out = alphaOver(out, gold, crescentCov)
       }
 
-      // Sparkle motes (axis-aligned diamonds)
-      for (const m of motes) {
-        const dx = Math.abs(px - m.px) / m.a
-        const dy = Math.abs(py - m.py) / m.b
-        const d = dx + dy - 1 // <=0 inside diamond
-        const c = coverage(d * Math.min(m.a, m.b), 1)
-        if (c > 0) out = alphaOver(out, SPARKLE, c * coverage(rectDist, 1.1))
+      // Guiding light mote
+      const moteCov = coverage(sdCircle(px, py, mote[0] * s, mote[1] * s, moteR * s), 1)
+      if (moteCov > 0) {
+        out = alphaOver(out, GOLD_TOP, moteCov)
+      }
+
+      // Open Qur'an page (two facing leaves) as thin gold strokes
+      // Simplified: two upward-arching leaf shapes
+      const leafR = 4.4
+      const leafC = 32
+      const leftLeaf = sdCircle(px, py, (leafC - 3.6) * s, 39.5 * s, leafR * s)
+      const rightLeaf = sdCircle(px, py, (leafC + 3.6) * s, 39.5 * s, leafR * s)
+      for (const d of [leftLeaf, rightLeaf]) {
+        const c = coverage(d, 1)
+        if (c > 0.02) {
+          out = alphaOver(out, GOLD_TOP, c * 0.4)
+        }
+      }
+      // leaf stems (outer hairlines)
+      const stemL = sdLine(px, py, (leafC - 4.6) * s, 35.6 * s, (leafC - 4.6) * s, 43 * s)
+      const stemR = sdLine(px, py, (leafC + 4.6) * s, 35.6 * s, (leafC + 4.6) * s, 43 * s)
+      for (const d of [stemL, stemR]) {
+        if (d < 0.9) {
+          out = alphaOver(out, GOLD_TOP, coverage(d, 0.9))
+        }
       }
 
       const i = (y * size + x) * 4

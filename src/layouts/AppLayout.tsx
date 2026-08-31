@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import {
   BookOpen,
   Home,
-  Library,
   Search,
   Bookmark,
   Settings,
@@ -18,6 +17,7 @@ import {
   StickyNote,
 } from 'lucide-react'
 import { ThemeToggle } from '../components/ThemeToggle'
+import { LogoLockup } from '../components/Brand'
 import { ArabicSizeSelector } from '../components/ArabicSizeSelector'
 import { UiSizeSelector } from '../components/UiSizeSelector'
 import { AudioPlayer } from '../components/AudioPlayer'
@@ -41,24 +41,28 @@ interface NavItem {
 
 const DESKTOP_NAV: NavItem[] = [
   { to: '/', label: 'Home', Icon: Home },
-  { to: '/surahs', label: 'Surahs', Icon: Library },
-  { to: '/juz', label: 'Juz', Icon: BookOpen },
-  { to: '/mushaf', label: 'Mushaf', Icon: Compass },
-  { to: '/search', label: 'Search', Icon: Search },
-  { to: '/daily-ayah', label: 'Daily Ayah', Icon: CalendarCheck },
-  { to: '/bookmarks', label: 'Bookmarks', Icon: Bookmark },
-  { to: '/notes', label: 'Notes', Icon: StickyNote },
+  { to: '/surahs', label: 'Quran', Icon: BookMarked },
+  { to: '/mushaf', label: 'Read', Icon: BookOpen },
   { to: '/listen', label: 'Listen', Icon: Radio },
+  { to: '/juz', label: 'Juz', Icon: Compass },
+  { to: '/search', label: 'Search', Icon: Search },
+]
+
+/** Secondary/user section — grouped beneath the primary nav. */
+const SECONDARY_NAV: NavItem[] = [
+  { to: '/bookmarks', label: 'Bookmarks', Icon: Bookmark },
+  { to: '/daily-ayah', label: 'Daily Ayah', Icon: CalendarCheck },
+  { to: '/plans', label: 'Reading Plan', Icon: CalendarCheck },
+  { to: '/notes', label: 'Notes', Icon: StickyNote },
   { to: '/tafsir', label: 'Tafsir', Icon: BookMarked },
-  { to: '/plans', label: 'Plans', Icon: CalendarCheck },
-  { to: '/settings', label: 'Settings', Icon: Settings },
-  { to: '/sources', label: 'Sources', Icon: Info },
+  { to: '/sources', label: 'Resources', Icon: Info },
   { to: '/about', label: 'About', Icon: Info },
+  { to: '/settings', label: 'Settings', Icon: Settings },
 ]
 
 const MOBILE_BOTTOM: NavItem[] = [
   { to: '/', label: 'Home', Icon: Home },
-  { to: '/surahs', label: 'Surahs', Icon: Library },
+  { to: '/surahs', label: 'Quran', Icon: BookMarked },
   { to: '/search', label: 'Search', Icon: Search },
   { to: '/bookmarks', label: 'Bookmarks', Icon: Bookmark },
   { to: '/settings', label: 'More', Icon: Menu },
@@ -160,28 +164,32 @@ export default function AppLayout() {
 
       {/* Desktop sidebar — Glass 1 */}
       <aside className="glass-nav sticky top-0 hidden h-screen w-64 shrink-0 flex-col lg:flex lg:border-y-0 lg:border-l-0">
-        <div className="flex items-center gap-3 px-6 py-6">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand/10 text-brand shadow-md">
-            <BookOpen className="h-5 w-5" aria-hidden />
-          </span>
-          <div>
-            <p className="arabic-heading text-lg leading-none" lang="ar" dir="rtl" translate="no">
-              نور القرآن
-            </p>
-            <p className="mt-0.5 text-xs font-medium text-ink-muted">
-              Noorul<span className="text-gold">Quran</span>
-            </p>
-          </div>
+        <div className="px-6 py-6">
+          <LogoLockup size="sm" />
         </div>
 
         <motion.nav
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="flex-1 space-y-0.5 overflow-y-auto px-3 py-2"
+          className="flex-1 space-y-0.5 overflow-y-auto px-3 py-1"
           aria-label="Sidebar navigation"
         >
           {DESKTOP_NAV.map((item) => (
+            <motion.div key={item.to} variants={fadeUp}>
+              <SidebarLink {...item} />
+            </motion.div>
+          ))}
+
+          <div className="flex items-center gap-3 px-4 pb-1 pt-4" aria-hidden>
+            <span className="h-px flex-1 bg-line/70" />
+            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-ink-faint">
+              Library
+            </span>
+            <span className="h-px flex-1 bg-line/70" />
+          </div>
+
+          {SECONDARY_NAV.map((item) => (
             <motion.div key={item.to} variants={fadeUp}>
               <SidebarLink {...item} />
             </motion.div>
@@ -195,14 +203,7 @@ export default function AppLayout() {
 
       {/* Mobile header — Glass 1 */}
       <div className="glass-nav fixed inset-x-0 top-0 z-40 flex items-center justify-between border-x-0 border-t-0 px-4 py-2.5 lg:hidden">
-        <div className="flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand/10 text-brand">
-            <BookOpen className="h-4 w-4" aria-hidden />
-          </span>
-          <p className="arabic-heading text-base leading-none" lang="ar" dir="rtl" translate="no">
-            نور القرآن
-          </p>
-        </div>
+        <LogoLockup size="sm" showArabic={false} />
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -251,6 +252,20 @@ export default function AppLayout() {
                 className="space-y-0.5"
               >
                 {DESKTOP_NAV.map((item) => (
+                  <SidebarLink
+                    key={item.to}
+                    {...item}
+                    onNavigate={() => setMobileMenuOpen(false)}
+                  />
+                ))}
+                <div className="flex items-center gap-3 px-4 pb-1 pt-4" aria-hidden>
+                  <span className="h-px flex-1 bg-line/70" />
+                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-ink-faint">
+                    Library
+                  </span>
+                  <span className="h-px flex-1 bg-line/70" />
+                </div>
+                {SECONDARY_NAV.map((item) => (
                   <SidebarLink
                     key={item.to}
                     {...item}
