@@ -12,9 +12,13 @@
     "typecheck": "tsc -b",
     "generate:quran": "node scripts/generate-quran-data.mjs",
     "generate:icons": "node scripts/generate-pwa-icons.mjs",
+    "generate:android": "node scripts/generate-android-icons.mjs",
     "validate:quran": "node scripts/validate-quran.mjs"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/cli": "^8.5.1",
+    "@capacitor/core": "^8.5.1",
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/lora": "^5.3.0",
     "@fontsource/amiri": "^5.3.0",
