@@ -82,21 +82,8 @@
       <!-- Static app splash (replaced by React on mount) — premium, minimal:
            only the NoorulQuran logo + "Created by Tauseef Khan". -->
       <div id="app-splash" style="position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;font-family:Inter,system-ui,sans-serif;background:radial-gradient(900px 60% at 50% -8%,rgba(15,107,82,.22),transparent 62%),linear-gradient(180deg,#050807,#0a0f0d);">
-        <div style="width:72px;height:72px;display:flex;align-items:center;justify-content:center;border-radius:24px;background:rgba(0,0,0,.4);box-shadow:0 0 60px rgba(15,107,82,.35);border:1px solid rgba(255,255,255,.06);">
-          <svg viewBox="0 0 64 64" width="56" height="56" role="img" aria-label="NoorulQuran logo">
-            <defs>
-              <linearGradient id="sp-em" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f6b52"/><stop offset="1" stop-color="#06211b"/></linearGradient>
-              <linearGradient id="sp-gd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eec98c"/><stop offset="1" stop-color="#c7a23a"/></linearGradient>
-            </defs>
-            <path d="M32 4 56 18v28L32 60 8 46V18Z" fill="url(#sp-em)" stroke="url(#sp-gd)" stroke-width="1.6" stroke-linejoin="round"/>
-            <path d="M32 11 50.6 22v20L32 53 13.4 42V22Z" fill="none" stroke="url(#sp-gd)" stroke-width="0.9" stroke-opacity="0.65" stroke-linejoin="round"/>
-            <path d="M37.5 16.5a8.5 8.5 0 1 0 0 17 7.2 7.2 0 1 1 0-17Z" transform="rotate(24 37 25)" fill="url(#sp-gd)"/>
-            <circle cx="37" cy="38.4" r="1.7" fill="url(#sp-gd)"/>
-            <g stroke="url(#sp-gd)" stroke-width="1.5" stroke-linecap="round" fill="none">
-              <path d="M26 34c-3 1.6-6.6 2.3-10 2 2.6 4.6 6.2 7 10 7.4 3.8-.4 7.4-2.8 10-7.4-3.4.3-7-.4-10-2Z"/>
-              <path d="M38 34c3 1.6 6.6 2.3 10 2-2.6 4.6-6.2 7-10 7.4-3.8-.4-7.4-2.8-10-7.4 3.4.3 7-.4 10-2Z"/>
-            </g>
-          </svg>
+        <div style="width:76px;height:76px;display:flex;align-items:center;justify-content:center;border-radius:24px;background:rgba(0,0,0,.4);box-shadow:0 0 60px rgba(15,107,82,.35);border:1px solid rgba(255,255,255,.06);overflow:hidden;">
+          <img src="/icons/pwa-192.png" width="76" height="76" alt="" role="presentation" style="display:block;width:76px;height:76px;object-fit:contain;" draggable="false" />
         </div>
         <div style="text-align:center;">
           <p style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em;color:#fff;">Noorul<span style="color:#eec98c;">Quran</span></p>

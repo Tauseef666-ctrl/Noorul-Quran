@@ -131,6 +131,12 @@ function RoutedPage() {
         const el = document.getElementById(id)
         el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       })
+    } else {
+      // New route → start at the top of the page. Scrolls after the route
+      // element mounts so the nav/footer transition doesn't fight it.
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+      })
     }
   }, [location.pathname, location.hash])
 
