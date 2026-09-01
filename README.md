@@ -1,12 +1,15 @@
-# NoorulQuran — نور القرآن
+<p align="center">
+  <img src="public/icons/pwa-512.png" alt="NoorulQuran logo" width="128" height="128" />
+</p>
 
-> **Read. Listen. Reflect.** A complete, production-quality Quran web application.
+<h1 align="center">NoorulQuran — نور القرآن</h1>
+
+<p align="center"><strong>Read. Listen. Reflect.</strong> A complete, production-quality Quran web application.</p>
 
 Built with Vite + React 19 + TypeScript + Tailwind CSS v4, wrapped in a luxury glass
 design (deep black → emerald in dark mode, warm ivory in light), with offline-first
-data, full audio playback, and accessibility baked in.
-
-**Live demo:** https://tauseef666-ctrl.github.io/Noorul-Quran
+data, full audio playback, and accessibility baked in. The same repository also ships
+a native **Android app** (Capacitor) — see [Android app](#android-app) below.
 
 ## Screenshots
 
@@ -129,12 +132,36 @@ npm run validate:quran     # integrity gate for the canonical dataset
 ## Deployment
 
 - **Vercel (recommended):** connect the repository and keep the default build
-  settings — `npm run build` / `dist`. Each push auto-deploys.
+  settings — `npm run build` / `dist`. Each push auto-deploys the web app.
 - **Any static host:** build first (`npm run build`), then serve `dist/` with SPA
   fallback to `index.html`. Serve over HTTPS; the service worker requires it (except
   `localhost`).
 - Set `VITE_SITE_URL` to your real domain and update `sitemap.xml`/`robots.txt`
   origins before launch.
+
+### Android app
+
+This repository also builds a native Android app from the same codebase via
+[Capacitor](https://capacitorjs.com) (`capacitor.config.ts`, `android/`).
+
+- Launcher icons and splash screens are generated from the shared brand renderer
+  (`npm run generate:android`) — no binary assets to hand-maintain.
+- The APK is built in the cloud by GitHub Actions (`.github/workflows/build-apk.yml`),
+  so you don't need an Android SDK locally.
+
+**To build and install the APK:**
+
+```bash
+git tag v1.0.0 && git push origin v1.0.0
+```
+
+A workflow run builds `app-debug.apk` and attaches it to a GitHub Release for that
+tag. You can also trigger it manually from **Actions → "Build Android APK" → Run workflow**,
+then grab the `NoorulQuran-APK` artifact.
+
+Install on a phone by opening the APK (allow "install unknown apps") — the app is
+**debug-signed** for sideloading. For Play Store distribution, configure a release
+keystore in the workflow instead.
 
 ## Accessibility
 
