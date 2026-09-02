@@ -38,7 +38,7 @@ export function LogoMark({ className = 'h-9 w-9' }: { className?: string }) {
       {/* Rub el Hizb octagram — upright square + 45° diamond */}
       <g
         stroke="url(#nqm-gold)"
-        strokeWidth="0.7"
+        strokeWidth="1.2"
         strokeLinejoin="round"
         fill="none"
       >
@@ -80,7 +80,7 @@ export function LogoIcon({ className = 'h-6 w-6' }: { className?: string }) {
       {/* Rub el Hizb octagram — upright square + 45° diamond */}
       <g
         stroke="url(#nqi-gold)"
-        strokeWidth="0.82"
+        strokeWidth="1.4"
         strokeLinejoin="round"
         fill="none"
       >

@@ -2,6 +2,7 @@
   "name": "NoorulQuran — Read. Listen. Reflect.",
   "short_name": "NoorulQuran",
   "description": "A peaceful digital Mushaf and modern Quran study companion — read, listen, and reflect.",
+  "id": "/",
   "lang": "en",
   "dir": "ltr",
   "start_url": "/",

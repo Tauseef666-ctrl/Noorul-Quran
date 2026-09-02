@@ -119,6 +119,15 @@
     overflow-x: clip;
   }
 
+  /* Edge-to-edge: content extends behind status bar + nav bar */
+  body {
+    padding:
+      env(safe-area-inset-top)
+      env(safe-area-inset-right)
+      env(safe-area-inset-bottom)
+      env(safe-area-inset-left);
+  }
+
   /* Accessible focus ring — emerald, clearly visible in both themes.
      Keyboard users get a crisp outline; mouse users keep clean hover states. */
   :focus-visible {

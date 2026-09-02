@@ -40,3 +40,16 @@ createRoot(document.getElementById('root')!).render(
     </PreferencesProvider>
   </StrictMode>,
 )
+
+// Dismiss the HTML splash with a controlled minimum hold (2.5s) and smooth fade-out.
+const splash = document.getElementById('app-splash')
+if (splash) {
+  const MIN_HOLD = 2500
+  const FADE_MS = 400
+  const elapsed = performance.now() - performance.timeOrigin
+  const delay = Math.max(0, MIN_HOLD - elapsed)
+  setTimeout(() => {
+    splash.style.opacity = '0'
+    setTimeout(() => splash.remove(), FADE_MS)
+  }, delay)
+}

@@ -125,7 +125,8 @@ never committed.
 ### Utilities
 
 ```bash
-npm run generate:icons     # re-rasterize the emerald/gold icon suite (no deps)
+npm run generate:icons     # re-rasterize the Rub el Hizb icon suite (PWA + favicon)
+npm run generate:android   # regenerate Android launcher icons + splash from the shared brand renderer
 npm run validate:quran     # integrity gate for the canonical dataset
 ```
 
@@ -152,7 +153,7 @@ This repository also builds a native Android app from the same codebase via
 **To build and install the APK:**
 
 ```bash
-git tag v1.0.0 && git push origin v1.0.0
+git tag v1.2.0 && git push origin v1.2.0
 ```
 
 A workflow run builds `app-debug.apk` and attaches it to a GitHub Release for that

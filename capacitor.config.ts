@@ -5,10 +5,11 @@ const config: CapacitorConfig = {
   appName: 'NoorulQuran',
   webDir: 'dist',
   backgroundColor: '#050807',
-  bundledWebRuntime: false,
   android: {
     backgroundColor: '#050807',
     allowMixedContent: false,
+    overrideUserAgent: undefined,
+    appendUserAgent: undefined,
   },
 }
 
