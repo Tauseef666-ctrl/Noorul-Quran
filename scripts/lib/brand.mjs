@@ -96,14 +96,20 @@ function fill(d, aa = 1) { return clamp01(0.5 + d / aa) }
 
 /**
  * Render the brand mark into a square RGBA buffer.
+ *
+ * The mark is the "Rub el Hizb" octagram (۞) — the eight-pointed star that
+ * marks every quarter of the Qur'an — drawn as two gold squares (upright and
+ * rotated 45°), softened by a radiant noor glow, cradling a gold crescent-orb
+ * and a single guiding-light mote. Minimal, jewelled, unmistakably Qur'anic.
+ *
  * @param {number} size        canvas edge length in px
  * @param {object} [opts]
- * @param {number} [opts.contentScale] fraction of the canvas the medallion spans.
+ * @param {number} [opts.contentScale] fraction of the canvas the mark spans.
  *   - opaque tile (legacy launcher / splash): use ~0.98 (near full canvas)
- *   - transparent adaptive foreground: use ~0.66 to stay inside the safe zone
+ *   - transparent adaptive foreground: use ~0.78 to stay inside the safe zone
  * @param {'emerald'|'transparent'} [opts.background]
- *   'emerald' fills the canvas with the dark emerald gradient behind the medallion;
- *   'transparent' leaves everything outside the medallion fully transparent
+ *   'emerald' fills the canvas with the dark emerald gradient behind the mark;
+ *   'transparent' leaves everything outside the mark's safe circle transparent
  */
 export function drawBrand(size, { contentScale = 0.98, background = 'emerald' } = {}) {
   const pixels = Buffer.alloc(size * size * 4)
@@ -113,27 +119,20 @@ export function drawBrand(size, { contentScale = 0.98, background = 'emerald' } 
   const ox = -32 * unit + size / 2
   const oy = -32 * unit + size / 2
 
-  // Hexagon vertices in 64-unit design space (pointy-top, centred at 32,32)
-  const hexVertsUnit = (apothem) => {
-    const verts = []
-    const r = apothem / Math.cos(Math.PI / 6)
-    for (let i = 0; i < 6; i++) {
-      const ang = (i * 60 - 30) * (Math.PI / 180)
-      verts.push([32 + r * Math.cos(ang), 32 + r * Math.sin(ang)])
-    }
-    return verts
-  }
-  const outerVerts = hexVertsUnit(24.25) // SVG `M32 4 56 18v28L32 60 8 46V18Z` (circumradius 28)
-  const innerVerts = hexVertsUnit(18.18) // SVG `M32 11 50.6 22v20L32 53 13.4 42V22Z` (circumradius 21)
-  const clipVerts = hexVertsUnit(24.25 + 7) // transparent-clip margin
-
   const AA = 0.4 // anti-aliasing width in design units
   const gold = (v) => mix(GOLD_TOP, GOLD_BOTTOM, clamp01(v / 64))
+  const brightGold = mix(GOLD_TOP, GOLD_BOTTOM, 0.2)
 
-  // Crescent local frame: SVG group is rotate(24) about (37,25); we inverse-rotate each sample
-  const rot = (-24 * Math.PI) / 180
-  const cosR = Math.cos(rot)
-  const sinR = Math.sin(rot)
+  // The octagram: two squares sharing the centre (32,32), half-length 18.5
+  const sq = (rotDeg, half = 18.5) => {
+    const a = (rotDeg * Math.PI) / 180, ca = Math.cos(a), sa = Math.sin(a)
+    const p = (x, y) => [32 + x * ca - y * sa, 32 + x * sa + y * ca]
+    return [p(-half, -half), p(half, -half), p(half, half), p(-half, half)]
+  }
+  const sqA = sq(0)  // upright square
+  const sqB = sq(45) // diamond
+
+  const C = 32, CY = 30.8, R_OUT = 7, R_IN = 5.5, GAP = 2.1
 
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
@@ -144,56 +143,36 @@ export function drawBrand(size, { contentScale = 0.98, background = 'emerald' } 
       let out = [0, 0, 0, 255]
       if (background === 'transparent') out = [0, 0, 0, 0]
 
-      // Medallion face fill: emerald always inside the hexagon; whole tile for tiles
-      const outerSd = sdPolygon(u, v, outerVerts)
       if (background === 'emerald') {
         out = alphaOver(out, mix(GREEN_TOP, GREEN_BOTTOM, py / size), 1)
-        if (outerSd > 0) out = alphaOver(out, DEEP_BLACK, coverage(outerSd, 1.2) * 0.5)
-      } else if (outerSd <= 0) {
-        out = alphaOver(out, mix(GREEN_TOP, GREEN_BOTTOM, py / size), 1)
       }
 
-      // Outer gold rim (SVG strokeWidth 1.6)
-      const rimW = 0.8
-      if (Math.abs(outerSd) < rimW) out = alphaOver(out, gold(v), coverage(Math.abs(outerSd), rimW))
+      // Radiant noor glow behind the star
+      const dist = Math.hypot(u - 32, v - 32)
+      if (dist < 23) out = alphaOver(out, gold(v), (1 - dist / 23) * 0.14)
 
-      // Inner gold hairline (SVG strokeWidth 0.9, opacity 0.65)
-      const inW = 0.45
-      if (Math.abs(sdPolygon(u, v, innerVerts)) < inW) {
-        out = alphaOver(out, gold(v), coverage(Math.abs(sdPolygon(u, v, innerVerts)), inW) * 0.65)
+      // Rub el Hizb octagram — two gold squares (upright + 45° diamond)
+      const sqW = 0.7
+      for (const s of [sqA, sqB]) {
+        const ds = sdPolygon(u, v, s)
+        if (Math.abs(ds) < sqW) out = alphaOver(out, gold(v), coverage(Math.abs(ds), sqW))
       }
 
-      // Crescent-orb: annulus r 7.2..8.5 at (37.5,25), rotated 24deg, opening right
-      const cu = (u - 37) * cosR - (v - 25) * sinR + 37
-      const cv = (u - 37) * sinR + (v - 25) * cosR + 25
-      const dcx = cu - 37.5
-      const dcx2 = cv - 25
-      const cdist = Math.hypot(dcx, dcx2)
-      const dCrescent = Math.min(8.5 - cdist, cdist - 7.2, -dcx)
-      const crescentCov = fill(dCrescent, AA)
-      if (crescentCov > 0) out = alphaOver(out, gold(v), crescentCov)
+      // Crescent-orb: annulus r 5.5..7 at (32,30.8), opening right
+      const dCres = Math.min(
+        7 - Math.hypot(u - C, v - CY),
+        Math.hypot(u - (C + GAP), v - (CY + GAP * 0.35)) - 5.5,
+      )
+      const cresCov = fill(dCres, AA)
+      if (cresCov > 0) out = alphaOver(out, gold(v), cresCov)
 
-      // Guiding-light mote (SVG circle r=1.7 at 37,38.4)
-      const dMote = 1.7 - Math.hypot(u - 37, v - 38.4)
+      // Guiding-light mote
+      const dMote = 1.6 - Math.hypot(u - 32, v - 38.4)
       const moteCov = fill(dMote, AA)
-      if (moteCov > 0) out = alphaOver(out, gold(v), moteCov)
+      if (moteCov > 0) out = alphaOver(out, brightGold, moteCov)
 
-      // Open Qur'an page — two stroked leaf ellipses (SVG stroked leaf paths)
-      const leafW = 0.75 // strokeWidth 1.5 / 2
-      for (const leafCx of [21.5, 42.5]) {
-        const du = (u - leafCx) / 6
-        const dv = (v - 37.8) / 4
-        const d = Math.hypot(du, dv)
-        const sdf = (1 - d) * 4 // positive when inside the ellipse (approx, units-ish)
-        if (Math.abs(sdf) < leafW) {
-          out = alphaOver(out, gold(v), coverage(Math.abs(sdf), leafW) * 0.5)
-        }
-      }
-
-      // Transparent variant: keep only content around the medallion
-      if (background === 'transparent' && sdPolygon(u, v, clipVerts) > 0) {
-        out = [0, 0, 0, 0]
-      }
+      // Transparent variant: keep only content within the safe circle
+      if (background === 'transparent' && dist > 30) out = [0, 0, 0, 0]
 
       const i = (y * size + x) * 4
       pixels[i] = out[0]; pixels[i + 1] = out[1]; pixels[i + 2] = out[2]; pixels[i + 3] = out[3]

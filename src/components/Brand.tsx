@@ -1,13 +1,14 @@
 /**
  * NoorulQuran brand — the app mark, wordmark, and colour tokens.
  *
- * The mark is a "Guiding Light": a slender emerald crescent-orb that casts a
- * single mote of light down onto an open Qur'an page below, sitting inside a
- * six-point medallion. Islamic geometry + a book + the Noor (light) idea, drawn
- * to stay crisp at favicon size. Built with balanced, soothing curves — no neon.
+ * The mark is the "Rub el Hizb" octagram (۞) — the eight-pointed star that
+ * marks every quarter of a Qur'an copy — drawn as two gold squares (upright
+ * and 45° diamond) softened by a radiant noor glow, cradling a gold
+ * crescent-orb and a single guiding-light mote below it. Minimal, jewelled,
+ * unmistakably Qur'anic. Drawn to stay crisp even at favicon size.
  */
 
-/** Balanced geometric medallion mark — optimized for small sizes. */
+/** Balanced Rub el Hizb mark — the brand's octagram, glow and crescent. */
 export function LogoMark({ className = 'h-9 w-9' }: { className?: string }) {
   return (
     <svg
@@ -17,48 +18,39 @@ export function LogoMark({ className = 'h-9 w-9' }: { className?: string }) {
       aria-label="NoorulQuran logo"
     >
       <defs>
-        <linearGradient id="nq-emerald" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#0f6b52" />
-          <stop offset="1" stopColor="#06211b" />
-        </linearGradient>
-        <linearGradient id="nq-gold" x1="0" y1="0" x2="1" y2="1">
+        <radialGradient id="nqm-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#c7a23a" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="#c7a23a" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="nqm-gold" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#eec98c" />
           <stop offset="1" stopColor="#c7a23a" />
         </linearGradient>
+        <mask id="nqm-cres">
+          <rect width="64" height="64" fill="#fff" />
+          <circle cx="34.1" cy="31.5" r="5.5" fill="#000" />
+        </mask>
       </defs>
 
-      {/* Medallion outer ring (hexagonal) */}
-      <path
-        d="M32 4 56 18v28L32 60 8 46V18Z"
-        fill="url(#nq-emerald)"
-        stroke="url(#nq-gold)"
-        strokeWidth="1.6"
+      {/* Radiant noor glow */}
+      <circle cx="32" cy="32" r="24" fill="url(#nqm-glow)" />
+
+      {/* Rub el Hizb octagram — upright square + 45° diamond */}
+      <g
+        stroke="url(#nqm-gold)"
+        strokeWidth="0.7"
         strokeLinejoin="round"
-      />
-      {/* Inner ring */}
-      <path
-        d="M32 11 50.6 22v20L32 53 13.4 42V22Z"
         fill="none"
-        stroke="url(#nq-gold)"
-        strokeWidth="0.9"
-        strokeOpacity="0.65"
-        strokeLinejoin="round"
-      />
-
-      {/* Crescent-orb: thin gold crescent above */}
-      <path
-        d="M37.5 16.5a8.5 8.5 0 1 0 0 17 7.2 7.2 0 1 1 0-17Z"
-        transform="rotate(24 37 25)"
-        fill="url(#nq-gold)"
-      />
-      {/* Guiding light mote */}
-      <circle cx="37" cy="38.4" r="1.7" fill="url(#nq-gold)" />
-
-      {/* Open Qur'an page below (two facing leaves) */}
-      <g stroke="url(#nq-gold)" strokeWidth="1.5" strokeLinecap="round" fill="none">
-        <path d="M26 34c-3 1.6-6.6 2.3-10 2 2.6 4.6 6.2 7 10 7.4 3.8-.4 7.4-2.8 10-7.4-3.4.3-7-.4-10-2Z" />
-        <path d="M38 34c3 1.6 6.6 2.3 10 2-2.6 4.6-6.2 7-10 7.4-3.8-.4-7.4-2.8-10-7.4 3.4.3 7-.4 10-2Z" />
+      >
+        <path d="M13.5 13.5h37v37h-37Z" />
+        <path d="M32 5.84 58.16 32 32 58.16 5.84 32Z" />
       </g>
+
+      {/* Crescent-orb, opening right */}
+      <circle cx="32" cy="30.8" r="7" fill="url(#nqm-gold)" mask="url(#nqm-cres)" />
+
+      {/* Guiding-light mote */}
+      <circle cx="32" cy="38.4" r="1.6" fill="url(#nqm-gold)" />
     </svg>
   )
 }
@@ -68,21 +60,39 @@ export function LogoIcon({ className = 'h-6 w-6' }: { className?: string }) {
   return (
     <svg viewBox="0 0 64 64" className={className} aria-hidden>
       <defs>
-        <linearGradient id="nq-gold-i" x1="0" y1="0" x2="1" y2="1">
+        <radialGradient id="nqi-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#c7a23a" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="#c7a23a" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="nqi-gold" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#eec98c" />
           <stop offset="1" stopColor="#c7a23a" />
         </linearGradient>
+        <mask id="nqi-cres">
+          <rect width="64" height="64" fill="#fff" />
+          <circle cx="34.1" cy="31.5" r="5.5" fill="#000" />
+        </mask>
       </defs>
-      <path
-        d="M37 15a9 9 0 1 0 0 18 7.4 7.4 0 1 1 0-18Z"
-        transform="rotate(24 37 24)"
-        fill="url(#nq-gold-i)"
-      />
-      <circle cx="37" cy="37.4" r="1.7" fill="url(#nq-gold-i)" />
-      <g stroke="url(#nq-gold-i)" strokeWidth="2" strokeLinecap="round" fill="none">
-        <path d="M26 33c-3 1.6-6.6 2.3-10 2 2.6 4.6 6.2 7 10 7.4 3.8-.4 7.4-2.8 10-7.4-3.4.3-7-.4-10-2Z" />
-        <path d="M38 33c3 1.6 6.6 2.3 10 2-2.6 4.6-6.2 7-10 7.4-3.8-.4-7.4-2.8-10-7.4 3.4.3 7-.4 10-2Z" />
+
+      {/* Radiant noor glow */}
+      <circle cx="32" cy="32" r="24" fill="url(#nqi-glow)" />
+
+      {/* Rub el Hizb octagram — upright square + 45° diamond */}
+      <g
+        stroke="url(#nqi-gold)"
+        strokeWidth="0.82"
+        strokeLinejoin="round"
+        fill="none"
+      >
+        <path d="M13.5 13.5h37v37h-37Z" />
+        <path d="M32 5.84 58.16 32 32 58.16 5.84 32Z" />
       </g>
+
+      {/* Crescent-orb, opening right */}
+      <circle cx="32" cy="30.8" r="7" fill="url(#nqi-gold)" mask="url(#nqi-cres)" />
+
+      {/* Guiding-light mote */}
+      <circle cx="32" cy="38.4" r="1.6" fill="url(#nqi-gold)" />
     </svg>
   )
 }
