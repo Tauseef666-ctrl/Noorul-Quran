@@ -216,7 +216,7 @@ export default function AppLayout() {
       </aside>
 
       {/* Mobile header — Glass 1 */}
-      <div className="glass-nav fixed inset-x-0 top-0 z-40 flex items-center justify-between border-x-0 border-t-0 px-4 py-2.5 lg:hidden">
+      <div className="glass-nav fixed inset-x-0 top-0 z-40 flex items-center justify-between border-x-0 border-t-0 px-4 pt-[calc(env(safe-area-inset-top)+0.625rem)] pb-2.5 lg:hidden">
         <LogoLockup size="sm" showArabic={false} />
         <button
           type="button"
@@ -258,7 +258,7 @@ export default function AppLayout() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="glass-nav fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto border-y-0 border-l-0 p-4 pt-20 shadow-xl lg:hidden"
+              className="glass-nav fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto border-y-0 border-l-0 p-4 pt-[calc(env(safe-area-inset-top)+5rem)] shadow-xl lg:hidden"
             >
               <nav
                 id="mobile-navigation"
@@ -321,7 +321,7 @@ export default function AppLayout() {
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
-        className="glass-nav fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-x-0 border-b-0 px-2 py-1.5 lg:hidden"
+        className="glass-nav fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-x-0 border-b-0 px-2 pt-1.5 pb-[calc(env(safe-area-inset-bottom)+0.375rem)] lg:hidden"
         aria-label="Mobile bottom navigation"
       >
         {MOBILE_BOTTOM.map(({ to, label, Icon }) => (

@@ -174,8 +174,8 @@ export default function HomePage() {
           {/* ── Left: branding + text + actions ─────────────────────────── */}
           <div className="relative order-2 text-center lg:order-1 lg:text-left">
             <motion.div variants={heroItem} className="flex justify-center lg:justify-start">
-              <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-black/30 ring-1 ring-white/10 shadow-lg">
-                <LogoMark className="h-10 w-10" />
+              <span className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#050807] ring-1 ring-gold/20 shadow-[0_0_40px_rgba(199,162,58,0.18)]">
+                <LogoMark className="h-14 w-14" />
               </span>
             </motion.div>
 

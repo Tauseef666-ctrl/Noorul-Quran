@@ -8,7 +8,9 @@
  * unmistakably Qur'anic. Drawn to stay crisp even at favicon size.
  */
 
-/** Balanced Rub el Hizb mark — the brand's octagram, glow and crescent. */
+/** Balanced Rub el Hizb mark — the brand's octagram, glow and crescent.
+ *  The octagram is a solid gold seal (visible on any background) with a
+ *  dark-emerald centre disc carrying the crescent + mote. */
 export function LogoMark({ className = 'h-9 w-9' }: { className?: string }) {
   return (
     <svg
@@ -19,7 +21,7 @@ export function LogoMark({ className = 'h-9 w-9' }: { className?: string }) {
     >
       <defs>
         <radialGradient id="nqm-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#c7a23a" stopOpacity="0.22" />
+          <stop offset="0%" stopColor="#c7a23a" stopOpacity="0.28" />
           <stop offset="100%" stopColor="#c7a23a" stopOpacity="0" />
         </radialGradient>
         <linearGradient id="nqm-gold" x1="0" y1="0" x2="1" y2="1">
@@ -33,18 +35,16 @@ export function LogoMark({ className = 'h-9 w-9' }: { className?: string }) {
       </defs>
 
       {/* Radiant noor glow */}
-      <circle cx="32" cy="32" r="24" fill="url(#nqm-glow)" />
+      <circle cx="32" cy="32" r="26" fill="url(#nqm-glow)" />
 
-      {/* Rub el Hizb octagram — upright square + 45° diamond */}
-      <g
-        stroke="url(#nqm-gold)"
-        strokeWidth="1.2"
-        strokeLinejoin="round"
-        fill="none"
-      >
+      {/* Rub el Hizb octagram — solid gold seal (upright square + 45° diamond) */}
+      <g fill="url(#nqm-gold)" fillRule="evenodd">
         <path d="M13.5 13.5h37v37h-37Z" />
         <path d="M32 5.84 58.16 32 32 58.16 5.84 32Z" />
       </g>
+
+      {/* Dark-emerald centre disc cradling the crescent + mote */}
+      <circle cx="32" cy="32" r="13.5" fill="#06211b" />
 
       {/* Crescent-orb, opening right */}
       <circle cx="32" cy="30.8" r="7" fill="url(#nqm-gold)" mask="url(#nqm-cres)" />
@@ -61,7 +61,7 @@ export function LogoIcon({ className = 'h-6 w-6' }: { className?: string }) {
     <svg viewBox="0 0 64 64" className={className} aria-hidden>
       <defs>
         <radialGradient id="nqi-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#c7a23a" stopOpacity="0.2" />
+          <stop offset="0%" stopColor="#c7a23a" stopOpacity="0.26" />
           <stop offset="100%" stopColor="#c7a23a" stopOpacity="0" />
         </radialGradient>
         <linearGradient id="nqi-gold" x1="0" y1="0" x2="1" y2="1">
@@ -75,18 +75,16 @@ export function LogoIcon({ className = 'h-6 w-6' }: { className?: string }) {
       </defs>
 
       {/* Radiant noor glow */}
-      <circle cx="32" cy="32" r="24" fill="url(#nqi-glow)" />
+      <circle cx="32" cy="32" r="26" fill="url(#nqi-glow)" />
 
-      {/* Rub el Hizb octagram — upright square + 45° diamond */}
-      <g
-        stroke="url(#nqi-gold)"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-        fill="none"
-      >
+      {/* Rub el Hizb octagram — solid gold seal */}
+      <g fill="url(#nqi-gold)" fillRule="evenodd">
         <path d="M13.5 13.5h37v37h-37Z" />
         <path d="M32 5.84 58.16 32 32 58.16 5.84 32Z" />
       </g>
+
+      {/* Dark-emerald centre disc */}
+      <circle cx="32" cy="32" r="13.5" fill="#06211b" />
 
       {/* Crescent-orb, opening right */}
       <circle cx="32" cy="30.8" r="7" fill="url(#nqi-gold)" mask="url(#nqi-cres)" />

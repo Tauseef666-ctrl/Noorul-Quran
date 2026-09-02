@@ -38,8 +38,29 @@ jobs:
       - name: Regenerate Android brand assets
         run: npm run generate:android
 
+      # Derive a monotonic versionCode from the Git tag (vMAJOR.MINOR.PATCH -> e.g. v1.2.3 -> 10203).
+      # Android compares versionCode to decide whether an install is an update (higher = newer);
+      # always bump to a NEW tag (v1.3.0, v1.3.1, …) so it never collides with an older APK.
+      - name: Compute versionCode from tag
+        id: version
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          TAG="${TAG#v}"
+          IFS='.' read -r MAJ MIN PAT <<< "$TAG"
+          MAJ=${MAJ:-0}; MIN=${MIN:-0}; PAT=${PAT:-0}
+          CODE=$((MAJ*10000 + MIN*100 + PAT))
+          echo "version_name=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version_code=$CODE" >> "$GITHUB_OUTPUT"
+
       - name: Sync Capacitor (copy web build to native)
         run: npx cap sync android
+
+      - name: Set Android version in build.gradle
+        shell: bash
+        run: |
+          sed -i "s/versionCode .*/versionCode ${{ steps.version.outputs.version_code }}/" android/app/build.gradle
+          sed -i "s/versionName \".*/versionName \"${{ steps.version.outputs.version_name }}\"/" android/app/build.gradle
 
       - name: Build debug APK
         working-directory: android
