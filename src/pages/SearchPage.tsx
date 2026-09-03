@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   Search,
   BookOpen,
@@ -17,7 +17,7 @@ import { useAudio } from '../store/audio'
 import { GeometricPattern } from '../components/GeometricPattern'
 import { EqualizerBars } from '../components/EqualizerBars'
 import { ErrorState } from '../components/ErrorState'
-import { fadeUp, staggerContainer } from '../animations'
+
 
 const fadeIn = {
   hidden: { opacity: 0, y: 12 },
@@ -275,21 +275,19 @@ export default function SearchPage() {
                 {matchesProvider ? ' · from provider' : ''}
               </p>
               <div className="space-y-2">
-                <motion.div variants={staggerContainer} className="space-y-2">
-                  <AnimatePresence initial={false}>
-                    {hits.map((hit) => (
-                      <motion.div key={hit.ayahKey} variants={fadeUp}>
-                        <HitCard
-                          hit={hit}
-                          query={query}
-                          toggle={toggle}
-                          playing={playing}
-                          isCurrentAyah={isCurrentAyah}
-                        />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </motion.div>
+                <div className="space-y-2">
+                  {hits.map((hit) => (
+                    <div key={hit.ayahKey}>
+                      <HitCard
+                        hit={hit}
+                        query={query}
+                        toggle={toggle}
+                        playing={playing}
+                        isCurrentAyah={isCurrentAyah}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}

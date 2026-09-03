@@ -118,7 +118,7 @@ export function AudioPlayer() {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 80, opacity: 0 }}
       transition={{ type: 'spring', damping: 26, stiffness: 260 }}
-      className="fixed inset-x-0 bottom-14 z-40 lg:inset-x-auto lg:bottom-5 lg:left-1/2 lg:w-[min(46rem,96vw)] lg:-translate-x-1/2"
+      className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+3.5rem)] z-40 lg:inset-x-auto lg:bottom-5 lg:left-1/2 lg:w-[min(46rem,96vw)] lg:-translate-x-1/2"
       role="region"
       aria-label="Audio player"
     >
@@ -231,7 +231,7 @@ export function AudioPlayer() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className="overflow-hidden"
+            className="max-h-[45vh] overflow-hidden overflow-y-auto"
           >
             {/* Progress */}
             <div className="flex items-center gap-2 px-3 pb-1.5 sm:gap-3 sm:px-4">

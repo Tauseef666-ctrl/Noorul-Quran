@@ -157,9 +157,9 @@ export default function SurahsPage() {
       )}
 
       {!loading && !error && (
-        <motion.div variants={staggerContainer} className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2">
           {filtered.map((surah) => (
-            <motion.div key={surah.number} variants={fadeUp}>
+            <div key={surah.number}>
               <div className="card group relative flex items-center gap-4 rounded-2xl p-4 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]">
                 <button
                   type="button"
@@ -209,9 +209,9 @@ export default function SurahsPage() {
                   </p>
                 </Link>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       )}
     </motion.div>
   )

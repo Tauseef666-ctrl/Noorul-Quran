@@ -1,4 +1,4 @@
-import { NavLink, useLocation, useOutlet } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate, useOutlet } from 'react-router-dom'
 import { Suspense, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
@@ -21,6 +21,7 @@ import { LogoLockup } from '../components/Brand'
 import { ArabicSizeSelector } from '../components/ArabicSizeSelector'
 import { UiSizeSelector } from '../components/UiSizeSelector'
 import { AudioPlayer } from '../components/AudioPlayer'
+import { MediaSessionBridge } from '../components/MediaSessionBridge'
 import { AppFooter } from '../components/AppFooter'
 import { AmbientBackground } from '../components/AmbientBackground'
 import { LoadingScreen } from '../components/LoadingScreen'
@@ -165,6 +166,32 @@ function RoutedPage() {
 export default function AppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { currentAyah: activeAudio } = useAudio()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  // Smart Android back button: close the drawer → go back in history → leave app.
+  useEffect(() => {
+    let handle: { remove: () => Promise<void> } | undefined
+    ;(async () => {
+      const { Capacitor } = await import('@capacitor/core')
+      if (!Capacitor.isNativePlatform()) return
+      const { App } = await import('@capacitor/app')
+      handle = await App.addListener('backButton', () => {
+        if (mobileMenuOpen) {
+          setMobileMenuOpen(false)
+          return
+        }
+        if (location.key !== 'default' && window.history.state?.idx > 0) {
+          navigate(-1)
+          return
+        }
+        App.minimizeApp()
+      })
+    })()
+    return () => {
+      void handle?.remove()
+    }
+  }, [mobileMenuOpen, location.key, navigate])
 
   return (
     <div className="flex min-h-screen">
@@ -352,6 +379,9 @@ export default function AppLayout() {
           </motion.div>
         ))}
       </motion.nav>
+
+      {/* Native-only media notification bridge (no-op on web) */}
+      <MediaSessionBridge />
     </div>
   )
 }

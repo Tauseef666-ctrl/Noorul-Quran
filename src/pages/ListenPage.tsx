@@ -161,11 +161,11 @@ export default function ListenPage() {
             onRetry={reload}
           />
         ) : surahs && (
-          <motion.div variants={staggerContainer} className="space-y-1.5">
+          <div className="space-y-1.5">
             {surahs.map((surah) => {
               const isPlayingHere = mode === 'surah' && currentAyah?.surahNumber === surah.number
               return (
-                <motion.div key={surah.number} variants={fadeUp}>
+                <div key={surah.number}>
                   <div className="group flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-surface">
                     <button
                       type="button"
@@ -209,10 +209,10 @@ export default function ListenPage() {
                       Read →
                     </Link>
                   </div>
-                </motion.div>
+                </div>
               )
             })}
-          </motion.div>
+          </div>
         )}
       </motion.section>
 
