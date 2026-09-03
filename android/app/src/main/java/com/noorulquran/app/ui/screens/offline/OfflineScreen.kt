@@ -60,7 +60,7 @@ import java.util.Locale
 fun OfflineScreen(navController: NavHostController) {
     val context = LocalContext.current
     val app = context.applicationContext as NoorulQuranApp
-    val dao = app.container.downloadDao()
+    val dao = app.container.database.downloadDao()
     val downloadManager = app.container.downloadManager
     val scope = rememberCoroutineScope()
 
