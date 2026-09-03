@@ -1,7 +1,4 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="app_name">NoorulQuran</string>
-    <string name="title_activity_main">NoorulQuran</string>
-    <string name="package_name">com.noorulquran.app</string>
-    <string name="custom_url_scheme">com.noorulquran.app</string>
 </resources>

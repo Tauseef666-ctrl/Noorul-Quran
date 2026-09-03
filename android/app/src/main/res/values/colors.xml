@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#06211B</color>
-    <color name="colorPrimaryDark">#050807</color>
-    <color name="colorAccent">#C7A23A</color>
+    <color name="brand_deep_black">#050807</color>
+    <color name="brand_emerald">#0E7A63</color>
+    <color name="brand_gold">#D4AF37</color>
+    <color name="brand_emerald_dark">#06211B</color>
+    <color name="gold_soft">#C7A23A</color>
 </resources>

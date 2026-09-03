@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Brand crescent "noor" mark used as the media-notification small icon. -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M15.5,2.5c-5.52,0 -10,4.48 -10,10s4.48,10 10,10c1.79,0 3.46,-0.47 4.91,-1.31 -3.05,-1.28 -5.18,-4.29 -5.18,-7.69s2.13,-6.41 5.18,-7.69C18.96,2.97 17.29,2.5 15.5,2.5z" />
+</vector>

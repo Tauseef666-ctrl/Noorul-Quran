@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.NoorulQuran" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/brand_deep_black</item>
+        <!-- Edge-to-edge: transparent system bars, content extends behind them -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/brand_deep_black</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:colorAccent">@color/brand_emerald</item>
+        <item name="colorPrimary">@color/brand_emerald</item>
+        <item name="colorPrimaryDark">@color/brand_deep_black</item>
+        <item name="colorSecondary">@color/brand_gold</item>
+        <item name="android:colorBackground">@color/brand_deep_black</item>
+        <item name="android:fontFamily">sans</item>
+    </style>
+</resources>
