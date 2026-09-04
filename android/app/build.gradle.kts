@@ -20,6 +20,18 @@ android {
         versionName = "1.0.0"
     }
 
+    signingConfigs {
+        create("release") {
+            val keystore = file("release.keystore")
+            if (keystore.exists()) {
+                storeFile = keystore
+                storePassword = signingSecret("RELEASE_STORE_PASSWORD", "noorulquran-android")
+                keyAlias = "noorulquran"
+                keyPassword = signingSecret("RELEASE_KEY_PASSWORD", "noorulquran-android")
+            }
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
@@ -32,6 +44,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            if (file("release.keystore").exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
@@ -93,3 +108,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
+
+/** Reads a signing secret from an env var or Gradle property, falling back for local builds. */
+private fun signingSecret(name: String, fallback: String): String =
+    System.getenv(name) ?: (project.findProperty(name) as String?) ?: fallback
