@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-apk:
-    name: Build Native Kotlin APK
+    name: Build Android APK
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -23,31 +23,19 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('android/**/*.gradle*', 'android/gradle/**') }}
-          restore-keys: gradle-${{ runner.os }}-
-
       - name: Compute versionCode from tag
         id: version
         shell: bash
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
           TAG="${TAG#v}"
-          if [ "$TAG" = "$GITHUB_REF" ]; then
-            TAG="0.0.0-dev"
-          fi
           IFS='.' read -r MAJ MIN PAT <<< "$TAG"
           MAJ=${MAJ:-0}; MIN=${MIN:-0}; PAT=${PAT:-0}
           CODE=$((MAJ*10000 + MIN*100 + PAT))
           echo "version_name=$TAG" >> "$GITHUB_OUTPUT"
           echo "version_code=$CODE" >> "$GITHUB_OUTPUT"
 
-      - name: Patch version in build.gradle.kts
+      - name: Set Android version in build.gradle.kts
         shell: bash
         run: |
           sed -i "s/versionCode = .*/versionCode = ${{ steps.version.outputs.version_code }}/" android/app/build.gradle.kts
@@ -61,10 +49,10 @@ jobs:
         working-directory: android
         run: ./gradlew assembleRelease
 
-      - name: Upload debug APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NoorulQuran-debug-APK
+          name: NoorulQuran-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
