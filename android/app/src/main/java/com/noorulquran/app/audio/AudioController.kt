@@ -1,6 +1,7 @@
 package com.noorulquran.app.audio
 
 import android.content.Context
+import android.net.Uri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
@@ -87,7 +88,7 @@ class AudioController(context: Context) {
             .setTitle(title)
             .setArtist(artist)
             .setAlbumTitle("NoorulQuran")
-            .apply { artwork?.let { setArtworkUri(it) } }
+            .apply { artwork?.let { setArtworkUri(Uri.parse(it)) } }
             .build()
         return MediaItem.Builder().setUri(url).setMediaMetadata(meta).build()
     }

@@ -3,6 +3,7 @@ package com.noorulquran.app.audio
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.noorulquran.app.AppContainer
 import com.noorulquran.app.NoorulQuranApp
 import com.noorulquran.app.data.api.QuranApi
 import com.noorulquran.app.data.quran.QuranRepository
@@ -24,7 +25,7 @@ data class PlaybackUiState(
 class AudioViewModel(app: Application) : AndroidViewModel(app) {
 
     private val appContext = app
-    private val container: NoorulQuranApp = app as NoorulQuranApp
+    private val container: AppContainer = (app as NoorulQuranApp).container
     private val quranRepository: QuranRepository = container.quranRepository
     private val api: QuranApi = container.api
 
