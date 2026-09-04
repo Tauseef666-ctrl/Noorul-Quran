@@ -44,14 +44,16 @@ jobs:
       - name: Build debug APK
         id: build-debug
         working-directory: android
-        run: ./gradlew assembleDebug --stacktrace 2>&1 | tee ../debug-build.log
+        shell: bash
+        run: set -o pipefail; ./gradlew assembleDebug --stacktrace 2>&1 | tee ../debug-build.log
         continue-on-error: true
 
       - name: Build release APK
         id: build-release
         if: steps.build-debug.outcome == 'success'
         working-directory: android
-        run: ./gradlew assembleRelease --stacktrace 2>&1 | tee ../release-build.log
+        shell: bash
+        run: set -o pipefail; ./gradlew assembleRelease --stacktrace 2>&1 | tee ../release-build.log
 
       - name: Upload build log on failure
         if: steps.build-debug.outcome == 'failure'
