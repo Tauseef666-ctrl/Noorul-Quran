@@ -34,10 +34,11 @@ import com.noorulquran.app.ui.theme.GoldDivider
 @Composable
 fun BrandMark(size: Int = 48) {
     Canvas(modifier = Modifier.size(size.dp)) {
-        val center = Offset(sizePx / 2f, sizePx / 2f)
-        val r = sizePx / 2f
+        val px = this.size.width
+        val center = Offset(px / 2f, px / 2f)
+        val r = px / 2f
         val r2 = r * 0.7071f
-        val stroke = sizePx * 0.05f
+        val stroke = px * 0.05f
 
         // Upright + 45° squares (octagram)
         fun square(rot: Float) {

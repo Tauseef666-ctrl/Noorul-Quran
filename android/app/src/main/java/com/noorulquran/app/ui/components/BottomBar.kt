@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.noorulquran.app.ui.Routes
 import com.noorulquran.app.ui.theme.DeepBlack
 import com.noorulquran.app.ui.theme.Emerald

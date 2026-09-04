@@ -29,10 +29,9 @@ class DownloadManager(
     fun audioFileFor(kind: String, number: Int, reciterId: String): File =
         File(downloadsDir, "${kind}_${number}_$reciterId.mp3")
 
-    fun isAudioDownloaded(kind: String, number: Int, reciterId: String): Boolean {
-        val f = File(downloadsDir, "${kind}_${number}_$reciterId.mp3")
-        return dao.findById(downloadId(kind, number))?.audioDownloaded == true && f.exists()
-    }
+    suspend fun isAudioDownloaded(kind: String, number: Int, reciterId: String): Boolean =
+        dao.findById(downloadId(kind, number))?.audioDownloaded == true &&
+            audioFileFor(kind, number, reciterId).exists()
 
     fun downloadId(kind: String, number: Int): String = "$kind:$number"
 
