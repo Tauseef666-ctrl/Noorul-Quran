@@ -111,8 +111,10 @@ class AudioViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
-        controller.clearQueue()
-        controller.player.release()
+        // Intentionally do NOT stop or release the shared player here:
+        // clearing the queue would interrupt audio that should keep playing in
+        // the background, and releasing the process-wide NoorulQuranPlayer would
+        // tear down the PlaybackService's media session.
         super.onCleared()
     }
 }

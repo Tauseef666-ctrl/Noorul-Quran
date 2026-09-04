@@ -1,27 +1,28 @@
 package com.noorulquran.app.audio
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * Thin ExoPlayer wrapper exposing playback state as StateFlows so Compose UI can
- * bind to the currently playing item and progress. The player drives the
- * MediaSessionService so the lock-screen/shade notification stays in sync.
+ * Thin wrapper on the process-wide ExoPlayer exposing playback state as
+ * StateFlows so Compose UI can bind to the currently playing item and progress.
+ * The player is shared with the [PlaybackService] MediaSession, so the
+ * lock-screen/shade notification stays in sync and keeps working while the app
+ * is backgrounded.
  */
 class AudioController(context: Context) {
 
     private val appContext = context.applicationContext
 
-    val player: ExoPlayer = ExoPlayer.Builder(appContext).build()
+    val player: ExoPlayer = NoorulQuranPlayer.get(appContext)
 
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying
@@ -56,11 +57,33 @@ class AudioController(context: Context) {
     }
 
     fun playQueue(items: List<PlaybackItem>, startIndex: Int, isContinuous: Boolean) {
+        startPlaybackService()
         player.setMediaItems(items.map { it.mediaItem }, startIndex, 0L)
         player.prepare()
         player.repeatMode = if (isContinuous) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
         _queue.value = items
         player.play()
+    }
+
+    /**
+     * Puts the [PlaybackService] into the foreground so the MediaSession
+     * notification appears (lock-screen + shade with transport controls).
+     * Media3's MediaSessionService calls startForeground as soon as playback
+     * begins, which the system requires to be preceded by startForegroundService.
+     */
+    private fun startPlaybackService() {
+        val intent = Intent(appContext, PlaybackService::class.java)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                appContext.startForegroundService(intent)
+            } else {
+                appContext.startService(intent)
+            }
+        } catch (_: RuntimeException) {
+            // Foreground service launch can be blocked by the OS (background
+            // start restrictions, OEM battery savers). Playback still works
+            // from the foreground UI; only the notification is skipped.
+        }
     }
 
     fun toggle() = if (player.isPlaying) player.pause() else player.play()
