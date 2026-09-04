@@ -53,7 +53,18 @@ jobs:
         if: steps.build-debug.outcome == 'success'
         working-directory: android
         shell: bash
-        run: set -o pipefail; ./gradlew assembleRelease --stacktrace 2>&1 | tee ../release-build.log
+        run: |
+          set -o pipefail
+          for attempt in 1 2 3; do
+            echo "===== Release build attempt $attempt/3 ====="
+            if ./gradlew assembleRelease --stacktrace 2>&1 | tee ../release-build.log; then
+              echo "Release build succeeded on attempt $attempt"
+              exit 0
+            fi
+            echo "===== Release build attempt $attempt failed, retrying ====="
+            sleep 20
+          done
+          exit 1
         continue-on-error: true
 
       - name: Upload build log on failure
