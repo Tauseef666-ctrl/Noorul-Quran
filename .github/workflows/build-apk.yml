@@ -44,14 +44,35 @@ jobs:
       - name: Build debug APK
         id: build-debug
         working-directory: android
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew assembleDebug --stacktrace 2>&1 | tee ../debug-build.log
+        continue-on-error: true
 
       - name: Build release APK
         id: build-release
+        if: steps.build-debug.outcome == 'success'
         working-directory: android
-        run: ./gradlew assembleRelease --stacktrace
+        run: ./gradlew assembleRelease --stacktrace 2>&1 | tee ../release-build.log
+
+      - name: Upload build log on failure
+        if: steps.build-debug.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-build-log
+          path: android/debug-build.log
+          if-no-files-found: error
+
+      - name: Show last 100 lines of build log
+        if: steps.build-debug.outcome == 'failure'
+        run: tail -100 android/debug-build.log
+
+      - name: Fail if debug build failed
+        if: steps.build-debug.outcome == 'failure'
+        run: |
+          echo "::error::Debug build failed"
+          exit 1
 
       - name: Upload debug APK
+        if: steps.build-debug.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: NoorulQuran-debug-APK
@@ -59,6 +80,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload release APK
+        if: steps.build-release.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: NoorulQuran-release-APK
@@ -66,7 +88,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') && steps.build-debug.outcome == 'success'
         uses: softprops/action-gh-release@v2
         with:
           files: |
