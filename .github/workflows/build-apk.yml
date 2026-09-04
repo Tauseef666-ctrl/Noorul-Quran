@@ -65,17 +65,16 @@ jobs:
             sleep 20
           done
           exit 1
-        continue-on-error: true
 
       - name: Upload build log on failure
-        if: steps.build-debug.outcome == 'failure' || steps.build-release.outcome == 'failure'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gradle-build-log
           path: |
             debug-build.log
             release-build.log
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Show debug build log on failure
         if: steps.build-debug.outcome == 'failure'
@@ -90,7 +89,7 @@ jobs:
           exit 1
 
       - name: Show release build log on failure
-        if: steps.build-release.outcome == 'failure'
+        if: steps.build-release.outcome == 'failure' && !cancelled()
         shell: bash
         run: |
           echo "===== FULL RELEASE BUILD LOG ====="
