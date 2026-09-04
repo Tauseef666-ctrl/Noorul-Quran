@@ -60,17 +60,18 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gradle-build-log
-          path: android/debug-build.log
+          path: debug-build.log
           if-no-files-found: error
 
       - name: Show last 100 lines of build log
         if: steps.build-debug.outcome == 'failure'
-        run: tail -100 android/debug-build.log
-
-      - name: Fail if debug build failed
-        if: steps.build-debug.outcome == 'failure'
+        shell: bash
         run: |
-          echo "::error::Debug build failed"
+          {
+            echo "## Gradle build error (last 100 lines)"
+            echo ""
+            tail -100 debug-build.log
+          } >> "$GITHUB_STEP_SUMMARY"
           exit 1
 
       - name: Upload debug APK
