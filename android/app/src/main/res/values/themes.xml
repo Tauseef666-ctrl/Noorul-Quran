@@ -9,9 +9,8 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
         <item name="android:colorAccent">@color/brand_emerald</item>
-        <item name="colorPrimary">@color/brand_emerald</item>
-        <item name="colorPrimaryDark">@color/brand_deep_black</item>
-        <item name="colorSecondary">@color/brand_gold</item>
+        <item name="android:colorPrimary">@color/brand_emerald</item>
+        <item name="android:colorPrimaryDark">@color/brand_deep_black</item>
         <item name="android:colorBackground">@color/brand_deep_black</item>
         <item name="android:fontFamily">sans</item>
     </style>
