@@ -54,16 +54,19 @@ jobs:
         working-directory: android
         shell: bash
         run: set -o pipefail; ./gradlew assembleRelease --stacktrace 2>&1 | tee ../release-build.log
+        continue-on-error: true
 
       - name: Upload build log on failure
-        if: steps.build-debug.outcome == 'failure'
+        if: steps.build-debug.outcome == 'failure' || steps.build-release.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: gradle-build-log
-          path: debug-build.log
+          path: |
+            debug-build.log
+            release-build.log
           if-no-files-found: error
 
-      - name: Show build log on failure
+      - name: Show debug build log on failure
         if: steps.build-debug.outcome == 'failure'
         shell: bash
         run: |
@@ -73,6 +76,16 @@ jobs:
           # Emit each log line as a separate error annotation so the full
           # error text is surfaced through the check-run annotations API.
           awk '{ printf "::error::%s%%0A", $0 }' debug-build.log
+          exit 1
+
+      - name: Show release build log on failure
+        if: steps.build-release.outcome == 'failure'
+        shell: bash
+        run: |
+          echo "===== FULL RELEASE BUILD LOG ====="
+          cat release-build.log
+          echo "===== END LOG ====="
+          awk '{ printf "::error::%s%%0A", $0 }' release-build.log
           exit 1
 
       - name: Upload debug APK
