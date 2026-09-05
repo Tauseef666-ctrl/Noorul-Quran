@@ -60,12 +60,17 @@ fun HomeScreen(navController: NavHostController, audioViewModel: AudioViewModel)
 
     var surahs by remember { mutableStateOf<List<Surah>?>(null) }
     var lastRead by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    var loadFailed by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        surahs = repo.getSurahList()
-        val settings = app.container.settings
-        combine(settings.lastReadSurah, settings.lastReadAyah) { s, a -> s to a }
-            .collect { lastRead = it }
+        try {
+            surahs = repo.getSurahList()
+            val settings = app.container.settings
+            combine(settings.lastReadSurah, settings.lastReadAyah) { s, a -> s to a }
+                .collect { lastRead = it }
+        } catch (_: Exception) {
+            loadFailed = true
+        }
     }
 
     Column(
@@ -74,6 +79,14 @@ fun HomeScreen(navController: NavHostController, audioViewModel: AudioViewModel)
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
     ) {
+        if (loadFailed) {
+            Text(
+                text = "Something went wrong loading the Quran data. Try restarting the app.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+
         // Brand header
         Row(verticalAlignment = Alignment.CenterVertically) {
             BrandMark(size = 56)
