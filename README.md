@@ -11,6 +11,11 @@ design (deep black → emerald in dark mode, warm ivory in light), with offline-
 data, full audio playback, and accessibility baked in. The same repository also ships
 a native **Android app** (Capacitor) — see [Android app](#android-app) below.
 
+The brand mark is the **Rub el Hizb** octagram (۞) — a solid gold seal with a
+dark-emerald centre disc, drawn from a single shared renderer
+(`scripts/lib/brand.mjs`) so the website, PWA icons, Android launcher icon, and
+splash screen all match exactly.
+
 ## Screenshots
 
 Captures of the app (Home hero, Surah reader, Mushaf, Listen player, Search) are
@@ -153,7 +158,7 @@ This repository also builds a native Android app from the same codebase via
 **To build and install the APK:**
 
 ```bash
-git tag v1.2.0 && git push origin v1.2.0
+git tag v1.4.1 && git push origin v1.4.1
 ```
 
 A workflow run builds `app-debug.apk` and attaches it to a GitHub Release for that
