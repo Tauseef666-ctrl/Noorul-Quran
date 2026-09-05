@@ -1,0 +1,36 @@
+name: Delete trash releases (temporary)
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const tags = ['v1.6.2', 'v1.6.1', 'v1.6.0', 'v1.0.0']
+
+            for (const tag of tags) {
+              try {
+                const { data: release } = await github.rest.repos.getReleaseByTag({ owner, repo, tag });
+                await github.rest.repos.deleteRelease({ owner, repo, release_id: release.id });
+                core.info(`Deleted release ${tag} (${release.id}) and its assets`);
+              } catch (e) {
+                core.info(`${tag}: release not found, skipping`);
+              }
+              try {
+                await github.rest.git.deleteRef({ owner, repo, ref: `tags/${tag}` });
+                core.info(`Deleted tag ${tag}`);
+              } catch (e) {
+                core.info(`${tag}: tag already gone`);
+              }
+            }
