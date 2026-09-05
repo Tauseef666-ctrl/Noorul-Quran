@@ -1,7 +1,8 @@
 // Shared NoorulQuran brand renderer (pure Node, no deps).
-// Renders the brand mark — a deep emerald hexagonal medallion with a luminous
-// gold crescent-orb, a guiding-light mote, and an open Qur'an page — into an
-// RGBA buffer. Used by both the web icon generator (opaque tile variant) and
+// Renders the current brand mark (mirrors src/components/Brand.tsx LogoMark) —
+// the Rub el Hizb octagram as a solid gold seal with a radial noor glow, a
+// dark-emerald centre disc, a gold crescent-orb and a guiding-light mote — into
+// an RGBA buffer. Used by both the web icon generator (opaque tile variant) and
 // the Android asset generator (opaque splash + transparent adaptive foreground).
 import { deflateSync } from 'node:zlib'
 
@@ -90,7 +91,6 @@ function sdPolygon(px, py, verts) {
   }
   return inside ? -dist : dist
 }
-function coverage(d, aa = 1) { return clamp01(0.5 - d / aa) }
 // coverage for an SDF where positive = inside the shape
 function fill(d, aa = 1) { return clamp01(0.5 + d / aa) }
 
@@ -98,9 +98,10 @@ function fill(d, aa = 1) { return clamp01(0.5 + d / aa) }
  * Render the brand mark into a square RGBA buffer.
  *
  * The mark is the "Rub el Hizb" octagram (۞) — the eight-pointed star that
- * marks every quarter of the Qur'an — drawn as two gold squares (upright and
- * rotated 45°), softened by a radiant noor glow, cradling a gold crescent-orb
- * and a single guiding-light mote. Minimal, jewelled, unmistakably Qur'anic.
+ * marks every quarter of the Qur'an — drawn as a solid gold seal of two gold
+ * squares (upright and rotated 45°), softened by a radiant noor glow, with a
+ * dark-emerald centre disc cradling a gold crescent-orb and a single
+ * guiding-light mote. Minimal, jewelled, unmistakably Qur'anic.
  *
  * @param {number} size        canvas edge length in px
  * @param {object} [opts]
@@ -121,7 +122,6 @@ export function drawBrand(size, { contentScale = 0.98, background = 'emerald' } 
 
   const AA = 0.4 // anti-aliasing width in design units
   const gold = (v) => mix(GOLD_TOP, GOLD_BOTTOM, clamp01(v / 64))
-  const brightGold = mix(GOLD_TOP, GOLD_BOTTOM, 0.2)
 
   // The octagram: two squares sharing the centre (32,32), half-length 18.5
   const sq = (rotDeg, half = 18.5) => {
@@ -131,8 +131,6 @@ export function drawBrand(size, { contentScale = 0.98, background = 'emerald' } 
   }
   const sqA = sq(0)  // upright square
   const sqB = sq(45) // diamond
-
-  const C = 32, CY = 30.8, R_OUT = 7, R_IN = 5.5, GAP = 2.1
 
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
@@ -147,29 +145,34 @@ export function drawBrand(size, { contentScale = 0.98, background = 'emerald' } 
         out = alphaOver(out, mix(GREEN_TOP, GREEN_BOTTOM, py / size), 1)
       }
 
-      // Radiant noor glow behind the star
+      // Radiant noor glow — radial gold, alpha 0.28 → 0 within r26 (LogoMark)
       const dist = Math.hypot(u - 32, v - 32)
-      if (dist < 23) out = alphaOver(out, gold(v), (1 - dist / 23) * 0.14)
+      if (dist < 26) out = alphaOver(out, GOLD_BOTTOM, (1 - dist / 26) * 0.28)
 
-      // Rub el Hizb octagram — two gold squares (upright + 45° diamond)
-      const sqW = 0.7
-      for (const s of [sqA, sqB]) {
-        const ds = sdPolygon(u, v, s)
-        if (Math.abs(ds) < sqW) out = alphaOver(out, gold(v), coverage(Math.abs(ds), sqW))
-      }
+      // Rub el Hizb octagram — solid gold seal, even-odd fill of the upright
+      // square + 45° diamond (the overlap becomes the star's empty cavity)
+      const covA = fill(-sdPolygon(u, v, sqA), AA)
+      const covB = fill(-sdPolygon(u, v, sqB), AA)
+      const covStar = covA + covB - 2 * covA * covB
+      if (covStar > 0) out = alphaOver(out, gold(v), covStar)
 
-      // Crescent-orb: annulus r 5.5..7 at (32,30.8), opening right
+      // Dark-emerald centre disc cradling the crescent + mote
+      const dDisc = 13.5 - dist
+      const discCov = fill(dDisc, AA)
+      if (discCov > 0) out = alphaOver(out, GREEN_BOTTOM, discCov)
+
+      // Crescent-orb, opening right: r7 at (32,30.8) minus r5.5 at (34.1,31.5)
       const dCres = Math.min(
-        7 - Math.hypot(u - C, v - CY),
-        Math.hypot(u - (C + GAP), v - (CY + GAP * 0.35)) - 5.5,
+        7 - Math.hypot(u - 32, v - 30.8),
+        Math.hypot(u - 34.1, v - 31.5) - 5.5,
       )
       const cresCov = fill(dCres, AA)
       if (cresCov > 0) out = alphaOver(out, gold(v), cresCov)
 
-      // Guiding-light mote
+      // Guiding-light mote r1.6 at (32,38.4)
       const dMote = 1.6 - Math.hypot(u - 32, v - 38.4)
       const moteCov = fill(dMote, AA)
-      if (moteCov > 0) out = alphaOver(out, brightGold, moteCov)
+      if (moteCov > 0) out = alphaOver(out, gold(v), moteCov)
 
       // Transparent variant: keep only content within the safe circle
       if (background === 'transparent' && dist > 30) out = [0, 0, 0, 0]
