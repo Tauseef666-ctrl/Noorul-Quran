@@ -14,15 +14,20 @@ const VERSION = 'nq-shell-v1'
 const SHELL_CACHE = 'nq-shell'
 const STATIC_CACHE = 'nq-static'
 
+// The worker must work at any deploy base (root or a GitHub Pages subpath
+// like /Noorul-Quran/). Everything app-relative resolves against the SW scope.
+const BASE = new URL(self.registration?.scope || '/')
+const appUrl = (path) => new URL(path.replace(/^\//, ''), BASE)
+
 const APP_SHELL_PATHS = [
-  '/',
-  '/manifest.webmanifest',
-  '/icons/favicon-32.png',
-  '/icons/pwa-192.png',
-  '/icons/pwa-512.png',
-  '/icons/maskable-512.png',
-  '/icons/apple-touch-icon.png',
-]
+  './',
+  './manifest.webmanifest',
+  './icons/favicon-32.png',
+  './icons/pwa-192.png',
+  './icons/pwa-512.png',
+  './icons/maskable-512.png',
+  './icons/apple-touch-icon.png',
+].map((p) => appUrl(p).href)
 
 function isSameOrigin(url) {
   return url.origin === self.location.origin
@@ -31,12 +36,12 @@ function isSameOrigin(url) {
 function isImmutableAsset(url) {
   // Vite emits content-hashed filenames (e.g. assets/index-abc123.js) — safe to
   // cache-first. Non-hashed public files fall back to network-first.
-  const path = url.pathname
+  const rel = url.href.replace(BASE.href, '/')
   return (
-    path.startsWith('/assets/') ||
-    path.startsWith('/fonts/') ||
-    path.startsWith('/icons/') ||
-    path === '/manifest.webmanifest'
+    rel.startsWith('/assets/') ||
+    rel.startsWith('/fonts/') ||
+    rel.startsWith('/icons/') ||
+    rel === '/manifest.webmanifest'
   )
 }
 
@@ -77,11 +82,11 @@ self.addEventListener('fetch', (event) => {
           const response = await fetch(request)
           if (response.ok) {
             const cache = await caches.open(SHELL_CACHE)
-            cache.put('/', response.clone())
+            cache.put(appUrl('./').href, response.clone())
           }
           return response
         } catch {
-          const cached = await caches.match('/')
+          const cached = await caches.match(appUrl('./').href)
           if (cached) return cached
           return new Response(
             '<h1>Offline</h1><p>NoorulQuran needs a connection to load this page.</p>',

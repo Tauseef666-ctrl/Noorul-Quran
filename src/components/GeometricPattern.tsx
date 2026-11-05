@@ -45,13 +45,6 @@ export function GeometricPattern({
       style={{ opacity }}
     >
       <defs>
-        <pattern
-          id={`geo-${variant}`}
-          patternUnits="userSpaceOnUse"
-          width={size}
-          height={size}
-          patternTransform={`translate(${half} ${half})`}
-        />
         <clipPath id={`geo-clip-${variant}`}>
           <rect width={size} height={size} />
         </clipPath>

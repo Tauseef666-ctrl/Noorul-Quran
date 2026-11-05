@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Code } from 'lucide-react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Code, ChevronDown, HeartHandshake } from 'lucide-react'
 import { GeometricPattern } from './GeometricPattern'
 import { LogoLockup } from './Brand'
 import { fadeUp, staggerContainer } from '../animations'
@@ -35,6 +36,8 @@ const LINK_GROUPS: { title: string; links: { label: string; to: string }[] }[] =
 ]
 
 export function AppFooter() {
+  const [duaOpen, setDuaOpen] = useState(false)
+
   return (
     <motion.footer
       variants={staggerContainer}
@@ -73,13 +76,66 @@ export function AppFooter() {
               <Code className="h-4 w-4" aria-hidden />
               Source on GitHub
             </a>
-            <Link
-              to="/sources#personal-dua"
-              className="text-xs font-medium text-gold/80 transition-colors hover:text-gold"
+            <button
+              type="button"
+              onClick={() => setDuaOpen((v) => !v)}
+              className="inline-flex items-center gap-1.5 rounded-full text-xs font-medium text-gold/80 transition-colors hover:text-gold"
+              aria-expanded={duaOpen}
+              aria-controls="footer-personal-dua"
             >
               Personal Dua
-            </Link>
+              <ChevronDown
+                className={`h-3.5 w-3.5 transition-transform duration-200 ${duaOpen ? 'rotate-180' : ''}`}
+                aria-hidden
+              />
+            </button>
           </div>
+
+          {/* Personal Dua — revealed in place; no navigation, no route change */}
+          <AnimatePresence initial={false}>
+            {duaOpen && (
+              <motion.div
+                key="footer-personal-dua"
+                id="footer-personal-dua"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0, transition: { duration: 0.28, ease: 'easeOut' } }}
+                exit={{ opacity: 0, y: -6, transition: { duration: 0.18 } }}
+                className="mt-4 max-w-md overflow-hidden rounded-2xl border border-gold/25 bg-surface-opaque/80 p-5"
+              >
+                <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">
+                  <HeartHandshake className="h-3.5 w-3.5" aria-hidden />
+                  Personal Dua
+                  <span className="font-medium normal-case tracking-wide text-ink-faint">
+                    · not Quranic text
+                  </span>
+                </p>
+                <blockquote
+                  lang="ar"
+                  dir="rtl"
+                  translate="no"
+                  className="arabic-heading mt-3 border-r-2 border-gold/40 pr-4 text-right text-lg leading-loose text-ink"
+                >
+                  اللَّهُمَّ اجْعَلْ هَٰذَا الْعَمَلَ خَالِصًا لِوَجْهِكَ الْكَرِيمِ،
+                  وَانْفَعْ بِهِ كُلَّ مَنْ قَرَأَ، وَارْزُقْنَا الْإِخْلَاصَ وَالْقَبُولَ
+                </blockquote>
+                <p className="mt-3 text-xs italic leading-relaxed text-ink-faint">
+                  (Transliteration: &ldquo;O Allah, make this work purely for Your noble
+                  Countenance, benefit through it everyone who reads, and grant us
+                  sincerity and acceptance.&rdquo;)
+                </p>
+                <p className="mt-2 text-xs text-ink-faint">
+                  Built with love for the sake of Allah ·{' '}
+                  <span className="num-ltr">Created by Tauseef Khan</span>
+                </p>
+                <Link
+                  to="/sources#personal-dua"
+                  className="mt-3 block border-t border-line/60 pt-3 text-[11px] font-medium text-brand hover:underline"
+                >
+                  Why we label it → Sources &amp; Attribution
+                </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         {/* Link groups */}

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NoorulQuran</title>
+    <script>
+      // GitHub Pages SPA rescue: any deep link that misses the static host
+      // (e.g. a refresh on /Noorul-Quran/surah/36) lands here. Store the real
+      // route and redirect to the app root; index.html restores it via
+      // history.replaceState before the router mounts — no visible flicker
+      // beyond one non-rendered bounce.
+      ;(function () {
+        var base = '/Noorul-Quran/'
+        var l = window.location
+        // Keep everything after the deploy base, including ?query and #hash.
+        var route = l.pathname.startsWith(base)
+          ? l.pathname.slice(base.length - 1)
+          : l.pathname
+        route = route + l.search + l.hash
+        try {
+          sessionStorage.setItem('nq-404-redirect', route)
+        } catch (e) {
+          /* storage unavailable — fall through to plain home redirect */
+        }
+        l.replace(base)
+      })()
+    </script>
+  </head>
+  <body></body>
+</html>

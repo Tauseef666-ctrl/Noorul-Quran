@@ -59,9 +59,110 @@
         }
       }
     </script>
+    <style>
+      /* Pre-paint splash — theme-aware via the .dark class applied below.
+         Paints the brand's own palette before any CSS/JS bundle exists. */
+      #app-splash {
+        --sp-bg-1: #f6f1e7;
+        --sp-bg-2: #efe7d8;
+        --sp-wash: rgba(14, 122, 99, 0.12);
+        --sp-chip: #fffdf8;
+        --sp-chip-ring: rgba(160, 125, 36, 0.3);
+        --sp-glow: rgba(160, 125, 36, 0.24);
+        --sp-ink: #1e2b26;
+        --sp-gold: #a07d24;
+        --sp-muted: rgba(30, 43, 38, 0.45);
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 22px;
+        font-family: Inter, system-ui, sans-serif;
+        background:
+          radial-gradient(900px 60% at 50% -8%, var(--sp-wash), transparent 62%),
+          linear-gradient(180deg, var(--sp-bg-1), var(--sp-bg-2));
+        opacity: 1;
+        transition: opacity 0.4s ease;
+      }
+      html.dark #app-splash {
+        --sp-bg-1: #050807;
+        --sp-bg-2: #0a0f0d;
+        --sp-wash: rgba(62, 207, 154, 0.1);
+        --sp-chip: rgba(0, 0, 0, 0.4);
+        --sp-chip-ring: rgba(226, 216, 190, 0.08);
+        --sp-glow: rgba(15, 107, 82, 0.35);
+        --sp-ink: #ffffff;
+        --sp-gold: #eec98c;
+        --sp-muted: rgba(255, 255, 255, 0.3);
+      }
+      #app-splash .nq-chip {
+        width: 84px;
+        height: 84px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 24px;
+        background: var(--sp-chip);
+        border: 1px solid var(--sp-chip-ring);
+        box-shadow:
+          0 18px 50px -16px var(--sp-glow),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+        animation: nq-splash-breathe 2.6s ease-in-out infinite;
+      }
+      #app-splash .nq-chip svg {
+        width: 60px;
+        height: 60px;
+        display: block;
+      }
+      #app-splash .nq-word {
+        text-align: center;
+      }
+      #app-splash .nq-word .nq-title {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: var(--sp-ink);
+      }
+      #app-splash .nq-word .nq-title .nq-gold {
+        color: var(--sp-gold);
+      }
+      #app-splash .nq-word .nq-credit {
+        margin: 6px 0 0;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.3em;
+        color: var(--sp-muted);
+      }
+      @keyframes nq-splash-breathe {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.045); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #app-splash .nq-chip {
+          animation: none;
+        }
+      }
+    </style>
     <script>
       // Pre-paint theme application — prevents flash of wrong theme.
       ;(function () {
+        try {
+          // GitHub Pages deep-link rescue: 404.html stores the real route here.
+          var nx = sessionStorage.getItem('nq-404-redirect')
+          if (nx) {
+            sessionStorage.removeItem('nq-404-redirect')
+            if (nx && nx !== '/') {
+              var here = location.pathname.replace(/\/$/, '')
+              history.replaceState(null, '', here + nx)
+            }
+          }
+        } catch (e) {
+          /* storage unavailable — nothing to restore */
+        }
         try {
           var theme = localStorage.getItem('nq:theme') || 'system'
           var dark =
@@ -79,15 +180,39 @@
   </head>
   <body>
     <div id="root">
-      <!-- Static app splash (replaced by React on mount) — premium, minimal:
-           only the NoorulQuran logo + "Created by Tauseef Khan". -->
-      <div id="app-splash" style="position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;font-family:Inter,system-ui,sans-serif;background:radial-gradient(900px 60% at 50% -8%,rgba(15,107,82,.22),transparent 62%),linear-gradient(180deg,#050807,#0a0f0d);opacity:1;transition:opacity 0.4s ease;">
-        <div style="width:76px;height:76px;display:flex;align-items:center;justify-content:center;border-radius:24px;background:rgba(0,0,0,.4);box-shadow:0 0 60px rgba(15,107,82,.35);border:1px solid rgba(255,255,255,.06);overflow:hidden;">
-          <img src="/icons/pwa-192.png" width="76" height="76" alt="" role="presentation" style="display:block;width:76px;height:76px;object-fit:contain;" draggable="false" />
+      <!-- Static app splash (replaced by React on mount): the Rub el Hizb
+           brand mark drawn inline — crisp at any size, theme-aware, and it
+           never depends on a network image that could 404. -->
+      <div id="app-splash" aria-hidden="true">
+        <div class="nq-chip">
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NoorulQuran logo">
+            <defs>
+              <radialGradient id="nqs-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#c7a23a" stop-opacity="0.28" />
+                <stop offset="100%" stop-color="#c7a23a" stop-opacity="0" />
+              </radialGradient>
+              <linearGradient id="nqs-gold" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#eec98c" />
+                <stop offset="1" stop-color="#c7a23a" />
+              </linearGradient>
+              <mask id="nqs-cres">
+                <rect width="64" height="64" fill="#fff" />
+                <circle cx="34.1" cy="31.5" r="5.5" fill="#000" />
+              </mask>
+            </defs>
+            <circle cx="32" cy="32" r="26" fill="url(#nqs-glow)" />
+            <g fill="url(#nqs-gold)" fill-rule="evenodd">
+              <path d="M13.5 13.5h37v37h-37Z" />
+              <path d="M32 5.84 58.16 32 32 58.16 5.84 32Z" />
+            </g>
+            <circle cx="32" cy="32" r="13.5" fill="#06211b" />
+            <circle cx="32" cy="30.8" r="7" fill="url(#nqs-gold)" mask="url(#nqs-cres)" />
+            <circle cx="32" cy="38.4" r="1.6" fill="url(#nqs-gold)" />
+          </svg>
         </div>
-        <div style="text-align:center;">
-          <p style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em;color:#fff;">Noorul<span style="color:#eec98c;">Quran</span></p>
-          <p style="margin:6px 0 0;font-size:11px;letter-spacing:.4em;text-transform:none;color:rgba(255,255,255,.3);">Created by Tauseef Khan</p>
+        <div class="nq-word">
+          <p class="nq-title">Noorul<span class="nq-gold">Quran</span></p>
+          <p class="nq-credit">Created by Tauseef Khan</p>
         </div>
       </div>
     </div>

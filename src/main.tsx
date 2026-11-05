@@ -17,11 +17,14 @@ import { AudioProvider } from './store/audio.tsx'
 
 // Register the PWA service worker only in production builds — the dev server
 // must never be shadowed by a cached shell. Registration is fire-and-forget.
+// Scope/paths follow the deploy base (GitHub Pages subpath compatible).
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {
-      /* offline support degrades silently */
-    })
+    navigator.serviceWorker
+      .register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL })
+      .catch(() => {
+        /* offline support degrades silently */
+      })
   })
 }
 
@@ -41,10 +44,11 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 )
 
-// Dismiss the HTML splash with a controlled minimum hold (2.5s) and smooth fade-out.
+// Dismiss the HTML splash with a short controlled hold (1.2s — enough to read
+// the wordmark, never enough to feel slow) and a smooth fade-out.
 const splash = document.getElementById('app-splash')
 if (splash) {
-  const MIN_HOLD = 2500
+  const MIN_HOLD = 1200
   const FADE_MS = 400
   const elapsed = performance.now() - performance.timeOrigin
   const delay = Math.max(0, MIN_HOLD - elapsed)

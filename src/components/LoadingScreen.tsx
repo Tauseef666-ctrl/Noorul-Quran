@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion'
 import { GeometricPattern } from './GeometricPattern'
-import { LogoMark } from './LogoMark'
+import { LogoMark } from './Brand'
 
 /**
- * Quran-inspired loading surface — geometric mark + wordmark + calm status line.
- * Used on route-level data waits; short-lived by design (never a long splash).
+ * Quran-inspired loading surface — the Rub el Hizb brand mark inside a soft
+ * brand-tinted chip, the Arabic wordmark, and a calm status line over a faint
+ * geometric weft. Theme-aware (all colours come from the design tokens), used
+ * on route-level data waits; short-lived by design (never a long splash).
  */
 export function LoadingScreen({ label = 'Loading Quran…' }: { label?: string }) {
   return (
@@ -19,9 +21,9 @@ export function LoadingScreen({ label = 'Loading Quran…' }: { label?: string }
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/10 text-brand shadow-lg"
+          className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand/10 shadow-[var(--shadow-glow)]"
         >
-          <LogoMark className="h-7 w-7" />
+          <LogoMark className="h-10 w-10" />
         </motion.div>
         <div>
           <p

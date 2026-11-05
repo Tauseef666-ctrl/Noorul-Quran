@@ -128,14 +128,6 @@
       env(safe-area-inset-left);
   }
 
-  /* Accessible focus ring — emerald, clearly visible in both themes.
-     Keyboard users get a crisp outline; mouse users keep clean hover states. */
-  :focus-visible {
-    outline: 2px solid var(--brand);
-    outline-offset: 2px;
-    border-radius: 8px;
-  }
-
   /* Skip-to-content link — visually hidden until focused (first tab stop) */
   .skip-link {
     position: fixed;
@@ -196,7 +188,6 @@ html {
     /* Animated light ↔ dark switch — no white flash, soft crossfade */
     transition: background-color 0.5s ease, color 0.5s ease;
   }
-
   /* Ambient wash — calm emerald + gold radial glows on a fixed layer */
   body::before {
     content: '';
@@ -227,6 +218,33 @@ html {
       border-color 0.5s ease,
       box-shadow 0.5s ease,
       color 0.3s ease;
+  }
+
+  /* Theme-matched scrollbars (sidebar + menu drawer). A hairline rail that
+     follows --line-strong in both themes — never the glaring OS default. */
+  .glass-nav {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+  .glass-nav::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .glass-nav::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .glass-nav::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    background-clip: padding-box;
+    border: 3px solid transparent;
+    border-radius: 9999px;
+  }
+  .glass-nav::-webkit-scrollbar-thumb:hover {
+    background: var(--ink-faint);
+    background-clip: padding-box;
+  }
+  .glass-nav::-webkit-scrollbar-corner {
+    background: transparent;
   }
 
   ::selection {
@@ -566,18 +584,4 @@ html {
 .eq-bars--muted span {
   animation-play-state: paused;
   transform: scaleY(0.35);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
 }
